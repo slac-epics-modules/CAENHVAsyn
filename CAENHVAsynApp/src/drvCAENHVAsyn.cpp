@@ -42,9 +42,25 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 {
     std::cout << "Initiliziting " << DriverName_ << "..." << std::endl;
 
+    // Check parameters
+    if ( portName_.empty() )
+        throw std::runtime_error("The port name must be defined");
+
+    if ( userName.empty() )
+        throw std::runtime_error("The user name must be defined");
+
+    if ( ipAddr.empty() )
+        throw std::runtime_error("The IP address must be defined");
+    else
+    {
+        unsigned char buf[sizeof(struct in6_addr)];
+        if (!inet_pton(AF_INET, ipAddr.c_str(), buf))
+            throw std::runtime_error("Invalid IP address");
+    }
+
     // Only SYx527 are supported at the 
     if ( (systemType < 0) || (systemType > 3) )
-        std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
+        throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
     // CAENHV_InitSystem
     std::cout << std::endl;
@@ -115,13 +131,9 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 // CAENHVAsynConfig
 extern "C" int CAENHVAsynConfig(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password)
 {
-    int status = 0;
-    
-    // Check parameters 
-    
     new CAENHVAsyn(portName, systemType, ipAddr, userName, password);
 
-    return (status==0) ? asynSuccess : asynError;
+    return asynSuccess;
 }
 
 static const iocshArg confArg0 = { "portName",   iocshArgString };

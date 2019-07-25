@@ -28,6 +28,7 @@
 #include <string.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#include <arpa/inet.h>
 #include <iostream>
 #include <epicsTypes.h>
 #include <epicsTime.h>
