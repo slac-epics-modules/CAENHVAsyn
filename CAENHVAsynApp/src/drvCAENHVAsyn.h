@@ -58,5 +58,5 @@ class CAENHVAsyn : public asynPortDriver
     private:
         const std::string DriverName_; // = "CAENHVAsyn";
         std::string portName_;
-        int handler;
+        int handle;
 };

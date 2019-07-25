@@ -38,7 +38,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         0),                                                                                         // Default stack size
     DriverName_("CAENHVAsyn"),
     portName_(portName),
-    handler(-1)
+    handle(-1)
 {
     std::cout << "Initiliziting " << DriverName_ << "..." << std::endl;
 
@@ -69,10 +69,10 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
                                           LINKTYPE_TCPIP, const_cast<void*>( static_cast<const void*>( ipAddr.c_str() ) ),
                                           userName.c_str(),
                                           password.c_str(), 
-                                          &handler );
+                                          &handle );
 
     std::stringstream retMessage; 
-    retMessage << "CAENHV_InitSystem: " << CAENHV_GetError(handler) << " (num. " << ret << ")";
+    retMessage << "CAENHV_InitSystem: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
 
     if( ret != CAENHV_OK )
         throw std::runtime_error(retMessage.str().c_str());
@@ -90,10 +90,10 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     unsigned short *SerNumList;
     unsigned char *FmwRelMinList;
     unsigned char *FmwRelMaxList;
-    ret = CAENHV_GetCrateMap(handler, &NrOfSlot, &NrOfChList, &ModelList, &DescriptionList, &SerNumList, &FmwRelMinList, &FmwRelMaxList);
+    ret = CAENHV_GetCrateMap(handle, &NrOfSlot, &NrOfChList, &ModelList, &DescriptionList, &SerNumList, &FmwRelMinList, &FmwRelMaxList);
 
     retMessage.str("");
-    retMessage << "CAENHV_GetCrateMap: " << CAENHV_GetError(handler) << " (num. " << ret << ")";
+    retMessage << "CAENHV_GetCrateMap: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
 
     if( ret != CAENHV_OK )
         throw std::runtime_error(retMessage.str().c_str());
@@ -120,6 +120,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     free(FmwRelMinList);
     free(FmwRelMaxList);
 
+     
     // Done
     std::cout << std::endl;
     std::cout << "Done initilizing " << DriverName_ << std::endl;
