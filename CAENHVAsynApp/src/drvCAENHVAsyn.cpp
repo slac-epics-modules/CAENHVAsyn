@@ -23,10 +23,10 @@
 
 //const std::string CAENHVAsyn::DriverName_ = "CAENHVAsyn";
 
-CAENHVAsyn::CAENHVAsyn(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password)
+CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
 :
     asynPortDriver(
-        portName,
+        portName.c_str(),
         MAX_SIGNALS,
         NUM_PARAMS,
         asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | \
@@ -49,7 +49,11 @@ CAENHVAsyn::CAENHVAsyn(const char* portName, int systemType, char* ipAddr, const
     // CAENHV_InitSystem
     std::cout << std::endl;
     std::cout << "Calling CAENHV_InitSystem..." << std::endl;
-    CAENHVRESULT ret = CAENHV_InitSystem(static_cast<CAENHV_SYSTEM_TYPE_t>(systemType), LINKTYPE_TCPIP, static_cast<void*>(ipAddr), userName, password, &handler);
+    CAENHVRESULT ret = CAENHV_InitSystem( static_cast<CAENHV_SYSTEM_TYPE_t>(systemType), 
+                                          LINKTYPE_TCPIP, const_cast<void*>( static_cast<const void*>( ipAddr.c_str() ) ),
+                                          userName.c_str(),
+                                          password.c_str(), 
+                                          &handler );
 
     std::stringstream retMessage; 
     retMessage << "CAENHV_InitSystem: " << CAENHV_GetError(handler) << " (num. " << ret << ")";
