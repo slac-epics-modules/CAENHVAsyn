@@ -50,7 +50,7 @@
 class CAENHVAsyn : public asynPortDriver
 {
     public:
-        CAENHVAsyn(const char* portName, char* ipAddr, const char* userName, const char* password);
+        CAENHVAsyn(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password);
 
         // Methods that we override from asynPortDriver
 

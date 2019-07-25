@@ -23,7 +23,7 @@
 
 //const std::string CAENHVAsyn::DriverName_ = "CAENHVAsyn";
 
-CAENHVAsyn::CAENHVAsyn(const char* portName, char* ipAddr, const char* userName, const char* password)
+CAENHVAsyn::CAENHVAsyn(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password)
 :
     asynPortDriver(
         portName,
@@ -42,10 +42,14 @@ CAENHVAsyn::CAENHVAsyn(const char* portName, char* ipAddr, const char* userName,
 {
     std::cout << "Initiliziting " << DriverName_ << "..." << std::endl;
 
+    // Only SYx527 are supported at the 
+    if ( (systemType < 0) || (systemType > 3) )
+        std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
+
     // CAENHV_InitSystem
     std::cout << std::endl;
     std::cout << "Calling CAENHV_InitSystem..." << std::endl;
-    CAENHVRESULT ret = CAENHV_InitSystem((CAENHV_SYSTEM_TYPE_t)3, LINKTYPE_TCPIP, static_cast<void*>(ipAddr), userName, password, &handler);
+    CAENHVRESULT ret = CAENHV_InitSystem(static_cast<CAENHV_SYSTEM_TYPE_t>(systemType), LINKTYPE_TCPIP, static_cast<void*>(ipAddr), userName, password, &handler);
 
     std::stringstream retMessage; 
     retMessage << "CAENHV_InitSystem: " << CAENHV_GetError(handler) << " (num. " << ret << ")";
@@ -105,35 +109,37 @@ CAENHVAsyn::CAENHVAsyn(const char* portName, char* ipAddr, const char* userName,
 ////////////////////////////////////
 
 // CAENHVAsynConfig
-extern "C" int CAENHVAsynConfig(const char* portName, char* ipAddr, const char* userName, const char* password)
+extern "C" int CAENHVAsynConfig(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password)
 {
     int status = 0;
     
     // Check parameters 
     
-    new CAENHVAsyn(portName, ipAddr, userName, password);
+    new CAENHVAsyn(portName, systemType, ipAddr, userName, password);
 
     return (status==0) ? asynSuccess : asynError;
 }
 
-static const iocshArg confArg0 =    { "portName",  iocshArgString };
-static const iocshArg confArg1 =    { "ipAddr",    iocshArgString };
-static const iocshArg confArg2 =    { "userName",  iocshArgString };
-static const iocshArg confArg3 =    { "password",  iocshArgString};
+static const iocshArg confArg0 = { "portName",   iocshArgString };
+static const iocshArg confArg1 = { "systemType", iocshArgInt    };
+static const iocshArg confArg2 = { "ipAddr",     iocshArgString };
+static const iocshArg confArg3 = { "userName",   iocshArgString };
+static const iocshArg confArg4 = { "password",   iocshArgString };
 
 static const iocshArg * const confArgs[] =
 {
     &confArg0,
     &confArg1,
     &confArg2,
-    &confArg3
+    &confArg3,
+    &confArg4
 };
 
-static const iocshFuncDef configFuncDef = {"CAENHVAsynConfig", 4, confArgs};
+static const iocshFuncDef configFuncDef = {"CAENHVAsynConfig", 5, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-    CAENHVAsynConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval);
+    CAENHVAsynConfig(args[0].sval, args[1].ival, args[2].sval, args[3].sval, args[4].sval);
 }
 
 // iocshRegister
