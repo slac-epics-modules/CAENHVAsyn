@@ -80,6 +80,116 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     std::cout << "Success!" << std::endl;
     std::cout << retMessage.str() << std::endl;
 
+    // Get System Property List
+    std::cout << std::endl;
+    std::cout << "Calling CAENHV_GetSysPropList...." << std::endl;
+    unsigned short NumProp;
+    char *PropNameList;
+
+    ret = CAENHV_GetSysPropList(handle, &NumProp, &PropNameList);
+
+    retMessage.str("");
+    retMessage << "CAENHV_GetSysPropList: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+
+    if( ret != CAENHV_OK )
+        throw std::runtime_error(retMessage.str().c_str());
+
+    std::cout << "Success!" << std::endl;
+    std::cout << retMessage.str() << std::endl;
+
+    std::cout << "Property List:" << std::endl;
+    std::cout << std::left << std::setw(20) << std::setfill(' ') << "Name";
+    std::cout << std::left << std::setw(10) << std::setfill(' ') << "Mode";
+    std::cout << std::left << std::setw(10) << std::setfill(' ') << "Type";
+    std::cout << std::left << std::setw(10) << std::setfill(' ') << "Value";
+    std::cout << std::endl;
+
+    char* p = PropNameList;
+    for (std::size_t i(0); i < NumProp; ++i, p += strlen(p) + 1)
+    {
+
+        // Print property name
+        std::cout << std::left << std::setw(20) << std::setfill(' ') << p;
+
+        // Get Property info
+        unsigned PropMode;
+        unsigned PropType;
+        CAENHVRESULT ret1 = CAENHV_GetSysPropInfo(handle, p, &PropMode, &PropType);
+
+        if ( ret1 != CAENHV_OK )
+        {
+            retMessage.str("");
+            retMessage << "Error: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+            std::cout << std::left << std::setw(20) << std::setfill(' ') << retMessage.str();
+        }
+	else
+        {
+            std::cout << std::left << std::setw(10) << std::setfill(' ') << unsigned(PropMode);
+            std::cout << std::left << std::setw(10) << std::setfill(' ') << unsigned(PropType);
+        }
+
+        // Get Property value
+        union   {
+            char            cBuff[4096];
+            float           fBuff;
+            unsigned short  ui2Buff;
+            unsigned long   ui4Buff;
+            short           i2Buff;
+            long            i4Buff;
+            unsigned        bBuff;
+        } app;
+
+        CAENHVRESULT ret2 = CAENHV_GetSysProp(handle, p, &app);
+
+        if ( ret2 != CAENHV_OK && ret2 != CAENHV_GETPROPNOTIMPL && ret2 != CAENHV_NOTGETPROP )
+        {
+            retMessage.str("");
+            retMessage << "Error: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+            std::cout << std::left << std::setw(20) << std::setfill(' ') << retMessage.str();
+        }
+        else
+        {
+            std::cout << std::left << std::setw(10) << std::setfill(' ');
+            switch( PropType )
+            {
+                case SYSPROP_TYPE_STR:
+                    std::cout << app.cBuff;
+                    break;
+            
+                case SYSPROP_TYPE_REAL:
+                    std::cout << app.fBuff;
+                    break;
+            
+                case SYSPROP_TYPE_UINT2:
+                    std::cout << app.ui2Buff;
+                    break;
+            
+                case SYSPROP_TYPE_UINT4:
+                    std::cout << app.ui4Buff;
+                    break;
+            
+                case SYSPROP_TYPE_INT2:
+                    std::cout << app.i2Buff;
+                    break;
+            
+                case SYSPROP_TYPE_INT4:
+                    std::cout << app.i4Buff;
+                    break;
+            
+                case SYSPROP_TYPE_BOOLEAN:
+                    std::cout << app.bBuff;
+                    break;
+            }
+
+        }
+
+        std::cout << std::endl;
+
+    }
+
+    // Deallocate memory (Use RAII in the future for this)
+    free(PropNameList);
+
     // Get Crate Map
     std::cout << std::endl;
     std::cout << "Calling CAENHV_GetCrateMap...." << std::endl;
@@ -105,7 +215,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     char *m = ModelList, *d = ModelList;
     for (std::size_t i(0); i < NrOfSlot; ++i, m += strlen(m) + 1, d += strlen(d) + 1)
     {
-        std::cout << "Board " << std::setfill('0')  << std::setw(2) << i << ": ";
+        std::cout << "Board " << std::setfill('0')  << std::setw(2) << i << ": " << std::setfill(' ');
         if ( *m == '\0' )
             std::cout << "Not present." << std::endl;
         else
@@ -120,7 +230,97 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     free(FmwRelMinList);
     free(FmwRelMaxList);
 
-     
+    // Get Board Parameter Info
+    std::cout << std::endl;
+    char *ParNameList;
+    std::cout << "Calling CAENHV_GetBdParamInfo...." << std::endl;
+    ret = CAENHV_GetBdParamInfo(handle, 0, &ParNameList);
+
+    if( ret != CAENHV_OK )
+    {
+        retMessage.str("");
+        retMessage << "CAENHV_GetCrateMap: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+        std::cout << retMessage.str() << std::endl;
+    }
+    else
+    {
+        char (*p)[MAX_PARAM_NAME];
+        p = (char (*)[MAX_PARAM_NAME])ParNameList;
+
+        for (std::size_t i(0); p[i][0]; ++i)
+        {
+            std::cout << "Property name: " << p[i] << std::endl;
+
+            //typedef struct ParPropTag
+            //{
+            //    unsigned long   Type, Mode;
+            //    float           MinVal, MaxVal;
+            //    unsigned short  Unit;
+            //    short           Exp;
+            //    char            OnState[30], OffState[30];
+            //} ParProp;
+
+            //ParProp pp;
+            unsigned long Type, Mode;
+            CAENHVRESULT ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], "Type", &Type);
+   
+            std::cout << "Type = ";
+            if ( ret1 != CAENHV_OK )
+                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+            else
+                std::cout << unsigned(Type) << std::endl;
+
+            ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], "Mode", &Mode);
+
+            std::cout << "Mode = ";
+            if ( ret1 != CAENHV_OK )
+                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+            else
+                std::cout << unsigned(Mode) << std::endl;
+
+            switch(Type)
+            {
+                case PARAM_TYPE_NUMERIC:
+                    {
+                        std::vector<std::string> eppl ( {"Minval", "Maxval"} );
+                        for (std::vector<std::string>::iterator it = eppl.begin(); it != eppl.end(); ++it)
+                        {
+                            float f;
+                            ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], it->c_str(), &f) != CAENHV_OK;
+                            if ( ret1 != CAENHV_OK )
+                                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                            else
+                                std::cout << *it << " = " << f << std::endl;
+                        }
+                    }
+                    break;
+                case PARAM_TYPE_ONOFF:
+                    {
+                        std::vector<std::string> eppl ( {"Onstate", "Offstate"} );
+                        for (std::vector<std::string>::iterator it = eppl.begin(); it != eppl.end(); ++it)
+                        {
+                            char c[30];
+                            ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], it->c_str(), c) != CAENHV_OK;
+                            if ( ret1 != CAENHV_OK )
+                                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                            else
+                                std::cout << *it << " = " << c << std::endl;
+                        }
+                    }
+                    break;
+                case PARAM_TYPE_BDSTATUS:
+                    break;
+                default:
+                    break;
+            }
+
+            std::cout << std::endl;
+        }
+    }
+
+    // Deallocate memory (Use RAII in the future for this)
+    free(ParNameList);
+ 
     // Done
     std::cout << std::endl;
     std::cout << "Done initilizing " << DriverName_ << std::endl;
