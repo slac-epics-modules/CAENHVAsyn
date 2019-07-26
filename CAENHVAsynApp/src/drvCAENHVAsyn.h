@@ -23,6 +23,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <iomanip>
+#include <bitset>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

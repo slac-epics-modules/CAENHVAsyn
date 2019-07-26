@@ -283,6 +283,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
                 case PARAM_TYPE_NUMERIC:
                     {
                         std::vector<std::string> eppl ( {"Minval", "Maxval"} );
+
                         for (std::vector<std::string>::iterator it = eppl.begin(); it != eppl.end(); ++it)
                         {
                             float f;
@@ -292,6 +293,20 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
                             else
                                 std::cout << *it << " = " << f << std::endl;
                         }
+
+                        {
+                            float val;
+                            unsigned short* SlotList = (unsigned short*)malloc(1 *  sizeof(unsigned short));
+                            SlotList[0] = 0;
+                       
+                            ret1 = CAENHV_GetBdParam(handle, 1, SlotList, p[i], &val);
+                            if ( ret1 != CAENHV_OK )
+                                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                            else
+                                std::cout << "Value = " << val << std::endl;
+                        }
+
+                        std::cout << std::endl;
                     }
                     break;
                 case PARAM_TYPE_ONOFF:
@@ -306,15 +321,37 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
                             else
                                 std::cout << *it << " = " << c << std::endl;
                         }
+
+                        {
+                            char val[30];
+                            unsigned short* SlotList = (unsigned short*)malloc(1 *  sizeof(unsigned short));
+                            SlotList[0] = 0;
+                       
+                            ret1 = CAENHV_GetBdParam(handle, 1, SlotList, p[i], val);
+                            if ( ret1 != CAENHV_OK )
+                                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                            else
+                                std::cout << "Value = " << val << std::endl;
+                        }
                     }
                     break;
                 case PARAM_TYPE_BDSTATUS:
+                        {
+                            unsigned val;
+                            unsigned short* SlotList = (unsigned short*)malloc(1 *  sizeof(unsigned short));
+                            SlotList[0] = 0;
+                       
+                            ret1 = CAENHV_GetBdParam(handle, 1, SlotList, p[i], &val);
+                            if ( ret1 != CAENHV_OK )
+                                std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                            else
+                                std::cout << "Value = " << std::bitset<32>(val) << std::endl;
+                        }
                     break;
                 default:
                     break;
             }
 
-            std::cout << std::endl;
         }
     }
 
