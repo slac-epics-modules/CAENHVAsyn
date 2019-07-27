@@ -239,7 +239,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     if( ret != CAENHV_OK )
     {
         retMessage.str("");
-        retMessage << "CAENHV_GetCrateMap: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+        retMessage << "CAENHV_GetBdParamInfo: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
         std::cout << retMessage.str() << std::endl;
     }
     else
@@ -249,18 +249,8 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
         for (std::size_t i(0); p[i][0]; ++i)
         {
-            std::cout << "Property name: " << p[i] << std::endl;
+            std::cout << "Parameter name: " << p[i] << std::endl;
 
-            //typedef struct ParPropTag
-            //{
-            //    unsigned long   Type, Mode;
-            //    float           MinVal, MaxVal;
-            //    unsigned short  Unit;
-            //    short           Exp;
-            //    char            OnState[30], OffState[30];
-            //} ParProp;
-
-            //ParProp pp;
             unsigned long Type, Mode;
             CAENHVRESULT ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], "Type", &Type);
    
@@ -287,7 +277,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
                         for (std::vector<std::string>::iterator it = eppl.begin(); it != eppl.end(); ++it)
                         {
                             float f;
-                            ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], it->c_str(), &f) != CAENHV_OK;
+                            ret1 = CAENHV_GetBdParamProp(handle, 0, p[i], it->c_str(), &f);
                             if ( ret1 != CAENHV_OK )
                                 std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
                             else
@@ -357,7 +347,153 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     // Deallocate memory (Use RAII in the future for this)
     free(ParNameList);
+
+    // Get Channel Parameter Info
+    {
+        std::cout << std::endl;
+        char *ParNameList;
+        int ParNumber;
+        std::cout << "Calling CAENHV_GetChParamInfo...." << std::endl;
+        ret = CAENHV_GetChParamInfo(handle, 0, 0, &ParNameList, &ParNumber);
+
+        if( ret != CAENHV_OK )
+        {
+            retMessage.str("");
+            retMessage << "CAENHV_GetiChParamInfo: " << CAENHV_GetError(handle) << " (num. " << ret << ")";
+            std::cout << retMessage.str() << std::endl;
+        }
+        else
+        {
+            char (*p)[MAX_PARAM_NAME];
+            p = (char (*)[MAX_PARAM_NAME])ParNameList;
+            for (std::size_t i(0); p[i][0] && i < ParNumber; ++i)
+            {
+                std::cout << "Parameter name: " << p[i] << std::endl;
+
+                unsigned long Type, Mode;
+                CAENHVRESULT ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Type", &Type);
+
+                std::cout << "Type = ";
+                if ( ret1 != CAENHV_OK )
+                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                else
+                    std::cout << unsigned(Type) << std::endl;
+
+                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Mode", &Mode);
+
+                std::cout << "Mode = ";
+                if ( ret1 != CAENHV_OK )
+                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                else
+                    std::cout << unsigned(Mode) << std::endl;
+
+                switch(Type)
+                {
+                    case PARAM_TYPE_NUMERIC:
+                        std::cout << "Numeric type." << std::endl;
+                        {
+                            {
+                                float f;
+                                unsigned short us;
+                                int x;
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Minval", &f);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Minval = " << f << std::endl;
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Maxval", &f);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Maxval = " << f << std::endl;
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Unit", &us);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Unit = " << us << std::endl;
+
+                                // using 'short' to get the rerun value here fails. So, I used an int, and casted it afterwards. 
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Exp", &x);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Exp = " << static_cast<short>(x) << std::endl;
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Decimal", &us);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Decimal = " << us << std::endl;
+                            }
+                        
+                            {
+                                float val;
+                                unsigned short* ChList = (unsigned short*)malloc(1 *  sizeof(unsigned short));
+                                ChList[0] = 0;
+
+                                ret1 = CAENHV_GetChParam(handle, 0, p[i], 1, ChList, &val);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Value = " << val << std::endl;
+                            }
+                            
+                            std::cout << std::endl;
+                        }
+                        break;
+
+                    case PARAM_TYPE_ONOFF:
+                        {
+                            {
+                                char c[30];
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Onstate", c);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Onstate = " << c << std::endl;
+
+                                ret1 = CAENHV_GetChParamProp(handle, 0, 0, p[i], "Offstate", c);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Offstate = " << c << std::endl;
+                            }
+
+                            {
+                                int x;
+                                unsigned short* ChList = (unsigned short*)malloc(1 *  sizeof(unsigned short));
+                                ChList[0] = 0;
+
+                                ret1 = CAENHV_GetChParam(handle, 0, p[i], 1, ChList, &x);
+                                if ( ret1 != CAENHV_OK )
+                                    std::cout << "Error: " << CAENHV_GetError(handle) << " (num. " << ret1 << ")" << std::endl;
+                                else
+                                    std::cout << "Value = " << x << std::endl;
+                            }
+                        }
+                        break;
+
+                    default:
+                        std::cout << "???" << std::endl;
+                        break;
+                }
+
+
+                std::cout << std::endl;
+            }
+
+            std::cout << std::endl;
+        }
+
+        // Deallocate memory (Use RAII in the future for this)
+        free(ParNameList);
  
+    }
+
     // Done
     std::cout << std::endl;
     std::cout << "Done initilizing " << DriverName_ << std::endl;
