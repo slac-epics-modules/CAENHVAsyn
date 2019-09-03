@@ -1,16 +1,16 @@
-#ifndef DRV_CAEN_HV_ASYN_H
-#define DRV_CAEN_HV_ASYN_H
+#ifndef BOARD_PARAMETER_H
+#define BOARD_PARAMETER_H
 
 /**
  *-----------------------------------------------------------------------------
  * Title      : CAEN HV Asyn module
  * ----------------------------------------------------------------------------
- * File       : drvCAENHVAsyn.h
+ * File       : board_parameter.h
  * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
- * Created    : 2019-07-23
+ * Created    : 2019-08-20
  * ----------------------------------------------------------------------------
  * Description:
- * EPICS Module for CAEN HV Power supplies
+ * CAEN HV Power supplies Board Parameter Class
  * ----------------------------------------------------------------------------
  * This file is part of l2MpsAsyn. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -35,49 +35,26 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <iostream>
-#include <epicsTypes.h>
-#include <epicsTime.h>
-#include <epicsThread.h>
-#include <epicsString.h>
-#include <epicsTimer.h>
-#include <epicsMutex.h>
-#include <epicsEvent.h>
-#include <iocsh.h>
-#include <dbAccess.h>
-#include <dbStaticLib.h>
-#include "asynPortDriver.h"
-#include <epicsExport.h>
 
 #include "CAENHVWrapper.h"
 #include "common.h"
-#include "chassis.h"
+#include "board_parameter_property.h"
 
-#define MAX_SIGNALS (3)
-#define NUM_PARAMS (1500)
-
-// Argument list passed to load a record
-struct recordParams
+class BoardParameter
 {
-    std::string recName;
-    std::string recDesc;
-    std::string recTemplate;
-    std::string paramName;
-    asynParamType paramType;
-};
+public:
+    BoardParameter(int h, std::size_t s, const std::string&  p);
+    ~BoardParameter();
 
-class CAENHVAsyn : public asynPortDriver
-{
-    public:
-        CAENHVAsyn(const std::string& portName, int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
+    void printInfo() const;
 
-        // Methods that we override from asynPortDriver
-
-    private:
-        int LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams);
-
-        const std::string driverName_;
-        std::string portName_;
-        Chassis *chassis;
+private:
+    int                     handle;
+    std::size_t             slot;
+    std::string             param;
+    uint32_t                type;
+    uint32_t                mode; 
+    BoardParameterProperty* boardParameterProperties;
 };
 
 #endif

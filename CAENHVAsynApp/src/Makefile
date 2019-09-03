@@ -14,6 +14,11 @@ INC += drvCAENHVAsyn.h
 
 LIBRARY_IOC += CAENHVAsyn
 LIB_SRCS += drvCAENHVAsyn.cpp
+LIB_SRCS += common.cpp
+LIB_SRCS += chassis.cpp
+LIB_SRCS += board.cpp
+LIB_SRCS += board_parameter.cpp
+LIB_SRCS += board_parameter_property.cpp
 LIB_LIBS += asyn
 
 #=====================================================

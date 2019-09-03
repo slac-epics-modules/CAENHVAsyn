@@ -1,16 +1,16 @@
-#ifndef DRV_CAEN_HV_ASYN_H
-#define DRV_CAEN_HV_ASYN_H
+#ifndef BOARD_PARAMETER_PROPERTY_H
+#define BOARD_PARAMETER_PROPERTY_H
 
 /**
  *-----------------------------------------------------------------------------
  * Title      : CAEN HV Asyn module
  * ----------------------------------------------------------------------------
- * File       : drvCAENHVAsyn.h
+ * File       : board_parameter_property.h 
  * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
- * Created    : 2019-07-23
+ * Created    : 2019-08-20
  * ----------------------------------------------------------------------------
  * Description:
- * EPICS Module for CAEN HV Power supplies
+ * CAEN HV Power supplies Board Parameter Property Class
  * ----------------------------------------------------------------------------
  * This file is part of l2MpsAsyn. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -35,49 +35,55 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <iostream>
-#include <epicsTypes.h>
-#include <epicsTime.h>
-#include <epicsThread.h>
-#include <epicsString.h>
-#include <epicsTimer.h>
-#include <epicsMutex.h>
-#include <epicsEvent.h>
-#include <iocsh.h>
-#include <dbAccess.h>
-#include <dbStaticLib.h>
-#include "asynPortDriver.h"
-#include <epicsExport.h>
 
 #include "CAENHVWrapper.h"
 #include "common.h"
-#include "chassis.h"
 
-#define MAX_SIGNALS (3)
-#define NUM_PARAMS (1500)
-
-// Argument list passed to load a record
-struct recordParams
+class BoardParameterProperty
 {
-    std::string recName;
-    std::string recDesc;
-    std::string recTemplate;
-    std::string paramName;
-    asynParamType paramType;
+public:
+    BoardParameterProperty(int h, std::size_t s, const std::string& p);
+    virtual ~BoardParameterProperty() {};
+
+    virtual void printInfo() const = 0;
+
+protected:
+    int         handle;
+    std::size_t slot;
+    std::string param;
+    std::string type;
 };
 
-class CAENHVAsyn : public asynPortDriver
+class BoardParameterPropertyNumeric : public BoardParameterProperty
 {
-    public:
-        CAENHVAsyn(const std::string& portName, int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
+public:
+    BoardParameterPropertyNumeric(int h, std::size_t s, const std::string& p);
+    virtual ~BoardParameterPropertyNumeric() {};
 
-        // Methods that we override from asynPortDriver
+    void printInfo() const;
 
-    private:
-        int LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams);
+private:
 
-        const std::string driverName_;
-        std::string portName_;
-        Chassis *chassis;
+    std::string getUnits(uint16_t units, uint8_t exp);
+
+    float       minVal;
+    float       maxVal;
+    std::string units;
+    float       value;
+};
+
+class BoardParameterPropertyOnoff : public BoardParameterProperty
+{
+public:
+    BoardParameterPropertyOnoff(int h, std::size_t s, const std::string& p);
+    virtual ~BoardParameterPropertyOnoff() {};
+
+    void printInfo() const;
+
+private:
+    std::string onState;
+    std::string offState;
+    std::string value;
 };
 
 #endif
