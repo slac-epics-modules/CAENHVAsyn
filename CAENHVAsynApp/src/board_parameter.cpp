@@ -56,7 +56,6 @@ BoardParameter::~BoardParameter()
 
 void BoardParameter::printInfo() const
 {
-std::cout << "Size of std::size_t = " << sizeof(std::size_t) << std::endl;
     std::cout << "      Name = " << param \
               << ", Type = "     << type \
               << ", Mode = "     << mode \
