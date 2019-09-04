@@ -21,6 +21,157 @@
 
 #include "drvCAENHVAsyn.h"
 
+
+void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
+{
+    bool loadRecord = true;
+
+    std::string name = bp->getEpicsParam();
+    std::string mode = bp->getMode();
+    std::string egu  = bp->getUnits();
+    float       min  = bp->getMinVal();
+    float       max  = bp->getMaxVal();
+
+    std::cout << "Creating EPICS numeric parameter..." << std::endl;
+    std::cout << "EPICS parameter name = " << name << std::endl;
+    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamFloat64, &index);
+
+    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    boardParameterNumericList.insert( std::make_pair<int, BoardParameterNumeric>(index, bp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",EGU=" << egu;
+        dbParamsLocal << ",LOPR=" << min;
+        dbParamsLocal << ",HOPR=" << max;
+        dbParamsLocal << ",SCAN=1 second";
+
+        std::cout << "Loading EPICS record..." << std::endl;
+
+        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str()); 
+    }
+}
+
+void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
+{
+    bool loadRecord = true;
+
+    std::string name     = bp->getEpicsParam();
+    std::string mode     = bp->getMode();
+    std::string onLabel  = bp->getOnState();
+    std::string offLabel = bp->getOffState();
+
+    std::cout << "Creating EPICS OnOff parameter..." << std::endl;
+    std::cout << "EPICS parameter name = " << name << std::endl;
+    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamUInt32Digital, &index);
+
+    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    boardParameterOnOffList.insert( std::make_pair<int, BoardParameterOnOff>(index, bp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",ZNAM=" << onLabel;
+        dbParamsLocal << ",ONAM=" << offLabel;
+        dbParamsLocal << ",SCAN=1 second";
+
+        std::cout << "Loading EPICS record..." << std::endl;
+
+        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+    }
+}
+
+//void CAENHVAsyn::createBoardParam(const BoardParameter& bp)
+//{
+//    bool loadRecord = true;
+//
+//    std::string name = bp->getEpicsParam();
+//    std::string mode = bp->getMode();
+//    std::string type = bp->getType();
+//
+//    std::cout << "Creating EPICS parameter..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+//    std::cout << "EPICS parameter Type = " << type << std::endl;
+//
+//    asynParamType paramType;
+//    if (!type.compare("Numeric"))
+//    {
+//        paramType = asynParamFloat64;
+//        std::cout << "Creating Double type parameter..." << std::endl;
+//        
+//    }
+//    else if (!type.compare("OnOff"))
+//    {
+//        paramType = asynParamOctet;
+//        std::cout << "Creating String type parameter..." << std::endl;
+//    }
+//    else
+//    { 
+//        std::cout << "Unsupported type..." << std::endl;
+//        return;
+//    }
+//
+//    int index;
+//    createParam(name.c_str(), paramType, &index);
+//
+//    boardParameterList.insert( std::make_pair<int, const BoardParameter&>(index, bp) ); 
+//    //boardParameterList.insert( std::make_pair<int, int>(index, index+50) ); 
+//
+//    std::cout << "Parameter '" << name << "' (type = " << paramType << ") created. Index = " << index << std::endl;
+//
+//    if (loadRecord)
+//    {
+//        std::stringstream dbParamsLocal;
+//
+//        // Create list of paramater to pass to the  dbLoadRecords function
+//        dbParamsLocal.str("");
+//        dbParamsLocal << "PORT=" << portName_;
+//        dbParamsLocal << ",R=" << name;
+//        dbParamsLocal << ",PARAM=" << name;
+//        dbParamsLocal << ",DESC=" << name;
+//        dbParamsLocal << ",SCAN=1 second";
+//
+//        std::cout << "Loading EPICS record..." << std::endl;
+//
+//        if (!type.compare("Numeric"))
+//        {
+//            std::cout << "Loading analog record..." << std::endl;
+//            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str()); 
+//        }
+//        else if (!type.compare("OnOff"))
+//        {
+//            std::cout << "Loading waveform of chars record..." << std::endl;
+//        }
+//
+//    }
+//}
+
 CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
 :
     asynPortDriver(
@@ -61,37 +212,112 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     std::cout << std::endl;
     chassis->printInfo();
+
+    std::vector<Board> b = chassis->getBoards();
+
+    for (std::vector<Board>::iterator boardIt = b.begin(); boardIt != b.end(); ++boardIt)
+    {
+        std::vector<BoardParameterNumeric> pn = boardIt->getBoardParameterNumerics();
+        std::cout << "Number of Numeric Properties = " << pn.size() << std::endl;
+        
+        for (std::vector<BoardParameterNumeric>::iterator paramIt = pn.begin(); paramIt != pn.end(); ++paramIt)
+            createBoardParamNumeric(*paramIt);
+
+        std::vector<BoardParameterOnOff> po = boardIt->getBoardParameterOnOffs();
+        std::cout << "Number of OnOff Properties = " << po.size() << std::endl;
+        
+        for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
+            createBoardParamOnOff(*paramIt);
+    }
+//    std::cout << "First element = " << chassis->getFirstSProps()->first << " = " << chassis->getFirstSProps()->second << std::endl;
+//
+//   std::vector<BoardParameter> bp0 = chassis->getBoara0dParameters();
+//   for (std::vector<BoardParameter>::iterator it = bp0.begin(); it != bp0.end(); ++it)
+//   {
+//       //std::string ep = (*it)->getEpicsParam();
+//       //std::cout << "Board EPICS parameter = " << ep << std::endl;
+//
+//       //(*it)->printInfo();
+//       createBoardParam(*it);
+//   }
 }
 
-int CAENHVAsyn::LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams)
+//int CAENHVAsyn::LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams)
+//{
+//    int paramIndex;
+//    std::stringstream dbParamsLocal;
+//
+//    // Create list of paramater to pass to the  dbLoadRecords function
+//    dbParamsLocal.str("");
+//    dbParamsLocal << "PORT=" << portName_;
+//    dbParamsLocal << ",ADDR=" << regType;
+//    dbParamsLocal << ",R=" << rp.recName;
+//    dbParamsLocal << ",PARAM=" << rp.paramName;
+//    dbParamsLocal << ",DESC=" << rp.recDesc;
+//    dbParamsLocal << dbParams.str();
+//
+//    // Create the asyn paramater
+//    createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);
+//
+//    // Create the record
+//    dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
+//
+//    // Write the record name to the PV list file
+//    //pvDumpFile->write("%s%*s", rp.recName.c_str(), recordNameLenMax - rp.recName.size() + 4, "");
+//    //pvDumpFile->write("# %s (%s)\n", getNameWithoutLeafIndexes(p).c_str(), regInterfaceTypeNames[regType]);
+//
+//    // Incrfement the number of created records
+//    //++recordCount;
+//
+//    // Return the parameter index
+//    return paramIndex;
+//}
+
+asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
-    int paramIndex;
-    std::stringstream dbParamsLocal;
+    static const char *functionName = "readFloat64";
+    int function = pasynUser->reason;
+    int status = 0;
 
-    // Create list of paramater to pass to the  dbLoadRecords function
-    dbParamsLocal.str("");
-    dbParamsLocal << "PORT=" << portName_;
-    dbParamsLocal << ",ADDR=" << regType;
-    dbParamsLocal << ",R=" << rp.recName;
-    dbParamsLocal << ",PARAM=" << rp.paramName;
-    dbParamsLocal << ",DESC=" << rp.recDesc;
-    dbParamsLocal << dbParams.str();
+    int addr;
+    this->getAddress(pasynUser, &addr);
 
-    // Create the asyn paramater
-    createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);
+    const char *name;
+    getParamName(addr, function, &name);
 
-    // Create the record
-    dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
+//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+    std::map<int, BoardParameterNumeric>::iterator it = boardParameterNumericList.find(function);
 
-    // Write the record name to the PV list file
-    //pvDumpFile->write("%s%*s", rp.recName.c_str(), recordNameLenMax - rp.recName.size() + 4, "");
-    //pvDumpFile->write("# %s (%s)\n", getNameWithoutLeafIndexes(p).c_str(), regInterfaceTypeNames[regType]);
+    if (it != boardParameterNumericList.end())
+        *value = it->second->getVal();
 
-    // Incrfement the number of created records
-    //++recordCount;
+    return (status==0) ? asynSuccess : asynError;
+}
 
-    // Return the parameter index
-    return paramIndex;
+asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
+{
+
+    static const char *functionName = "readUInt32Digital";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+
+    std::map<int, BoardParameterOnOff>::iterator it = boardParameterOnOffList.find(function);
+
+    if (it != boardParameterOnOffList.end())
+    {
+       // To be done... 
+       // At the memoment the getVal() returns an empty string
+    }
+
+    return (status==0) ? asynSuccess : asynError;
 }
 
 ////////////////////////////////////

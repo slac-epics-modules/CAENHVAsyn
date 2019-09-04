@@ -53,6 +53,12 @@ public:
 
     void printInfo() const;
 
+//    std::map< std::string, std::string >::iterator getFirstSProps() { return sProps.begin(); };
+//
+//   std::vector<BoardParameter> getBoara0dParameters() { return boards.begin()->getBoardParameters(); };
+
+    std::vector<Board> getBoards() { return boards; };
+
 private:
 
     int  InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const;
