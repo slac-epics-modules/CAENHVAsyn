@@ -32,6 +32,7 @@ Board::Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, 
     firmwareRelease(fw)
 {
     GetBoardParams();
+    GetBoardChannels();
 }
 
 Board::~Board()
@@ -51,8 +52,15 @@ void Board::printInfo() const
 
     std::cout << "    Board parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
-    std::cout << "      Number of parameters: " << boardParameters2.size() << std::endl;
-    for (std::vector<BoardParameter2>::const_iterator it = boardParameters2.begin(); it != boardParameters2.end(); ++it)
+    std::cout << "      Number of parameters: " << boardParameters.size() << std::endl;
+    for (std::vector<BoardParameter>::const_iterator it = boardParameters.begin(); it != boardParameters.end(); ++it)
+        (*it)->printInfo();
+
+    std::cout << "    Channel parameters:" << std::endl;
+    std::cout << "    ..........................." << std::endl;
+    std::cout << "    Channel: 0 " << std::endl;
+    std::cout << "      Number of parameters: " << channelParameters.size() << std::endl;
+    for (std::vector<ChannelParameter>::const_iterator it = channelParameters.begin(); it != channelParameters.end(); ++it)
         (*it)->printInfo();
 
     std::cout << std::endl;
@@ -77,10 +85,68 @@ void Board::GetBoardParams()
     char (*p)[MAX_PARAM_NAME];
     p = (char (*)[MAX_PARAM_NAME])ParNameList;
 
-    boardParameters2.reserve(MAX_PARAM_NAME);
-    for (std::size_t i(1); p[i][0]; ++i)
-        boardParameters2.push_back(IBoardParameter::create(handle, slot, p[i]));
+    boardParameters.reserve(MAX_PARAM_NAME);
+    for (std::size_t i(0); p[i][0]; ++i)
+    {
+        try
+        {
+            boardParameters.push_back(IBoardParameter::create(handle, slot, p[i]));
+        }
+        catch(const std::runtime_error& e)
+        {
+            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
+            std::cout << e.what() << std::endl;
+            std::cout << std::endl;
+        }
+    }
 
     // Deallocate memory (Use RAII in the future for this)
     free(ParNameList);
+}
+
+void Board::GetBoardChannels()
+{
+    // Get Board Parameter Info
+    std::string functionName("GetBoardChannels");
+
+std::size_t ch(0);
+//    for ( std::size_t ch(0); ch < numChannels; ++ch)
+//    {
+        std::cout << "Reading parameter list for channel " << ch << std::endl;
+        char *ParNameList = (char *)NULL;
+        int ParNumber(0);
+        CAENHVRESULT r = CAENHV_GetChParamInfo(handle, slot, ch, &ParNameList, &ParNumber);
+
+        std::stringstream retMessage;
+        retMessage << "CAENHV_GetChParamInfo (slot = " << slot << ") : " << CAENHV_GetError(handle) << " (num. " << r << ")";
+
+        printMessage(functionName, retMessage.str().c_str());
+
+        if ( r != CAENHV_OK )
+            return;
+
+        std::cout << "  ParNumber = " << ParNumber << std::endl;
+
+        char (*p)[MAX_PARAM_NAME];
+        p = (char (*)[MAX_PARAM_NAME])ParNameList;
+
+        channelParameters.reserve(ParNumber);
+        for( std::size_t i(0) ; p[i][0] && i < ParNumber; i++ )
+        {
+            std::cout << "    - Parameter = " << p[i] << std::endl;
+            try
+            {
+                channelParameters.push_back(IChannelParameter::create(handle, slot, ch, p[i]));
+            }
+            catch(const std::runtime_error& e)
+            {
+                std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
+                std::cout << e.what() << std::endl;
+                std::cout << std::endl;
+            }
+        }
+
+        std::cout << std::endl;
+//    }
+
 }

@@ -40,6 +40,7 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 #include "board_parameter.h"
+#include "channel_parameter.h"
 
 class Board
 {
@@ -51,6 +52,7 @@ public:
 private:
 
     void GetBoardParams();
+    void GetBoardChannels();
 
     int                         handle;
     std::size_t                 slot;
@@ -59,7 +61,9 @@ private:
     std::size_t                 numChannels;
     std::string                 serialNumber;
     std::string                 firmwareRelease;
-    std::vector<BoardParameter2> boardParameters2;
+    std::vector<BoardParameter> boardParameters;
+
+    std::vector<ChannelParameter> channelParameters;
 };
 
 #endif

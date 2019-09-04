@@ -18,6 +18,7 @@ LIB_SRCS += common.cpp
 LIB_SRCS += chassis.cpp
 LIB_SRCS += board.cpp
 LIB_SRCS += board_parameter.cpp 
+LIB_SRCS += channel_parameter.cpp
 LIB_LIBS += asyn
 
 #=====================================================

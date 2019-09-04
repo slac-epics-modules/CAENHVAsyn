@@ -19,32 +19,32 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include "board_parameter.h"
+#include "channel_parameter.h"
 
-BoardParameter IBoardParameter::create(int h, std::size_t s, const std::string&  p)
+ChannelParameter IChannelParameter::create(int h, std::size_t s, std::size_t c, const std::string&  p)
 {
     uint32_t type, mode;
 
-    if ( CAENHV_GetBdParamProp(h, s, p.c_str(), "Type", &type) != CAENHV_OK )
+    if ( CAENHV_GetChParamProp(h, s, c, p.c_str(), "Type", &type) != CAENHV_OK )
         throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
 
-    if (CAENHV_GetBdParamProp(h, s, p.c_str(), "Mode", &mode) != CAENHV_OK )
+    if (CAENHV_GetChParamProp(h, s, c, p.c_str(), "Mode", &mode) != CAENHV_OK )
         throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
 
     
     if (type == PARAM_TYPE_NUMERIC)
-        return std::make_shared< IBoardParameterTemplate< NumericParameterPolicy  > >(h, s, p, mode);
+        return std::make_shared< IChannelParameterTemplate< ChNumericParameterPolicy > >(h, s, c, p, mode);
     else if (type == PARAM_TYPE_ONOFF)
-        return std::make_shared< IBoardParameterTemplate< OnOffParameterPolicy > >(h, s, p, mode);
+        return std::make_shared< IChannelParameterTemplate< ChOnOffParameterPolicy   > >(h, s, c, p, mode);
     else
         throw std::runtime_error("Parameter type not  supported!");
 
 }
 
 
-NumericParameterPolicy::NumericParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m)
+ChNumericParameterPolicy::ChNumericParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    BoardParameterBase(h, s, p, m)
+    ChannelParameterBase(h, s, c, p, m)
 {
 
    type = "Numeric";
@@ -60,23 +60,23 @@ NumericParameterPolicy::NumericParameterPolicy(int h, std::size_t s, const std::
 
    float temp;
 
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Minval", &temp ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Minval", &temp ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
    minVal = temp;
 
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Maxval", &temp ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Maxval", &temp ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
    maxVal = temp;
 
    // Extract uints
    uint16_t u;
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Unit", &u ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Unit", &u ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
    uint8_t e;
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Exp", &e ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Exp", &e ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
     std::string temp_units;
@@ -121,31 +121,31 @@ NumericParameterPolicy::NumericParameterPolicy(int h, std::size_t s, const std::
 }
 
 
-float NumericParameterPolicy::getVal()
+float ChNumericParameterPolicy::getVal()
 {
     if (mode == PARAM_MODE_WRONLY)
         return 0.0;
 
     float temp;
    
-    uint16_t tempSlot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &tempSlot, param.c_str(), &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+    uint16_t temp_chs = channel;
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
 
     return temp;
 }
 
-void NumericParameterPolicy::setVal(float v)
+void ChNumericParameterPolicy::setVal(float v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
 
-    uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &v) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+    uint16_t temp_chs = channel;
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &v) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void NumericParameterPolicy::printInfo()
+void ChNumericParameterPolicy::printInfo()
 {
     std::cout << "      Param = " << param << std::endl;
     std::cout << "      Type  = " << type << std::endl;
@@ -158,12 +158,9 @@ void NumericParameterPolicy::printInfo()
     std::cout << std::endl;
 }
 
-    std::string s("");
-
-
-OnOffParameterPolicy::OnOffParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m)
+ChOnOffParameterPolicy::ChOnOffParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    BoardParameterBase(h, s, p, m)
+    ChannelParameterBase(h, s, c, p, m)
 {
    type = "OnOff";
 
@@ -178,33 +175,33 @@ OnOffParameterPolicy::OnOffParameterPolicy(int h, std::size_t s, const std::stri
 
    char temp[30];
 
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Onstate", temp ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Onstate", temp ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
    onState = temp;
 
-   if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Offstate", temp ) != CAENHV_OK )
+   if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Offstate", temp ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
     offState = temp;
 
 }
 
-std::string OnOffParameterPolicy::getVal()
+std::string ChOnOffParameterPolicy::getVal()
 {
     if (mode == PARAM_MODE_WRONLY)
         return "";
 
     char temp[30];
 
-    uint16_t temp_slot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &temp_slot, param.c_str(), temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+    uint16_t temp_chs = channel;
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
 
     return temp;
 }
 
-void OnOffParameterPolicy::setVal(const std::string& v)
+void ChOnOffParameterPolicy::setVal(const std::string& v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -212,13 +209,12 @@ void OnOffParameterPolicy::setVal(const std::string& v)
     char temp[v.size() + 1];
     strcpy(temp, v.c_str());
 
-    uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-
+    uint16_t temp_chs = channel;
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void OnOffParameterPolicy::printInfo()
+void ChOnOffParameterPolicy::printInfo()
 {
     std::cout << "      Param = " << param << std::endl;
     std::cout << "      Type  = " << type << std::endl;
