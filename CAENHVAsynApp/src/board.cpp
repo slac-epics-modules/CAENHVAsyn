@@ -51,9 +51,9 @@ void Board::printInfo() const
 
     std::cout << "    Board parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
-    std::cout << "      Number of parameters: " << boardParameters.size() << std::endl;
-    for (std::vector<BoardParameter>::const_iterator it = boardParameters.begin(); it != boardParameters.end(); ++it)
-        it->printInfo();
+    std::cout << "      Number of parameters: " << boardParameters2.size() << std::endl;
+    for (std::vector<BoardParameter2>::const_iterator it = boardParameters2.begin(); it != boardParameters2.end(); ++it)
+        (*it)->printInfo();
 
     std::cout << std::endl;
 }
@@ -77,9 +77,9 @@ void Board::GetBoardParams()
     char (*p)[MAX_PARAM_NAME];
     p = (char (*)[MAX_PARAM_NAME])ParNameList;
 
-    boardParameters.reserve(MAX_PARAM_NAME);
+    boardParameters2.reserve(MAX_PARAM_NAME);
     for (std::size_t i(1); p[i][0]; ++i)
-        boardParameters.emplace_back(handle, slot, p[i]);
+        boardParameters2.push_back(IBoardParameter::create(handle, slot, p[i]));
 
     // Deallocate memory (Use RAII in the future for this)
     free(ParNameList);

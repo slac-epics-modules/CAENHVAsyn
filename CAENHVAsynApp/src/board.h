@@ -59,7 +59,7 @@ private:
     std::size_t                 numChannels;
     std::string                 serialNumber;
     std::string                 firmwareRelease;
-    std::vector<BoardParameter> boardParameters;
+    std::vector<BoardParameter2> boardParameters2;
 };
 
 #endif
