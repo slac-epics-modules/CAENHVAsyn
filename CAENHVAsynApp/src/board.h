@@ -49,6 +49,10 @@ public:
     ~Board();
 
     void printInfo() const;
+
+    std::vector<BoardParameterNumeric> getBoardParameterNumerics() { return boardParameterNumerics; };
+    std::vector<BoardParameterOnOff>   getBoardParameterOnOffs()   { return boardParameterOnOffs; };
+
 private:
 
     void GetBoardParams();
@@ -61,7 +65,9 @@ private:
     std::size_t                 numChannels;
     std::string                 serialNumber;
     std::string                 firmwareRelease;
-    std::vector<BoardParameter> boardParameters;
+
+    std::vector<BoardParameterNumeric> boardParameterNumerics;
+    std::vector<BoardParameterOnOff>   boardParameterOnOffs;
 
     std::vector<ChannelParameter> channelParameters;
 };

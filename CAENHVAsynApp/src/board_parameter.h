@@ -32,6 +32,7 @@
 #include <string.h>
 #include <map>
 #include <memory>
+#include <algorithm>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <arpa/inet.h>
@@ -41,77 +42,59 @@
 #include "common.h"
 
 
-// Base class
-class IBoardParameter;
 
-// Derivated, template calss
-template <typename TypePolicy>
-class IBoardParameterTemplate;
-
-// Policy classes 
-class NumericParameterPolicy;
-class OnOffParameterPolicy;
-
+class BoardParameterBase;
+class IBoardParameterNumeric;
+class IBoardParameterOnOff;
 
 // Shared pointer types
-typedef std::shared_ptr< IBoardParameter                                   > BoardParameter;
-typedef std::shared_ptr< IBoardParameterTemplate< NumericParameterPolicy > > BoardParameterNumeric;
-typedef std::shared_ptr< IBoardParameterTemplate< OnOffParameterPolicy   > > BoardParameterOnOff;
+typedef std::shared_ptr< IBoardParameterNumeric > BoardParameterNumeric;
+typedef std::shared_ptr< IBoardParameterOnOff   > BoardParameterOnOff;
 
 
 class BoardParameterBase
 {
 public: 
-    BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m) : handle(h), slot(s), param(p), mode(m) {};
+    BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m) : handle(h), slot(s), param(p), mode(m) 
+    {
+        // Generate the EPICS parameter name
+        // - Remove white spaces from the parameter name
+        std::string tempParamName(param);
+        tempParamName.erase(std::remove_if(tempParamName.begin(), tempParamName.end(), isspace), tempParamName.end());
+        // - Convert parameter name to upper case
+        std::transform(tempParamName.begin(), tempParamName.end(), tempParamName.begin(), ::toupper);
+        // - Generate name as S<slot_number>_<parameter name, uppercase, without spaces>
+        std::stringstream temp;
+        temp.str("");
+        temp << "S" << s << "_" << tempParamName;
+        epicsParam = temp.str();
+    };
     virtual ~BoardParameterBase() {};
+
+    std::string getMode()       { return modeStr;    }; 
+    std::string getEpicsParam() { return epicsParam; };
 
 protected:
     int         handle;
     std::size_t slot;
     std::string param;
     uint32_t    mode;
-    std::string type;
     std::string modeStr;
+    std::string epicsParam;
 };
 
-class IBoardParameter
+class IBoardParameterNumeric : public BoardParameterBase
 {
 public:
-    IBoardParameter() {};
-    virtual ~IBoardParameter() {};
+    IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m); 
+    ~IBoardParameterNumeric() {};
 
     // Factory method
-    static BoardParameter create(int h, std::size_t s, const std::string&  p);
+    static BoardParameterNumeric create(int h, std::size_t s, const std::string&  p, uint32_t m);
 
-    virtual void printInfo() = 0;
-};
-
-// Derivate, template class. It uses policies.
-template <class TypePolicy>
-class IBoardParameterTemplate : public IBoardParameter, TypePolicy
-{
-public:
-    IBoardParameterTemplate(int h, std::size_t s, const std::string&  p, uint32_t m) : IBoardParameter(), TypePolicy(h, s, p, m)  {};
-    ~IBoardParameterTemplate() {};
-
-   virtual void printInfo() { TypePolicy::printInfo(); };
-
-private:
-    using TypePolicy::getVal;
-    using TypePolicy::setVal;
-};
-
-// Policies
-
-class NumericParameterPolicy : public BoardParameterBase
-{
-public:
-    NumericParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m); 
-    ~NumericParameterPolicy() {};
-
-    float getMinVal()             const { return minVal; };
-    float getMaxVal()             const { return maxVal; };
-    const std::string& getUnits() const { return units;  };
+    float       getMinVal() const { return minVal; };
+    float       getMaxVal() const { return maxVal; };
+    std::string getUnits()  const { return units;  };
 
     virtual void printInfo();
 
@@ -125,11 +108,14 @@ private:
     float       value;
 };
 
-class  OnOffParameterPolicy : public BoardParameterBase
+class  IBoardParameterOnOff : public BoardParameterBase
 {
 public:
-    OnOffParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m);
-    ~OnOffParameterPolicy() {};
+    IBoardParameterOnOff(int h, std::size_t s, const std::string&  p, uint32_t m);
+    ~IBoardParameterOnOff() {};
+
+    // Factory method
+    static BoardParameterOnOff create(int h, std::size_t s, const std::string&  p, uint32_t m);
 
     const std::string& getOnState()  const { return onState;  }; 
     const std::string& getOffState() const { return offState; }; 
@@ -138,6 +124,7 @@ public:
 
     std::string getVal();
     void setVal(const std::string& v);
+
 
 private:
     std::string onState;

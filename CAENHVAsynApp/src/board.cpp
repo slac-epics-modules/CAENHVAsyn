@@ -52,10 +52,18 @@ void Board::printInfo() const
 
     std::cout << "    Board parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
-    std::cout << "      Number of parameters: " << boardParameters.size() << std::endl;
-    for (std::vector<BoardParameter>::const_iterator it = boardParameters.begin(); it != boardParameters.end(); ++it)
+    //std::cout << "      Number of parameters: " << boardParameters.size() << std::endl;
+    //for (std::vector<BoardParameter>::const_iterator it = boardParameters.begin(); it != boardParameters.end(); ++it)
+    //    (*it)->printInfo();
+
+    std::cout << "      Number of Numeric parameters: " << boardParameterNumerics.size() << std::endl;
+    for (std::vector<BoardParameterNumeric>::const_iterator it = boardParameterNumerics.begin(); it != boardParameterNumerics.end(); ++it)
         (*it)->printInfo();
 
+    std::cout << "      Number of OnOff parameters: " << boardParameterOnOffs.size() << std::endl;
+    for (std::vector<BoardParameterOnOff>::const_iterator it = boardParameterOnOffs.begin(); it != boardParameterOnOffs.end(); ++it)
+        (*it)->printInfo();
+    
     std::cout << "    Channel parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
     std::cout << "    Channel: 0 " << std::endl;
@@ -85,20 +93,48 @@ void Board::GetBoardParams()
     char (*p)[MAX_PARAM_NAME];
     p = (char (*)[MAX_PARAM_NAME])ParNameList;
 
-    boardParameters.reserve(MAX_PARAM_NAME);
+    boardParameterNumerics.reserve(MAX_PARAM_NAME);
+    boardParameterOnOffs.reserve(MAX_PARAM_NAME);
+
     for (std::size_t i(0); p[i][0]; ++i)
     {
-        try
+        uint32_t type, mode;
+
+        if ( CAENHV_GetBdParamProp(handle, slot, p[i], "Type", &type) != CAENHV_OK )
+            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+
+        if (CAENHV_GetBdParamProp(handle, slot, p[i], "Mode", &mode) != CAENHV_OK )
+            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+
+
+        if (type == PARAM_TYPE_NUMERIC)
+            boardParameterNumerics.push_back( IBoardParameterNumeric::create(handle, slot, p[i], mode));
+            //return std::make_shared< IBoardParameterTemplate< NumericParameterPolicy  > >(h, s, p, mode);
+        else if (type == PARAM_TYPE_ONOFF)
+            boardParameterOnOffs.push_back( IBoardParameterOnOff::create(handle, slot, p[i], mode));
+            //return std::make_shared< IBoardParameterTemplate< OnOffParameterPolicy > >(h, s, p, mode);
+        else
         {
-            boardParameters.push_back(IBoardParameter::create(handle, slot, p[i]));
-        }
-        catch(const std::runtime_error& e)
-        {
+            //throw std::runtime_error("Parameter type not  supported!");
             std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
-            std::cout << e.what() << std::endl;
             std::cout << std::endl;
         }
     }
+
+    //boardParameters.reserve(MAX_PARAM_NAME);
+    //for (std::size_t i(0); p[i][0]; ++i)
+    //{
+    //    try
+    //    {
+    //        boardParameters.push_back(IBoardParameter::create(handle, slot, p[i]));
+    //    }
+    //    catch(const std::runtime_error& e)
+    //    {
+    //        std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
+    //        std::cout << e.what() << std::endl;
+    //        std::cout << std::endl;
+    //    }
+    //}
 
     // Deallocate memory (Use RAII in the future for this)
     free(ParNameList);

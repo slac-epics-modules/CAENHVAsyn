@@ -21,34 +21,16 @@
 
 #include "board_parameter.h"
 
-BoardParameter IBoardParameter::create(int h, std::size_t s, const std::string&  p)
+BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
-    uint32_t type, mode;
-
-    if ( CAENHV_GetBdParamProp(h, s, p.c_str(), "Type", &type) != CAENHV_OK )
-        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
-
-    if (CAENHV_GetBdParamProp(h, s, p.c_str(), "Mode", &mode) != CAENHV_OK )
-        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
-
-    
-    if (type == PARAM_TYPE_NUMERIC)
-        return std::make_shared< IBoardParameterTemplate< NumericParameterPolicy  > >(h, s, p, mode);
-    else if (type == PARAM_TYPE_ONOFF)
-        return std::make_shared< IBoardParameterTemplate< OnOffParameterPolicy > >(h, s, p, mode);
-    else
-        throw std::runtime_error("Parameter type not  supported!");
-
+    return std::make_shared<IBoardParameterNumeric>(h, s, p, m);
 }
 
 
-NumericParameterPolicy::NumericParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m)
+IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
     BoardParameterBase(h, s, p, m)
 {
-
-   type = "Numeric";
-
    if (mode == PARAM_MODE_WRONLY)
        modeStr = "WO";
    else if (mode == PARAM_MODE_RDONLY)
@@ -121,7 +103,7 @@ NumericParameterPolicy::NumericParameterPolicy(int h, std::size_t s, const std::
 }
 
 
-float NumericParameterPolicy::getVal()
+float IBoardParameterNumeric::getVal()
 {
     if (mode == PARAM_MODE_WRONLY)
         return 0.0;
@@ -135,7 +117,7 @@ float NumericParameterPolicy::getVal()
     return temp;
 }
 
-void NumericParameterPolicy::setVal(float v)
+void IBoardParameterNumeric::setVal(float v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -145,10 +127,9 @@ void NumericParameterPolicy::setVal(float v)
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void NumericParameterPolicy::printInfo()
+void IBoardParameterNumeric::printInfo()
 {
     std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Type  = " << type << std::endl;
     std::cout << "      Mode  = " << modeStr << std::endl;
     std::cout << "      Properties:" << std::endl;
     std::cout << "        - Minval = " << getMinVal() << std::endl;
@@ -158,15 +139,16 @@ void NumericParameterPolicy::printInfo()
     std::cout << std::endl;
 }
 
-    std::string s("");
 
+BoardParameterOnOff IBoardParameterOnOff::create(int h, std::size_t s, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IBoardParameterOnOff>(h, s, p, m);
+}
 
-OnOffParameterPolicy::OnOffParameterPolicy(int h, std::size_t s, const std::string&  p, uint32_t m)
+IBoardParameterOnOff::IBoardParameterOnOff(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
     BoardParameterBase(h, s, p, m)
 {
-   type = "OnOff";
-
    if (mode == PARAM_MODE_WRONLY)
        modeStr = "WO";
    else if (mode == PARAM_MODE_RDONLY)
@@ -187,10 +169,9 @@ OnOffParameterPolicy::OnOffParameterPolicy(int h, std::size_t s, const std::stri
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
     offState = temp;
-
 }
 
-std::string OnOffParameterPolicy::getVal()
+std::string IBoardParameterOnOff::getVal()
 {
     if (mode == PARAM_MODE_WRONLY)
         return "";
@@ -204,7 +185,7 @@ std::string OnOffParameterPolicy::getVal()
     return temp;
 }
 
-void OnOffParameterPolicy::setVal(const std::string& v)
+void IBoardParameterOnOff::setVal(const std::string& v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -218,10 +199,9 @@ void OnOffParameterPolicy::setVal(const std::string& v)
 
 }
 
-void OnOffParameterPolicy::printInfo()
+void IBoardParameterOnOff::printInfo()
 {
     std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Type  = " << type << std::endl;
     std::cout << "      Mode  = " << modeStr << std::endl;
     std::cout << "      Properties:" << std::endl;
     std::cout << "        - On state  = " << getOnState()  << std::endl;
