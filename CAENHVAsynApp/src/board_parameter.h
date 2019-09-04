@@ -55,20 +55,7 @@ typedef std::shared_ptr< IBoardParameterOnOff   > BoardParameterOnOff;
 class BoardParameterBase
 {
 public: 
-    BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m) : handle(h), slot(s), param(p), mode(m) 
-    {
-        // Generate the EPICS parameter name
-        // - Remove white spaces from the parameter name
-        std::string tempParamName(param);
-        tempParamName.erase(std::remove_if(tempParamName.begin(), tempParamName.end(), isspace), tempParamName.end());
-        // - Convert parameter name to upper case
-        std::transform(tempParamName.begin(), tempParamName.end(), tempParamName.begin(), ::toupper);
-        // - Generate name as S<slot_number>_<parameter name, uppercase, without spaces>
-        std::stringstream temp;
-        temp.str("");
-        temp << "S" << s << "_" << tempParamName;
-        epicsParam = temp.str();
-    };
+    BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m);
     virtual ~BoardParameterBase() {};
 
     std::string getMode()       { return modeStr;    }; 

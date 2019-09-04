@@ -21,6 +21,21 @@
 
 #include "board_parameter.h"
 
+
+BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m)
+: 
+    handle(h), 
+    slot(s), 
+    param(p), 
+    mode(m)
+{
+    // Generate the EPICS parameter name
+    std::stringstream temp;
+    temp.str("");
+    temp << "S" << s << "_" << processParamName(param);
+    epicsParam = temp.str();
+}
+
 BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IBoardParameterNumeric>(h, s, p, m);

@@ -27,3 +27,17 @@ void printMessage(const std::string& f, const std::string& s)
     //    CAENHVAsyn::driverName_.c_str(), CAENHVAsyn::portName_.c_str(), f.c_str(), s.c_str());
     printf("function '%s' : %s\n", f.c_str(), s.c_str());
 }
+
+std::string processParamName(std::string name)
+{
+    // Make a copy
+    std::string temp(name);
+
+    // Remove white spaces from the parameter name
+    temp.erase(std::remove_if(temp.begin(), temp.end(), isspace), temp.end());
+
+    // Convert parameter name to upper case
+    std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
+
+    return temp;
+}

@@ -32,11 +32,13 @@
 #include <string.h>
 #include <map>
 #include <vector>
+#include <algorithm>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <iostream>
 
 void printMessage(const std::string& f, const std::string& s);
+std::string processParamName(std::string name);
 
 #endif
