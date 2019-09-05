@@ -1,16 +1,16 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef CHANNEL_H
+#define CHANNEL_H
 
 /**
  *-----------------------------------------------------------------------------
  * Title      : CAEN HV Asyn module
  * ----------------------------------------------------------------------------
- * File       : board.h
+ * File       : channel.h
  * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
- * Created    : 2019-08-20
+ * Created    : 2019-09-04
  * ----------------------------------------------------------------------------
  * Description:
- * CAEN HV Power supplies Board Class
+ * CAEN HV Power supplies Channel Class
  * ----------------------------------------------------------------------------
  * This file is part of l2MpsAsyn. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -39,42 +39,30 @@
 
 #include "CAENHVWrapper.h"
 #include "common.h"
-#include "board_parameter.h"
-//#include "channel_parameter.h"
-#include "channel.h"
+#include "channel_parameter.h"
 
-class Board
+class Channel
 {
 public:
-    Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw);
-    ~Board();
+    Channel(int h, std::size_t s, std::size_t c);
+    ~Channel() {};
 
     void printInfo() const;
 
-    std::vector<BoardParameterNumeric> getBoardParameterNumerics() { return boardParameterNumerics; };
-    std::vector<BoardParameterOnOff>   getBoardParameterOnOffs()   { return boardParameterOnOffs;   };
-    std::vector<Channel>               getChannels()               { return channels;               };
+    std::vector<ChannelParameterNumeric> getBoardParameterNumerics() { return channelParameterNumerics; };
+    std::vector<ChannelParameterOnOff>   getBoardParameterOnOffs()   { return channelParameterOnOffs; };
 
 private:
 
-    void GetBoardParams();
-    void GetBoardChannels();
+    void GetChannelParams();
 
     int                         handle;
     std::size_t                 slot;
-    std::string                 model;
-    std::string                 description;
-    std::size_t                 numChannels;
-    std::string                 serialNumber;
-    std::string                 firmwareRelease;
+    std::size_t                 channel;
 
-    std::vector<BoardParameterNumeric> boardParameterNumerics;
-    std::vector<BoardParameterOnOff>   boardParameterOnOffs;
+    std::vector<ChannelParameterNumeric> channelParameterNumerics;
+    std::vector<ChannelParameterOnOff>   channelParameterOnOffs;
 
-    std::vector<Channel> channels;
-
-//std::vector<Channel> channels;
-//    std::vector<ChannelParameter> channelParameters;
 };
 
 #endif
