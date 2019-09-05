@@ -12,9 +12,13 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 #DB += xxx.db
 DB += ai.template
+DB += ao.template
 DB += bi.template
-DB += string.template
+DB += bo.template
+DB += stringin.template
+DB += stringout.template
 DB += longin.template
+DB += longout.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

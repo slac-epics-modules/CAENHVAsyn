@@ -46,15 +46,27 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU="   << egu;
         dbParamsLocal << ",LOPR="  << min;
         dbParamsLocal << ",HOPR="  << max;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str()); 
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",SCAN=1 second";
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",DRVL=" << min;
+            dbParamsLocal << ",DRVH=" << max;
+            dbParamsLocal << ",R="    << recordName << ":St";
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+        }
+
     }
 }
 
@@ -81,14 +93,23 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
         dbParamsLocal << ",ONAM="  << offLabel;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",SCAN=1 second";
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R="    << recordName << ":St";
+            dbLoadRecords("db/bo.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -118,15 +139,26 @@ void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU="   << egu;
         dbParamsLocal << ",LOPR="  << min;
         dbParamsLocal << ",HOPR="  << max;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",SCAN=1 second";
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",DRVL=" << min;
+            dbParamsLocal << ",DRVH=" << max;
+            dbParamsLocal << ",R="    << recordName << ":St";
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -154,14 +186,23 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
         dbParamsLocal << ",ONAM="  << offLabel;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",SCAN=1 second";
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R="    << recordName << ":St";
+            dbLoadRecords("db/bo.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -187,12 +228,21 @@ void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -217,12 +267,21 @@ void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -247,12 +306,21 @@ void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -277,12 +345,21 @@ void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -307,12 +384,21 @@ void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -330,6 +416,7 @@ void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
 
     systemPropertyStringList.insert( std::make_pair<int, SystemPropertyString>(index, sp) );
 
+std::cout << "Creqating -> " << recordName << " mode: " << mode << std::endl;
     if (loadRecord)
     {
         std::stringstream dbParamsLocal;
@@ -337,13 +424,22 @@ void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",NELM=4096";
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/string.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/stringin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/stringout.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -368,15 +464,26 @@ void CAENHVAsyn::createSystemPropertyFloat(SystemPropertyFloat sp)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "PORT="   << portName_;
-        dbParamsLocal << ",R="     << recordName;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU=";
         dbParamsLocal << ",LOPR=";
         dbParamsLocal << ",HOPR=";
-        dbParamsLocal << ",SCAN=1 second";
 
-        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",SCAN=1 second";
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",DRVL=";
+            dbParamsLocal << ",DRVH=";
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+        }
     }
 }
 
@@ -419,7 +526,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     chassis = new Chassis(systemType, ipAddr, userName, password);
 
     std::cout << std::endl;
-    chassis->printInfo();
+    //chassis->printInfo();
 
     // System properties
     {
@@ -482,8 +589,6 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     }
 }
 
-
-
 asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
     static const char *functionName = "readInt32";
@@ -503,7 +608,6 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     std::map<int, SystemPropertyI16>::iterator i16_it;
     std::map<int, SystemPropertyI32>::iterator i32_it;
 
-
     if ((u16_it = systemPropertyU16List.find(function)) != systemPropertyU16List.end())
         *value = u16_it->second->getVal();
     else if ((u32_it = systemPropertyU32List.find(function)) != systemPropertyU32List.end())
@@ -514,6 +618,37 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
         *value = i32_it->second->getVal();
 
     return (status==0) ? asynSuccess : asynError;    
+}
+
+asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    static const char *functionName = "writeInt32";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    printf("Function = %s, addr = %d, function = %d, name = %s, value = %d\n", functionName, addr, function, name, value);
+
+    std::map<int, SystemPropertyU16>::iterator u16_it;
+    std::map<int, SystemPropertyU32>::iterator u32_it;
+    std::map<int, SystemPropertyI16>::iterator i16_it;
+    std::map<int, SystemPropertyI32>::iterator i32_it;
+
+    if ((u16_it = systemPropertyU16List.find(function)) != systemPropertyU16List.end())
+        u16_it->second->setVal(value);
+    else if ((u32_it = systemPropertyU32List.find(function)) != systemPropertyU32List.end())
+        u32_it->second->setVal(value);
+    else if ((i16_it = systemPropertyI16List.find(function)) != systemPropertyI16List.end())
+        i16_it->second->setVal(value);
+    else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
+        i32_it->second->setVal(value);
+
+    return (status==0) ? asynSuccess : asynError;
 }
 
 asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
@@ -531,22 +666,44 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     std::map<int, ChannelParameterNumeric>::iterator cpIt; 
     std::map<int, BoardParameterNumeric>::iterator   bpIt;
 
-//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
     if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
         *value = cpIt->second->getVal();
     else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
         *value = bpIt->second->getVal();
 
-    //std::map<int, BoardParameterNumeric>::iterator it = boardParameterNumericList.find(function);
-    //if (it != boardParameterNumericList.end())
+    return (status==0) ? asynSuccess : asynError;
+}
+
+asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+    static const char *functionName = "writeFloat64";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    std::map<int, ChannelParameterNumeric>::iterator cpIt;
+    std::map<int, BoardParameterNumeric>::iterator   bpIt;
+
+    //printf("Function = %s, addr = %d, function = %d, name = %si, value = %f\n", functionName, addr, function, name, value);
+
+    if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
+        cpIt->second->setVal(value);
+    else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
+        bpIt->second->setVal(value);
 
     return (status==0) ? asynSuccess : asynError;
+
 }
 
 asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
 {
-
     static const char *functionName = "readUInt32Digital";
     int function = pasynUser->reason;
     int status = 0;
@@ -559,12 +716,54 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
 
     //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
-    std::map<int, BoardParameterOnOff>::iterator it = boardParameterOnOffList.find(function);
+    std::map<int, BoardParameterOnOff>::iterator bpIt;
+    std::map<int, ChannelParameterOnOff>::iterator cpIt;
 
-    if (it != boardParameterOnOffList.end())
+    if ((bpIt = boardParameterOnOffList.find(function )) != boardParameterOnOffList.end())
     {
-       // To be done... 
-       // At the memoment the getVal() returns an empty string
+       uint32_t temp = bpIt->second->getVal();
+       temp &= mask;
+       *value = temp;
+    }
+    if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
+    {
+       uint32_t temp = cpIt->second->getVal();
+       temp &= mask;
+       *value = temp;
+    }
+
+    return (status==0) ? asynSuccess : asynError;
+}
+
+
+asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask)
+{
+    static const char *functionName = "writeUInt32Digital";
+    int function = pasynUser->reason;
+    int status(0);
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    epicsUInt32 val(0);
+    val &= ~mask;
+    val |= value;
+
+    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+
+    std::map<int, BoardParameterOnOff>::iterator bpIt;
+    std::map<int, ChannelParameterOnOff>::iterator cpIt;
+
+    if ((bpIt = boardParameterOnOffList.find(function )) != boardParameterOnOffList.end())
+    {
+        bpIt->second->setVal(val);
+    }
+    if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
+    {
+        cpIt->second->setVal(val);
     }
 
     return (status==0) ? asynSuccess : asynError;
@@ -583,13 +782,40 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     getParamName(addr, function, &name);
 
     //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
-    std::map<int, SystemPropertyString>::iterator it =  systemPropertyStringList.find(function);
 
-    if (it != systemPropertyStringList.end())
+    std::map<int, SystemPropertyString>::iterator spIt;
+
+    if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
     {
-        std::string temp = it->second->getVal();
+        std::string temp = spIt->second->getVal();
         strcpy(value, temp.c_str());
         *nActual = temp.length() + 1;
+    }
+
+    return (status==0) ? asynSuccess : asynError;
+}
+
+asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual)
+{
+    static const char *functionName = "writeOctet";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+    
+    std::map<int, SystemPropertyString>::iterator spIt;
+
+    if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
+    {
+        std::string temp(value);
+        spIt->second->setVal(temp);
+        *nActual = temp.size();
     }
 
     return (status==0) ? asynSuccess : asynError;

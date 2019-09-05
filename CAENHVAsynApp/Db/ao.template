@@ -1,0 +1,12 @@
+record(ao,      "$(R)") {
+    field(PINI, "NO")
+    field(DESC, "$(DESC)")
+    field(DTYP, "asynFloat64")
+    field(SCAN, "Passive")
+    field(EGU,  "$(EGU)")
+    field(LOPR, "$(LOPR)")
+    field(HOPR, "$(HOPR)")
+    field(DRVL, "$(DRVL)")
+    field(DRVH, "$(DRVH)")
+    field(OUT,  "@asyn($(PORT))$(PARAM)")
+}

@@ -144,13 +144,13 @@ float IBoardParameterNumeric::getVal()
     return temp;
 }
 
-void IBoardParameterNumeric::setVal(float v)
+void IBoardParameterNumeric::setVal(float value)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
 
     uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &v) != CAENHV_OK )
+    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
@@ -190,32 +190,31 @@ IBoardParameterOnOff::IBoardParameterOnOff(int h, std::size_t s, const std::stri
     offState = temp;
 }
 
-std::string IBoardParameterOnOff::getVal()
+uint32_t IBoardParameterOnOff::getVal()
 {
     if (mode == PARAM_MODE_WRONLY)
-        return "";
+        return 0;
 
-    char temp[30];
+    uint32_t temp;
 
     uint16_t temp_slot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &temp_slot, param.c_str(), temp) != CAENHV_OK )
+    if ( CAENHV_GetBdParam(handle, 1, &temp_slot, param.c_str(), &temp) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
     return temp;
 }
 
-void IBoardParameterOnOff::setVal(const std::string& v)
+void IBoardParameterOnOff::setVal(uint32_t value)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
 
-    char temp[v.size() + 1];
-    strcpy(temp, v.c_str());
+//    char temp[v.size() + 1];
+//    strcpy(temp, v.c_str());
 
     uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), temp) != CAENHV_OK )
+    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-
 }
 
 void IBoardParameterOnOff::printInfo()

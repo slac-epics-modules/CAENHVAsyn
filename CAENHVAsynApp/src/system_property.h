@@ -103,7 +103,7 @@ public:
     static SystemPropertyU8 create(int h, const std::string&  p, uint32_t m);
 
     uint8_t getVal();
-    void     setVal(const uint8_t& v);
+    void    setVal(uint8_t v);
 };
 
 class ISystemPropertyU16 : public SystemPropertyBase
@@ -116,7 +116,7 @@ public:
     static SystemPropertyU16 create(int h, const std::string&  p, uint32_t m);
 
     uint16_t getVal();
-    void     setVal(const uint16_t& v);
+    void     setVal(uint16_t v);
 };
 
 class ISystemPropertyU32 : public SystemPropertyBase
@@ -129,7 +129,7 @@ public:
     static SystemPropertyU32 create(int h, const std::string&  p, uint32_t m);
 
     uint32_t getVal();
-    void     setVal(const uint16_t& v);
+    void     setVal(uint32_t v);
 };
 
 class ISystemPropertyI16 : public SystemPropertyBase
@@ -142,7 +142,7 @@ public:
     static SystemPropertyI16 create(int h, const std::string&  p, uint32_t m);
 
     int16_t getVal();
-    void    setVal(const uint16_t& v);
+    void    setVal(int16_t v);
 };
 
 class ISystemPropertyI32 : public SystemPropertyBase
@@ -155,7 +155,7 @@ public:
     static SystemPropertyI32 create(int h, const std::string&  p, uint32_t m);
 
     int32_t getVal();
-    void    setVal(const uint16_t& v);
+    void    setVal(int32_t v);
 };
 
 class ISystemPropertyFloat : public SystemPropertyBase
@@ -168,7 +168,7 @@ public:
     static SystemPropertyFloat create(int h, const std::string&  p, uint32_t m);
 
     float getVal();
-    void  setVal(const float& v);
+    void  setVal(float v);
 };
 
 #endif

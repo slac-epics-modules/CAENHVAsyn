@@ -1,10 +1,10 @@
 record(ai,      "$(R)") {
-    field(PINI,   "YES")
-    field(DESC,   "$(DESC)")
-    field(DTYP,   "asynFloat64")
-    field(SCAN,   "$(SCAN)")
-    field(EGU,    "$(EGU)")
-    field(LOPR,   "$(LOPR)")
-    field(HOPR,   "$(HOPR)")
-    field(INP,    "@asyn($(PORT))$(PARAM)")
+    field(PINI, "YES")
+    field(DESC, "$(DESC)")
+    field(DTYP, "asynFloat64")
+    field(SCAN, "$(SCAN)")
+    field(EGU,  "$(EGU)")
+    field(LOPR, "$(LOPR)")
+    field(HOPR, "$(HOPR)")
+    field(INP,  "@asyn($(PORT))$(PARAM)")
 }

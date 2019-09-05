@@ -90,7 +90,7 @@ public:
     virtual void printInfo();
 
     float getVal();
-    void setVal(float v);
+    void setVal(float value);
 
 private:
     float       minVal;
@@ -113,8 +113,8 @@ public:
 
     virtual void printInfo();
 
-    std::string getVal();
-    void setVal(const std::string& v);
+    uint32_t getVal();
+    void setVal(uint32_t value);
 
 
 private:

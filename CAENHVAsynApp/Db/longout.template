@@ -1,0 +1,7 @@
+record(longout,  "$(R)") {
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC)")
+    field(PINI, "NO")
+    field(SCAN, "Passive")
+    field(OUT,  "@asyn($(PORT))$(PARAM)")
+}

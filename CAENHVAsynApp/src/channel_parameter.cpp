@@ -145,13 +145,13 @@ float IChannelParameterNumeric::getVal() const
     return temp;
 }
 
-void IChannelParameterNumeric::setVal(float v)
+void IChannelParameterNumeric::setVal(float value)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
 
     uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &v) != CAENHV_OK )
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
@@ -191,30 +191,27 @@ IChannelParameterOnOff::IChannelParameterOnOff(int h, std::size_t s, std::size_t
 
 }
 
-std::string IChannelParameterOnOff::getVal() const
+uint32_t IChannelParameterOnOff::getVal() const
 {
     if (mode == PARAM_MODE_WRONLY)
-        return "";
+        return 0;
 
-    char temp[30];
+    uint32_t temp;
 
     uint16_t temp_chs = channel;
-    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, temp) != CAENHV_OK )
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
 
     return temp;
 }
 
-void IChannelParameterOnOff::setVal(const std::string& v)
+void IChannelParameterOnOff::setVal(uint32_t value)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
 
-    char temp[v.size() + 1];
-    strcpy(temp, v.c_str());
-
     uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, temp) != CAENHV_OK )
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 

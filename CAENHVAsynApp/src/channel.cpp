@@ -63,13 +63,19 @@ void Channel::GetChannelParams()
     if ( r != CAENHV_OK )
         return;
 
+    // Check if we the number of parameter is > 0
+    if (ParNumber <= 0)
+        return;
+
+    // Create an unsigned version of the number of parameters
+    std::size_t numParams(ParNumber);
+
     char (*p)[MAX_PARAM_NAME];
     p = (char (*)[MAX_PARAM_NAME])ParNameList;
 
-
-    channelParameterNumerics.reserve(ParNumber);
-    channelParameterOnOffs.reserve(ParNumber);
-    for( std::size_t i(0) ; p[i][0] && i < ParNumber; i++ )
+    channelParameterNumerics.reserve(numParams);
+    channelParameterOnOffs.reserve(numParams);
+    for( std::size_t i(0) ; p[i][0] && i < numParams; i++ )
     {
 
         uint32_t type, mode;

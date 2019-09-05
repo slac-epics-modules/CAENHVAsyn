@@ -23,7 +23,7 @@
 
 void printMessage(const std::string& f, const std::string& s)
 {
-    //printf("Driver '%s', port '%s', function '%s' : %s\n", \
+    //printf("Driver '%s', port '%s', function '%s' : %s\n", 
     //    CAENHVAsyn::driverName_.c_str(), CAENHVAsyn::portName_.c_str(), f.c_str(), s.c_str());
     printf("function '%s' : %s\n", f.c_str(), s.c_str());
 }
