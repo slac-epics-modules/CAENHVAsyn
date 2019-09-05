@@ -69,7 +69,7 @@ private:
     std::vector<BoardParameterNumeric> boardParameterNumerics;
     std::vector<BoardParameterOnOff>   boardParameterOnOffs;
 
-    std::vector<ChannelParameter> channelParameters;
+//    std::vector<ChannelParameter> channelParameters;
 };
 
 #endif

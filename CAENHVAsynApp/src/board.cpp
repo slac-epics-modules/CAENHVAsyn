@@ -67,9 +67,9 @@ void Board::printInfo() const
     std::cout << "    Channel parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
     std::cout << "    Channel: 0 " << std::endl;
-    std::cout << "      Number of parameters: " << channelParameters.size() << std::endl;
-    for (std::vector<ChannelParameter>::const_iterator it = channelParameters.begin(); it != channelParameters.end(); ++it)
-        (*it)->printInfo();
+    //std::cout << "      Number of parameters: " << channelParameters.size() << std::endl;
+    //for (std::vector<ChannelParameter>::const_iterator it = channelParameters.begin(); it != channelParameters.end(); ++it)
+    //    (*it)->printInfo();
 
     std::cout << std::endl;
 }
@@ -166,21 +166,21 @@ std::size_t ch(0);
         char (*p)[MAX_PARAM_NAME];
         p = (char (*)[MAX_PARAM_NAME])ParNameList;
 
-        channelParameters.reserve(ParNumber);
-        for( std::size_t i(0) ; p[i][0] && i < ParNumber; i++ )
-        {
-            std::cout << "    - Parameter = " << p[i] << std::endl;
-            try
-            {
-                channelParameters.push_back(IChannelParameter::create(handle, slot, ch, p[i]));
-            }
-            catch(const std::runtime_error& e)
-            {
-                std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
-                std::cout << e.what() << std::endl;
-                std::cout << std::endl;
-            }
-        }
+        //channelParameters.reserve(ParNumber);
+        //for( std::size_t i(0) ; p[i][0] && i < ParNumber; i++ )
+        //{
+        //    std::cout << "    - Parameter = " << p[i] << std::endl;
+        //    try
+        //    {
+        //        channelParameters.push_back(IChannelParameter::create(handle, slot, ch, p[i]));
+        //    }
+        //    catch(const std::runtime_error& e)
+        //    {
+        //        std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
+        //        std::cout << e.what() << std::endl;
+        //        std::cout << std::endl;
+        //    }
+        //}
 
         std::cout << std::endl;
 //    }

@@ -21,34 +21,22 @@
 
 #include "channel_parameter.h"
 
-ChannelParameter IChannelParameter::create(int h, std::size_t s, std::size_t c, const std::string&  p)
+
+ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+: 
+    handle(h), 
+    slot(s), 
+    channel(c), 
+    param(p), 
+    mode(m) 
 {
-    uint32_t type, mode;
+    // Generate the EPICS parameter name
+    std::stringstream temp;
+    temp.str("");
+    temp << "S" << s << "_" << processParamName(param);
+    epicsParam = temp.str();
 
-    if ( CAENHV_GetChParamProp(h, s, c, p.c_str(), "Type", &type) != CAENHV_OK )
-        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
-
-    if (CAENHV_GetChParamProp(h, s, c, p.c_str(), "Mode", &mode) != CAENHV_OK )
-        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(h)));
-
-    
-    if (type == PARAM_TYPE_NUMERIC)
-        return std::make_shared< IChannelParameterTemplate< ChNumericParameterPolicy > >(h, s, c, p, mode);
-    else if (type == PARAM_TYPE_ONOFF)
-        return std::make_shared< IChannelParameterTemplate< ChOnOffParameterPolicy   > >(h, s, c, p, mode);
-    else
-        throw std::runtime_error("Parameter type not  supported!");
-
-}
-
-
-ChNumericParameterPolicy::ChNumericParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
-:
-    ChannelParameterBase(h, s, c, p, m)
-{
-
-   type = "Numeric";
-
+   // Generate mode string
    if (mode == PARAM_MODE_WRONLY)
        modeStr = "WO";
    else if (mode == PARAM_MODE_RDONLY)
@@ -57,7 +45,25 @@ ChNumericParameterPolicy::ChNumericParameterPolicy(int h, std::size_t s, std::si
        modeStr = "RW";
    else
        modeStr = "?";
+}
 
+void ChannelParameterBase::printInfo() const
+{
+    std::cout << "      Param = " << param << std::endl;
+    std::cout << "      Type  = " << type << std::endl;
+    std::cout << "      Mode  = " << modeStr << std::endl;
+    std::cout << std::endl;
+}
+
+ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IChannelParameterNumeric>(h, s, c, p, m);
+}
+
+IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+:
+    ChannelParameterBase(h, s, c, p, m)
+{
    float temp;
 
    if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Minval", &temp ) != CAENHV_OK )
@@ -121,7 +127,7 @@ ChNumericParameterPolicy::ChNumericParameterPolicy(int h, std::size_t s, std::si
 }
 
 
-float ChNumericParameterPolicy::getVal()
+float IChannelParameterNumeric::getVal() const
 {
     if (mode == PARAM_MODE_WRONLY)
         return 0.0;
@@ -135,7 +141,7 @@ float ChNumericParameterPolicy::getVal()
     return temp;
 }
 
-void ChNumericParameterPolicy::setVal(float v)
+void IChannelParameterNumeric::setVal(float v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -145,7 +151,7 @@ void ChNumericParameterPolicy::setVal(float v)
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void ChNumericParameterPolicy::printInfo()
+void IChannelParameterNumeric::printInfo() const
 {
     std::cout << "      Param = " << param << std::endl;
     std::cout << "      Type  = " << type << std::endl;
@@ -158,21 +164,15 @@ void ChNumericParameterPolicy::printInfo()
     std::cout << std::endl;
 }
 
-ChOnOffParameterPolicy::ChOnOffParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IChannelParameterOnOff>(h, s, c, p, m);
+}
+
+IChannelParameterOnOff::IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
     ChannelParameterBase(h, s, c, p, m)
 {
-   type = "OnOff";
-
-   if (mode == PARAM_MODE_WRONLY)
-       modeStr = "WO";
-   else if (mode == PARAM_MODE_RDONLY)
-       modeStr = "RO";
-   else if (mode == PARAM_MODE_RDWR)
-       modeStr = "RW";
-   else
-       modeStr = "?";
-
    char temp[30];
 
    if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Onstate", temp ) != CAENHV_OK )
@@ -187,7 +187,7 @@ ChOnOffParameterPolicy::ChOnOffParameterPolicy(int h, std::size_t s, std::size_t
 
 }
 
-std::string ChOnOffParameterPolicy::getVal()
+std::string IChannelParameterOnOff::getVal() const
 {
     if (mode == PARAM_MODE_WRONLY)
         return "";
@@ -201,7 +201,7 @@ std::string ChOnOffParameterPolicy::getVal()
     return temp;
 }
 
-void ChOnOffParameterPolicy::setVal(const std::string& v)
+void IChannelParameterOnOff::setVal(const std::string& v)
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -214,7 +214,7 @@ void ChOnOffParameterPolicy::setVal(const std::string& v)
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void ChOnOffParameterPolicy::printInfo()
+void IChannelParameterOnOff::printInfo() const
 {
     std::cout << "      Param = " << param << std::endl;
     std::cout << "      Type  = " << type << std::endl;

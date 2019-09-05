@@ -42,29 +42,22 @@
 
 #include "board_parameter.h"
 
-// Base class
-class IChannelParameter;
 
-// Derivated, template calss
-template <typename TypePolicy>
-class IChannelParameterTemplate;
-
-// Policy classes 
-class ChNumericParameterPolicy;
-class ChOnOffParameterPolicy;
-
+class IChannelParameterNumeric;
+class IChannelParameterOnOff;
 
 // Shared pointer types
-typedef std::shared_ptr< IChannelParameter                                     > ChannelParameter;
-typedef std::shared_ptr< IChannelParameterTemplate< ChNumericParameterPolicy > > ChannelParameterNumeric;
-typedef std::shared_ptr< IChannelParameterTemplate< ChOnOffParameterPolicy   > > ChannelParameterOnOff;
+typedef std::shared_ptr< IChannelParameterNumeric > ChannelParameterNumeric;
+typedef std::shared_ptr< IChannelParameterOnOff   > ChannelParameterOnOff;
 
 
 class ChannelParameterBase
 {
 public: 
-    ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m) : handle(h), slot(s), channel(c), param(p), mode(m) {};
+    ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
     virtual ~ChannelParameterBase() {};
+
+    virtual void printInfo() const;
 
 protected:
     int         handle;
@@ -74,77 +67,53 @@ protected:
     uint32_t    mode;
     std::string type;
     std::string modeStr;
+    std::string epicsParam;
 };
 
-class IChannelParameter
+class IChannelParameterNumeric : public ChannelParameterBase
 {
 public:
-   IChannelParameter() {};
-   virtual ~IChannelParameter() {};
+    IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m); 
+    ~IChannelParameterNumeric() {};
 
-   // Factory method
-   static ChannelParameter create(int h, std::size_t s, std::size_t c, const std::string&  p);
+    // Factory method
+    static ChannelParameterNumeric create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
 
-   virtual void printInfo() = 0;
-};
+    float       getMinVal() const { return minVal; };
+    float       getMaxVal() const { return maxVal; };
+    std::string getUnits()  const { return units;  };
 
-// Derivate, template class. It uses policies.
-template <class TypePolicy>
-class IChannelParameterTemplate : public IChannelParameter, TypePolicy
-{
-public:
-    IChannelParameterTemplate(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m) : IChannelParameter(), TypePolicy(h, s, c, p, m)  {};
-    ~IChannelParameterTemplate() {};
+    virtual void printInfo() const;
 
-   virtual void printInfo() { TypePolicy::printInfo(); };
-
-private:
-    using TypePolicy::getVal;
-    using TypePolicy::setVal;
-};
-
-// Policies
-
-class ChNumericParameterPolicy : public ChannelParameterBase
-{
-public:
-    ChNumericParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m); 
-    ~ChNumericParameterPolicy() {};
-
-    float getMinVal()             const { return minVal; };
-    float getMaxVal()             const { return maxVal; };
-    const std::string& getUnits() const { return units;  };
-
-    virtual void printInfo();
-
-    float getVal();
+    float getVal() const;
     void setVal(float v);
 
 private:
     float       minVal;
     float       maxVal;
     std::string units;
-    float       value;
 };
 
-class  ChOnOffParameterPolicy : public ChannelParameterBase
+class IChannelParameterOnOff : public ChannelParameterBase
 {
 public:
-    ChOnOffParameterPolicy(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
-    ~ChOnOffParameterPolicy() {};
+    IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+    ~IChannelParameterOnOff() {};
 
-    const std::string& getOnState()  const { return onState;  }; 
-    const std::string& getOffState() const { return offState; }; 
+    // Factory method
+    static ChannelParameterOnOff create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
 
-    virtual void printInfo();
+    std::string getOnState()  const { return onState;  }; 
+    std::string getOffState() const { return offState; }; 
 
-    std::string getVal();
+    virtual void printInfo() const;
+
+    std::string getVal() const;
     void setVal(const std::string& v);
 
 private:
     std::string onState;
     std::string offState;
-    std::string value;
 };
 
 #endif
