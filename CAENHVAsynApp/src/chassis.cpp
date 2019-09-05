@@ -50,31 +50,31 @@ void Chassis::GetPropList()
             switch( PropType )
             {
                 case SYSPROP_TYPE_STR:
-                    GetSysPropString(p);
+                    systemPropertyStrings.push_back(ISystemPropertyString::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_REAL:
-                    GetSysPropFloat(p);
+                    systemPropertyFloats.push_back(ISystemPropertyFloat::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_UINT2:
-                    GetSysPropU16(p);
+                    systemPropertyU16s.push_back(ISystemPropertyU16::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_UINT4:
-                    GetSysPropU32(p);
+                    systemPropertyU32s.push_back(ISystemPropertyU32::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_INT2:
-                    GetSysPropI16(p);
+                    systemPropertyI16s.push_back(ISystemPropertyI16::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_INT4:
-                    GetSysPropI32(p);
+                    systemPropertyI32s.push_back(ISystemPropertyI32::create(handle, p, PropMode));
                     break; 
                 
                 case SYSPROP_TYPE_BOOLEAN:
-                    GetSysPropU8(p);
+                    systemPropertyU8s.push_back(ISystemPropertyU8::create(handle, p, PropMode));
                     break; 
             }
 
@@ -82,125 +82,6 @@ void Chassis::GetPropList()
     }
        
     free(PropNameList);
-}
-
-void Chassis::GetSysPropFloat(char* p)
-{
-    float v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        fProps.insert(std::make_pair<std::string, float>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropU16(char* p)
-{
-    uint16_t v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        u16Props.insert(std::make_pair<std::string, uint16_t>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropU32(char* p)
-{
-    uint32_t v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        u32Props.insert(std::make_pair<std::string, uint32_t>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropI16(char* p)
-{
-    int16_t v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        i16Props.insert(std::make_pair<std::string, int16_t>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropI32(char* p)
-{
-    int32_t v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        i32Props.insert(std::make_pair<std::string, int32_t>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropU8(char* p)
-{
-    uint8_t v;
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, &v);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        u8Props.insert(std::make_pair<std::string, uint8_t>(p, v));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void Chassis::GetSysPropString(char* p)
-{
-    char aux[4096];
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, p, aux);
-
-    if ( r == CAENHV_OK || r == CAENHV_GETPROPNOTIMPL || r == CAENHV_NOTGETPROP )
-    {
-        sProps.insert(std::make_pair<std::string, std::string>(p, aux));
-    }
-    else
-    {
-        std::cout << "Failed to get system property: " << p << std::endl;
-        std::cout << CAENHV_GetError(handle) << std::endl;
-        std::cout << std::endl;
-    }
 }
 
 void Chassis::GetCrateMap()
@@ -308,13 +189,13 @@ void Chassis::printInfo() const
     std::cout << "  Properties:" << std::endl;;
     std::cout << "  ---------------------------" << std::endl;
 
-    printProperties("float",    fProps);
-    printProperties("uint16_t", u16Props);
-    printProperties("uint32_t", u32Props);
-    printProperties("int16_t",  i16Props);
-    printProperties("int32_t",  i32Props);
-    printProperties("uint8_t",  u8Props);
-    printProperties("string",   sProps);
+    printProperties("float",    systemPropertyFloats  );
+    printProperties("uint16_t", systemPropertyU16s    );
+    printProperties("uint32_t", systemPropertyU32s    );
+    printProperties("int16_t",  systemPropertyI16s    );
+    printProperties("int32_t",  systemPropertyI32s    );
+    printProperties("uint8_t",  systemPropertyU8s     );
+    printProperties("string",   systemPropertyStrings );
 
     std::cout << std::endl;
     std::cout << "  Board information: " << std::endl;
@@ -334,5 +215,5 @@ void Chassis::printProperties(const std::string& type, const T& pv) const
     std::cout << "    Number of properties of type " << type << ": " << n << std::endl;
     if (n)
         for (auto it = pv.begin(); it != pv.end(); ++it)
-            std::cout << "    - " << it->first << " = " << it->second << std::endl;
+            (*it)->printInfo();
 }

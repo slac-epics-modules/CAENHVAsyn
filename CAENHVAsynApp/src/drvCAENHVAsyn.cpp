@@ -32,14 +32,14 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
     float       min  = bp->getMinVal();
     float       max  = bp->getMaxVal();
 
-    std::cout << "Creating EPICS numeric parameter..." << std::endl;
-    std::cout << "EPICS parameter name = " << name << std::endl;
-    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+//    std::cout << "Creating EPICS numeric parameter..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
 
     int index;
     createParam(name.c_str(), asynParamFloat64, &index);
 
-    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
 
     boardParameterNumericList.insert( std::make_pair<int, BoardParameterNumeric>(index, bp) );
 
@@ -58,9 +58,9 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
         dbParamsLocal << ",HOPR=" << max;
         dbParamsLocal << ",SCAN=1 second";
 
-        std::cout << "Loading EPICS record..." << std::endl;
+//        std::cout << "Loading EPICS record..." << std::endl;
 
-        std::cout << "Loading analog record..." << std::endl;
+//        std::cout << "Loading analog record..." << std::endl;
         dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str()); 
     }
 }
@@ -74,14 +74,14 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
     std::string onLabel  = bp->getOnState();
     std::string offLabel = bp->getOffState();
 
-    std::cout << "Creating EPICS OnOff parameter..." << std::endl;
-    std::cout << "EPICS parameter name = " << name << std::endl;
-    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+//    std::cout << "Creating EPICS OnOff parameter..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
 
     int index;
     createParam(name.c_str(), asynParamUInt32Digital, &index);
 
-    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
 
     boardParameterOnOffList.insert( std::make_pair<int, BoardParameterOnOff>(index, bp) );
 
@@ -99,78 +99,275 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
         dbParamsLocal << ",ONAM=" << offLabel;
         dbParamsLocal << ",SCAN=1 second";
 
-        std::cout << "Loading EPICS record..." << std::endl;
+//        std::cout << "Loading EPICS record..." << std::endl;
 
-        std::cout << "Loading analog record..." << std::endl;
+//        std::cout << "Loading analog record..." << std::endl;
         dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
     }
 }
 
-//void CAENHVAsyn::createBoardParam(const BoardParameter& bp)
-//{
-//    bool loadRecord = true;
-//
-//    std::string name = bp->getEpicsParam();
-//    std::string mode = bp->getMode();
-//    std::string type = bp->getType();
-//
-//    std::cout << "Creating EPICS parameter..." << std::endl;
+void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System U8 Property..." << std::endl;
 //    std::cout << "EPICS parameter name = " << name << std::endl;
 //    std::cout << "EPICS parameter Mode = " << mode << std::endl;
-//    std::cout << "EPICS parameter Type = " << type << std::endl;
-//
-//    asynParamType paramType;
-//    if (!type.compare("Numeric"))
-//    {
-//        paramType = asynParamFloat64;
-//        std::cout << "Creating Double type parameter..." << std::endl;
-//        
-//    }
-//    else if (!type.compare("OnOff"))
-//    {
-//        paramType = asynParamOctet;
-//        std::cout << "Creating String type parameter..." << std::endl;
-//    }
-//    else
-//    { 
-//        std::cout << "Unsupported type..." << std::endl;
-//        return;
-//    }
-//
-//    int index;
-//    createParam(name.c_str(), paramType, &index);
-//
-//    boardParameterList.insert( std::make_pair<int, const BoardParameter&>(index, bp) ); 
-//    //boardParameterList.insert( std::make_pair<int, int>(index, index+50) ); 
-//
-//    std::cout << "Parameter '" << name << "' (type = " << paramType << ") created. Index = " << index << std::endl;
-//
-//    if (loadRecord)
-//    {
-//        std::stringstream dbParamsLocal;
-//
-//        // Create list of paramater to pass to the  dbLoadRecords function
-//        dbParamsLocal.str("");
-//        dbParamsLocal << "PORT=" << portName_;
-//        dbParamsLocal << ",R=" << name;
-//        dbParamsLocal << ",PARAM=" << name;
-//        dbParamsLocal << ",DESC=" << name;
-//        dbParamsLocal << ",SCAN=1 second";
-//
+
+    int index;
+    createParam(name.c_str(), asynParamInt32, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyU8List.insert( std::make_pair<int, SystemPropertyU8>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",SCAN=1 second";
+
 //        std::cout << "Loading EPICS record..." << std::endl;
-//
-//        if (!type.compare("Numeric"))
-//        {
-//            std::cout << "Loading analog record..." << std::endl;
-//            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str()); 
-//        }
-//        else if (!type.compare("OnOff"))
-//        {
-//            std::cout << "Loading waveform of chars record..." << std::endl;
-//        }
-//
-//    }
-//}
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System U16 Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamInt32, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyU16List.insert( std::make_pair<int, SystemPropertyU16>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System U32 Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamInt32, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyU32List.insert( std::make_pair<int, SystemPropertyU32>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System I16 Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamInt32, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyI16List.insert( std::make_pair<int, SystemPropertyI16>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System I32 Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamInt32, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyI32List.insert( std::make_pair<int, SystemPropertyI32>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System String Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamOctet, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyStringList.insert( std::make_pair<int, SystemPropertyString>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",NELM=4096";
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/string.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createSystemPropertyFloat(SystemPropertyFloat sp)
+{
+    bool loadRecord = true;
+
+    std::string name     = sp->getEpicsParam();
+    std::string mode     = sp->getMode();
+
+//    std::cout << "Creating EPICS System Float Property..." << std::endl;
+//    std::cout << "EPICS parameter name = " << name << std::endl;
+//    std::cout << "EPICS parameter Mode = " << mode << std::endl;
+
+    int index;
+    createParam(name.c_str(), asynParamFloat64, &index);
+
+//    std::cout << "Parameter '" << name << "' created. Index = " << index << std::endl;
+
+    systemPropertyFloatList.insert( std::make_pair<int, SystemPropertyFloat>(index, sp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",EGU=";
+        dbParamsLocal << ",LOPR=";
+        dbParamsLocal << ",HOPR=";
+        dbParamsLocal << ",SCAN=1 second";
+
+//        std::cout << "Loading EPICS record..." << std::endl;
+
+//        std::cout << "Loading analog record..." << std::endl;
+        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+    }
+}
 
 CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
 :
@@ -213,65 +410,87 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     std::cout << std::endl;
     chassis->printInfo();
 
+    // System properties
+    {
+        std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
+        for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyString(*it);
+    }
+
+    {
+        std::vector<SystemPropertyU16> s = chassis->getSystemPropertyU16s();
+        for (std::vector<SystemPropertyU16>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyU16(*it);
+    }
+
+    {
+        std::vector<SystemPropertyU32> s = chassis->getSystemPropertyU32s();
+        for (std::vector<SystemPropertyU32>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyU32(*it);
+    }
+
+    {
+        std::vector<SystemPropertyI16> s = chassis->getSystemPropertyI16s();
+        for (std::vector<SystemPropertyI16>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyI16(*it);
+    }
+
+    {
+        std::vector<SystemPropertyI32> s = chassis->getSystemPropertyI32s();
+        for (std::vector<SystemPropertyI32>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyI32(*it);
+    }
+
+    // Boards
     std::vector<Board> b = chassis->getBoards();
 
     for (std::vector<Board>::iterator boardIt = b.begin(); boardIt != b.end(); ++boardIt)
     {
         std::vector<BoardParameterNumeric> pn = boardIt->getBoardParameterNumerics();
-        std::cout << "Number of Numeric Properties = " << pn.size() << std::endl;
         
         for (std::vector<BoardParameterNumeric>::iterator paramIt = pn.begin(); paramIt != pn.end(); ++paramIt)
             createBoardParamNumeric(*paramIt);
 
         std::vector<BoardParameterOnOff> po = boardIt->getBoardParameterOnOffs();
-        std::cout << "Number of OnOff Properties = " << po.size() << std::endl;
         
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
             createBoardParamOnOff(*paramIt);
     }
-//    std::cout << "First element = " << chassis->getFirstSProps()->first << " = " << chassis->getFirstSProps()->second << std::endl;
-//
-//   std::vector<BoardParameter> bp0 = chassis->getBoara0dParameters();
-//   for (std::vector<BoardParameter>::iterator it = bp0.begin(); it != bp0.end(); ++it)
-//   {
-//       //std::string ep = (*it)->getEpicsParam();
-//       //std::cout << "Board EPICS parameter = " << ep << std::endl;
-//
-//       //(*it)->printInfo();
-//       createBoardParam(*it);
-//   }
 }
 
-//int CAENHVAsyn::LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams)
-//{
-//    int paramIndex;
-//    std::stringstream dbParamsLocal;
-//
-//    // Create list of paramater to pass to the  dbLoadRecords function
-//    dbParamsLocal.str("");
-//    dbParamsLocal << "PORT=" << portName_;
-//    dbParamsLocal << ",ADDR=" << regType;
-//    dbParamsLocal << ",R=" << rp.recName;
-//    dbParamsLocal << ",PARAM=" << rp.paramName;
-//    dbParamsLocal << ",DESC=" << rp.recDesc;
-//    dbParamsLocal << dbParams.str();
-//
-//    // Create the asyn paramater
-//    createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);
-//
-//    // Create the record
-//    dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
-//
-//    // Write the record name to the PV list file
-//    //pvDumpFile->write("%s%*s", rp.recName.c_str(), recordNameLenMax - rp.recName.size() + 4, "");
-//    //pvDumpFile->write("# %s (%s)\n", getNameWithoutLeafIndexes(p).c_str(), regInterfaceTypeNames[regType]);
-//
-//    // Incrfement the number of created records
-//    //++recordCount;
-//
-//    // Return the parameter index
-//    return paramIndex;
-//}
+
+
+asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
+{
+    static const char *functionName = "readInt32";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+
+    std::map<int, SystemPropertyU16>::iterator u16_it;
+    std::map<int, SystemPropertyU32>::iterator u32_it;
+    std::map<int, SystemPropertyI16>::iterator i16_it;
+    std::map<int, SystemPropertyI32>::iterator i32_it;
+
+
+    if ((u16_it = systemPropertyU16List.find(function)) != systemPropertyU16List.end())
+        *value = u16_it->second->getVal();
+    else if ((u32_it = systemPropertyU32List.find(function)) != systemPropertyU32List.end())
+        *value = u32_it->second->getVal();
+    else if ((i16_it = systemPropertyI16List.find(function)) != systemPropertyI16List.end())
+        *value = i16_it->second->getVal();
+    else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
+        *value = i32_it->second->getVal();
+
+    return (status==0) ? asynSuccess : asynError;    
+}
 
 asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
@@ -315,6 +534,31 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     {
        // To be done... 
        // At the memoment the getVal() returns an empty string
+    }
+
+    return (status==0) ? asynSuccess : asynError;
+}
+
+asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
+{
+    static const char *functionName = "readOctet";
+    int function = pasynUser->reason;
+    int status = 0;
+
+    int addr;
+    this->getAddress(pasynUser, &addr);
+
+    const char *name;
+    getParamName(addr, function, &name);
+
+    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+    std::map<int, SystemPropertyString>::iterator it =  systemPropertyStringList.find(function);
+
+    if (it != systemPropertyStringList.end())
+    {
+        std::string temp = it->second->getVal();
+        strcpy(value, temp.c_str());
+        *nActual = temp.length() + 1;
     }
 
     return (status==0) ? asynSuccess : asynError;

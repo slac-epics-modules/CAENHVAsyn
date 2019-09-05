@@ -74,17 +74,33 @@ class CAENHVAsyn : public asynPortDriver
         // Methods that we override from asynPortDriver
         virtual asynStatus readFloat64       (asynUser *pasynUser, epicsFloat64 *value);
         virtual asynStatus readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
+        virtual asynStatus readOctet         (asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
+        virtual asynStatus readInt32         (asynUser *pasynUser, epicsInt32 *value);
 
     private:
-        //int LoadRecord(int regType, const recordParams& rp, const std::stringstream& dbParams);
 
-        //void createBoardParam(const BoardParameter& bp);
+        void createSystemPropertyU8(SystemPropertyU8);
+        void createSystemPropertyU16(SystemPropertyU16);
+        void createSystemPropertyU32(SystemPropertyU32);
+        void createSystemPropertyI16(SystemPropertyI16);
+        void createSystemPropertyI32(SystemPropertyI32);
+        void createSystemPropertyString(SystemPropertyString);
+        void createSystemPropertyFloat(SystemPropertyFloat);
+
         void createBoardParamNumeric(BoardParameterNumeric bp);
         void createBoardParamOnOff(BoardParameterOnOff bp);
 
         const std::string driverName_;
         std::string portName_;
         Chassis *chassis;
+
+       std::map<int, SystemPropertyU8>      systemPropertyU8List;
+       std::map<int, SystemPropertyU16>     systemPropertyU16List;
+       std::map<int, SystemPropertyU32>     systemPropertyU32List;
+       std::map<int, SystemPropertyI16>     systemPropertyI16List;
+       std::map<int, SystemPropertyI32>     systemPropertyI32List;
+       std::map<int, SystemPropertyString>  systemPropertyStringList;
+       std::map<int, SystemPropertyFloat>   systemPropertyFloatList;
 
        std::map<int, BoardParameterNumeric> boardParameterNumericList;
        std::map<int, BoardParameterOnOff>   boardParameterOnOffList;

@@ -40,6 +40,7 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 #include "board.h"
+#include "system_property.h"
 
 class SysProp;
 template<typename T>
@@ -53,9 +54,13 @@ public:
 
     void printInfo() const;
 
-//    std::map< std::string, std::string >::iterator getFirstSProps() { return sProps.begin(); };
-//
-//   std::vector<BoardParameter> getBoara0dParameters() { return boards.begin()->getBoardParameters(); };
+    std::vector<SystemPropertyU8>     getSystemPropertyU8s()     { return systemPropertyU8s;     };  
+    std::vector<SystemPropertyU16>    getSystemPropertyU16s()    { return systemPropertyU16s;    };  
+    std::vector<SystemPropertyU32>    getSystemPropertyU32s()    { return systemPropertyU32s;    };  
+    std::vector<SystemPropertyI16>    getSystemPropertyI16s()    { return systemPropertyI16s;    };  
+    std::vector<SystemPropertyI32>    getSystemPropertyI32s()    { return systemPropertyI32s;    };  
+    std::vector<SystemPropertyFloat>  getSystemPropertyFloats()  { return systemPropertyFloats;  };  
+    std::vector<SystemPropertyString> getSystemPropertyStrings() { return systemPropertyStrings; };
 
     std::vector<Board> getBoards() { return boards; };
 
@@ -64,15 +69,6 @@ private:
     int  InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const;
     void GetPropList();
     void GetCrateMap();
-
-    // Methods to extract system properties of each type
-    void GetSysPropFloat(char* p);
-    void GetSysPropU16(char* p);
-    void GetSysPropU32(char* p);
-    void GetSysPropI16(char* p);
-    void GetSysPropI32(char* p);
-    void GetSysPropU8(char* p);
-    void GetSysPropString(char* p);
 
     template <typename T>
     void printProperties(const std::string& type, const T& pv) const;
@@ -86,15 +82,13 @@ private:
     std::vector<Board> boards;
 
     // Chassis properties
-    std::map< std::string, float        > fProps;
-    std::map< std::string, uint16_t     > u16Props;
-    std::map< std::string, uint32_t     > u32Props;
-    std::map< std::string, int16_t      > i16Props;
-    std::map< std::string, int32_t      > i32Props;
-    std::map< std::string, uint8_t      > u8Props;
-    std::map< std::string, std::string  > sProps;
-
-    std::map< std::string, SysProp* > props;
+    std::vector<SystemPropertyU8>     systemPropertyU8s;
+    std::vector<SystemPropertyU16>    systemPropertyU16s;
+    std::vector<SystemPropertyU32>    systemPropertyU32s;
+    std::vector<SystemPropertyI16>    systemPropertyI16s;
+    std::vector<SystemPropertyI32>    systemPropertyI32s;
+    std::vector<SystemPropertyFloat>  systemPropertyFloats;
+    std::vector<SystemPropertyString> systemPropertyStrings;
 };
 
 #endif

@@ -13,6 +13,8 @@ include $(TOP)/configure/CONFIG
 #DB += xxx.db
 DB += ai.template
 DB += bi.template
+DB += string.template
+DB += longin.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
