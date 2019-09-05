@@ -616,6 +616,8 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
         *value = i16_it->second->getVal();
     else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
         *value = i32_it->second->getVal();
+    else
+        status = asynPortDriver::readInt32(pasynUser, value);
 
     return (status==0) ? asynSuccess : asynError;    
 }
@@ -647,6 +649,8 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
         i16_it->second->setVal(value);
     else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
         i32_it->second->setVal(value);
+    else
+        status = asynPortDriver::writeInt32(pasynUser, value);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -672,6 +676,8 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
         *value = cpIt->second->getVal();
     else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
         *value = bpIt->second->getVal();
+    else
+        status = asynPortDriver::readFloat64(pasynUser, value);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -697,6 +703,8 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         cpIt->second->setVal(value);
     else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
         bpIt->second->setVal(value);
+    else
+        status = asynPortDriver::writeFloat64(pasynUser, value);
 
     return (status==0) ? asynSuccess : asynError;
 
@@ -725,12 +733,14 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
        temp &= mask;
        *value = temp;
     }
-    if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
+    else if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
     {
        uint32_t temp = cpIt->second->getVal();
        temp &= mask;
        *value = temp;
     }
+    else
+        status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -757,14 +767,16 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     std::map<int, BoardParameterOnOff>::iterator bpIt;
     std::map<int, ChannelParameterOnOff>::iterator cpIt;
 
-    if ((bpIt = boardParameterOnOffList.find(function )) != boardParameterOnOffList.end())
+    if ( ( bpIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
     {
         bpIt->second->setVal(val);
     }
-    if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
+    else if ( ( cpIt = channelParameterOnOffList.find(function ) ) != channelParameterOnOffList.end() )
     {
         cpIt->second->setVal(val);
     }
+    else
+        status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -791,6 +803,8 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
         strcpy(value, temp.c_str());
         *nActual = temp.length() + 1;
     }
+    else
+        status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -817,6 +831,8 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
         spIt->second->setVal(temp);
         *nActual = temp.size();
     }
+    else
+        status = asynPortDriver::writeOctet(pasynUser, value, maxChars, nActual);
 
     return (status==0) ? asynSuccess : asynError;
 }
