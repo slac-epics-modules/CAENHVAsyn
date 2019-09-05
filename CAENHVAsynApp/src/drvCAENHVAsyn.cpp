@@ -591,17 +591,15 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
 asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
-    static const char *functionName = "readInt32";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("readInt32");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
 
     const char *name;
     getParamName(addr, function, &name);
-
-//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
     std::map<int, SystemPropertyU16>::iterator u16_it;
     std::map<int, SystemPropertyU32>::iterator u32_it;
@@ -619,22 +617,35 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     else
         status = asynPortDriver::readInt32(pasynUser, value);
 
-    return (status==0) ? asynSuccess : asynError;    
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : read '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, *value);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    static const char *functionName = "writeInt32";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("writeInt32");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
 
     const char *name;
     getParamName(addr, function, &name);
-
-    printf("Function = %s, addr = %d, function = %d, name = %s, value = %d\n", functionName, addr, function, name, value);
 
     std::map<int, SystemPropertyU16>::iterator u16_it;
     std::map<int, SystemPropertyU32>::iterator u32_it;
@@ -652,14 +663,29 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     else
         status = asynPortDriver::writeInt32(pasynUser, value);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : set to '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%d', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
-    static const char *functionName = "readFloat64";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("readFloat64");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
@@ -670,8 +696,6 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     std::map<int, ChannelParameterNumeric>::iterator cpIt; 
     std::map<int, BoardParameterNumeric>::iterator   bpIt;
 
-    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
-
     if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
         *value = cpIt->second->getVal();
     else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
@@ -679,14 +703,29 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     else
         status = asynPortDriver::readFloat64(pasynUser, value);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : read '%f'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, *value);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
-    static const char *functionName = "writeFloat64";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("writeFloat64");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
@@ -697,8 +736,6 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     std::map<int, ChannelParameterNumeric>::iterator cpIt;
     std::map<int, BoardParameterNumeric>::iterator   bpIt;
 
-    //printf("Function = %s, addr = %d, function = %d, name = %si, value = %f\n", functionName, addr, function, name, value);
-
     if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
         cpIt->second->setVal(value);
     else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
@@ -706,23 +743,35 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     else
         status = asynPortDriver::writeFloat64(pasynUser, value);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : set to '%f'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value);
 
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%f', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
 {
-    static const char *functionName = "readUInt32Digital";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("readUInt32Digital");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
 
     const char *name;
     getParamName(addr, function, &name);
-
-    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
     std::map<int, BoardParameterOnOff>::iterator bpIt;
     std::map<int, ChannelParameterOnOff>::iterator cpIt;
@@ -742,14 +791,29 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     else
         status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : read '%d', mask '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, *value, mask);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, mask '%d', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, mask, status);
+
+        return asynError;
+    }
 }
 
 
 asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask)
 {
-    static const char *functionName = "writeUInt32Digital";
-    int function = pasynUser->reason;
+    static std::string method("writeUInt32Digital");
+    int function(pasynUser->reason);
     int status(0);
 
     int addr;
@@ -761,8 +825,6 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     epicsUInt32 val(0);
     val &= ~mask;
     val |= value;
-
-    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
     std::map<int, BoardParameterOnOff>::iterator bpIt;
     std::map<int, ChannelParameterOnOff>::iterator cpIt;
@@ -778,22 +840,35 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     else
         status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : set to '%d', mask '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, mask);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%d', mask '%d', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, mask, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
 {
-    static const char *functionName = "readOctet";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("readOctet");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
 
     const char *name;
     getParamName(addr, function, &name);
-
-    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
 
     std::map<int, SystemPropertyString>::iterator spIt;
 
@@ -806,14 +881,29 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     else
         status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : read '%s', maxChars '%zu', nActual '%zu'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, maxChars, *nActual);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, maxChars '%zu', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, maxChars, status);
+
+        return asynError;
+    }
 }
 
 asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual)
 {
-    static const char *functionName = "writeOctet";
-    int function = pasynUser->reason;
-    int status = 0;
+    static std::string method("writeOctet");
+    int function(pasynUser->reason);
+    int status(0);
 
     int addr;
     this->getAddress(pasynUser, &addr);
@@ -821,8 +911,6 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     const char *name;
     getParamName(addr, function, &name);
 
-    //printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
-    
     std::map<int, SystemPropertyString>::iterator spIt;
 
     if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
@@ -834,7 +922,22 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     else
         status = asynPortDriver::writeOctet(pasynUser, value, maxChars, nActual);
 
-    return (status==0) ? asynSuccess : asynError;
+    if (0 == status)
+    {
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : set to '%s', maxChars '%zu', nActual '%zu'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, maxChars, *nActual);
+
+        return asynSuccess;
+    }
+    else
+    {
+         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%s', maxChars '%zu', status '%d'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, maxChars, status);
+
+        return asynError;
+    }
 }
 
 ////////////////////////////////////
