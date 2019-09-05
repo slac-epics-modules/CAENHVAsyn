@@ -57,10 +57,12 @@ public:
     ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
     virtual ~ChannelParameterBase() {};
 
-    virtual void printInfo() const;
+    virtual void printInfo() const = 0;
 
-    std::string getMode()       { return modeStr;    }; 
-    std::string getEpicsParam() { return epicsParam; };
+    std::string getMode()            { return modeStr;    }; 
+    std::string getEpicsParamName()  { return epicsParamName;  };
+    std::string getEpicsRecordName() { return epicsRecordName; };
+    std::string getEpicsDesc()       { return epicsDesc;       };
 
 protected:
     int         handle;
@@ -70,7 +72,9 @@ protected:
     uint32_t    mode;
     std::string type;
     std::string modeStr;
-    std::string epicsParam;
+    std::string epicsParamName;
+    std::string epicsRecordName;
+    std::string epicsDesc;
 };
 
 class IChannelParameterNumeric : public ChannelParameterBase

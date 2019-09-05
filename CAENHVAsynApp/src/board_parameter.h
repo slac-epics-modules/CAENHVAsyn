@@ -58,8 +58,10 @@ public:
     BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m);
     virtual ~BoardParameterBase() {};
 
-    std::string getMode()       { return modeStr;    }; 
-    std::string getEpicsParam() { return epicsParam; };
+    std::string getMode()            { return modeStr;         }; 
+    std::string getEpicsParamName()  { return epicsParamName;  };
+    std::string getEpicsRecordName() { return epicsRecordName; };
+    std::string getEpicsDesc()       { return epicsDesc;       };
 
 protected:
     int         handle;
@@ -67,7 +69,9 @@ protected:
     std::string param;
     uint32_t    mode;
     std::string modeStr;
-    std::string epicsParam;
+    std::string epicsParamName;
+    std::string epicsRecordName;
+    std::string epicsDesc;
 };
 
 class IBoardParameterNumeric : public BoardParameterBase

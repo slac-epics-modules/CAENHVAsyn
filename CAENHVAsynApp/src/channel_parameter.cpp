@@ -30,13 +30,7 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
     param(p), 
     mode(m) 
 {
-    // Generate the EPICS parameter name
-    std::stringstream temp;
-    temp.str("");
-    temp << "S" << s << "_" << "C" << channel << "_" << processParamName(param);
-    epicsParam = temp.str();
-
-   // Generate mode string
+   // Generate mode string representation
    if (mode == PARAM_MODE_WRONLY)
        modeStr = "WO";
    else if (mode == PARAM_MODE_RDONLY)
@@ -45,15 +39,24 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
        modeStr = "RW";
    else
        modeStr = "?";
-}
 
-void ChannelParameterBase::printInfo() const
-{
-    std::cout << "        Param = " << param \
-              << ", Type = "        << type \
-              << ", Mode = "        << modeStr \
-              << ", epicsParam = "  << epicsParam \
-              << std::endl;
+    std::stringstream temp;
+
+    // Generate the EPICS parameter name
+    temp.str("");
+    temp << "S" << s << "_" << "C" << channel << "_" << processParamName(param);
+    epicsParamName = temp.str();
+
+    // Generate the EPICS record name
+    temp.str("");
+    temp << "S" << s << ":" << "C" << channel << ":" << processParamName(param);
+    epicsRecordName = temp.str();
+
+    // Generate the EPICS description
+    temp.str("");
+    temp << "'Slot " << s <<  ", Ch " << channel <<  ", " << param << " (" << modeStr << ")'";
+    epicsDesc = temp.str();
+
 }
 
 ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
@@ -160,7 +163,8 @@ void IChannelParameterNumeric::printInfo() const
               << ", Maxval = "    <<  getMaxVal() \
               << ", Units = "    << units.c_str() \
               << ", Value = "    << getVal() \
-              << ", epicsParam = " << epicsParam \
+              << ", epicsParamName = " << epicsParamName \
+              << ", epicsRecordName = " << epicsRecordName \
               << std::endl;
 }
 
@@ -221,7 +225,8 @@ void IChannelParameterOnOff::printInfo() const
               << ", On state = " << getOnState() \
               << ", Off state = " << getOffState() \
               << ", Value = " << getVal() \
-              << ", epicsParam = " << epicsParam \
+              << ", epicsParamName = " << epicsParamName \
+              << ", epicsRecordName = " << epicsRecordName \
               << std::endl;
 }
 

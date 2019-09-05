@@ -27,12 +27,6 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
     prop(p), 
     mode(m)
 {
-    // Generate the EPICS parameter name
-    std::stringstream temp;
-    temp.str("");
-    temp << "C" << "_" << processParamName(prop);
-    epicsParam = temp.str();
-
     // Generate mode string
     if (mode == PARAM_MODE_WRONLY)
         modeStr = "WO";
@@ -42,6 +36,24 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
         modeStr = "RW";
     else
         modeStr = "?";
+
+    std::stringstream temp;
+
+    // Generate the EPICS parameter name
+    temp.str("");
+    temp << "C_" << processParamName(prop);
+    epicsParamName = temp.str();
+
+    // Generate the EPICS record name
+    temp.str("");
+    temp << "C:" << processParamName(prop);
+    epicsRecordName = temp.str();
+
+    // Generate the EPICS description
+    temp.str("");
+    temp << "'Chassis, " << prop << " (" << modeStr << ")'";
+    epicsDesc = temp.str();
+
 };
 
 void SystemPropertyBase::printInfo() const
@@ -49,7 +61,8 @@ void SystemPropertyBase::printInfo() const
     std::cout << "      Name = "   << prop \
               << ", handle = "     << handle \
               << ", mode = "       << mode \
-              << ", epicsParam = " << epicsParam \ 
+              << ", epicsParamName = " << epicsParamName \ 
+              << ", epicsRecordName = " << epicsRecordName \ 
               << std::endl;
 }
 

@@ -29,11 +29,32 @@ BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string& 
     param(p), 
     mode(m)
 {
-    // Generate the EPICS parameter name
+   // Generate mode string representation
+   if (mode == PARAM_MODE_WRONLY)
+       modeStr = "WO";
+   else if (mode == PARAM_MODE_RDONLY)
+       modeStr = "RO";
+   else if (mode == PARAM_MODE_RDWR)
+       modeStr = "RW";
+   else
+       modeStr = "?";
+
     std::stringstream temp;
+
+    // Generate the EPICS parameter name
     temp.str("");
     temp << "S" << s << "_" << processParamName(param);
-    epicsParam = temp.str();
+    epicsParamName = temp.str();
+
+    // Generate the EPICS record name
+    temp.str("");
+    temp << "S" << s << ":" << processParamName(param);
+    epicsRecordName = temp.str();
+
+    // Generate the EPICS description
+    temp.str("");
+    temp << "'Slot " << s << ", " << param << " (" << modeStr << ")'";
+    epicsDesc = temp.str();
 }
 
 BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const std::string&  p, uint32_t m)
@@ -46,15 +67,6 @@ IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::
 :
     BoardParameterBase(h, s, p, m)
 {
-   if (mode == PARAM_MODE_WRONLY)
-       modeStr = "WO";
-   else if (mode == PARAM_MODE_RDONLY)
-       modeStr = "RO";
-   else if (mode == PARAM_MODE_RDWR)
-       modeStr = "RW";
-   else
-       modeStr = "?";
-
    float temp;
 
    if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Minval", &temp ) != CAENHV_OK )
@@ -144,13 +156,14 @@ void IBoardParameterNumeric::setVal(float v)
 
 void IBoardParameterNumeric::printInfo()
 {
-    std::cout << "        Param = " << param \
-              << ", Mode  = "       << modeStr \
-              << ", Minval = "      << getMinVal() \
-              << ", Maxval = "      <<  getMaxVal() \
-              << ", Units  = "      << units.c_str() \
-              << ", Value  = "      << getVal() \
-              << ", epicsParam = " << epicsParam \
+    std::cout << "        Param = "     << param \
+              << ", Mode  = "           << modeStr \
+              << ", Minval = "          << getMinVal() \
+              << ", Maxval = "          <<  getMaxVal() \
+              << ", Units  = "          << units.c_str() \
+              << ", Value  = "          << getVal() \
+              << ", epicsParamName = "  << epicsParamName \
+              << ", epicsRecordName = " << epicsRecordName \
               << std::endl;
 }
 
@@ -164,15 +177,6 @@ IBoardParameterOnOff::IBoardParameterOnOff(int h, std::size_t s, const std::stri
 :
     BoardParameterBase(h, s, p, m)
 {
-   if (mode == PARAM_MODE_WRONLY)
-       modeStr = "WO";
-   else if (mode == PARAM_MODE_RDONLY)
-       modeStr = "RO";
-   else if (mode == PARAM_MODE_RDWR)
-       modeStr = "RW";
-   else
-       modeStr = "?";
-
    char temp[30];
 
    if ( CAENHV_GetBdParamProp(handle, slot, param.c_str(), "Onstate", temp ) != CAENHV_OK )
@@ -221,7 +225,8 @@ void IBoardParameterOnOff::printInfo()
               << ",  On state = "  << getOnState() \
               << ",  Off state = "  << getOffState() \
               << ",  Value = "  << getVal() \
-              << ", epicsParam = " << epicsParam \
+              << ", epicsParamName = " << epicsParamName \
+              << ", epicsRecordName = " << epicsRecordName \
               << std::endl;
 }
 
