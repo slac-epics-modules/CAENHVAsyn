@@ -106,6 +106,76 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
     }
 }
 
+
+
+void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
+{
+    bool loadRecord = true;
+
+    std::string name = cp->getEpicsParam();
+    std::string mode = cp->getMode();
+    std::string egu  = cp->getUnits();
+    float       min  = cp->getMinVal();
+    float       max  = cp->getMaxVal();
+
+    int index;
+    createParam(name.c_str(), asynParamFloat64, &index);
+
+    channelParameterNumericList.insert( std::make_pair<int, ChannelParameterNumeric>(index, cp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",EGU=" << egu;
+        dbParamsLocal << ",LOPR=" << min;
+        dbParamsLocal << ",HOPR=" << max;
+        dbParamsLocal << ",SCAN=1 second";
+
+        dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
+    }
+}
+
+void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
+{
+    bool loadRecord = true;
+
+    std::string name     = cp->getEpicsParam();
+    std::string mode     = cp->getMode();
+    std::string onLabel  = cp->getOnState();
+    std::string offLabel = cp->getOffState();
+
+    int index;
+    createParam(name.c_str(), asynParamUInt32Digital, &index);
+
+
+    channelParameterOnOffList.insert( std::make_pair<int, ChannelParameterOnOff>(index, cp) );
+
+    if (loadRecord)
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "PORT=" << portName_;
+        dbParamsLocal << ",R=" << name;
+        dbParamsLocal << ",PARAM=" << name;
+        dbParamsLocal << ",DESC=" << name;
+        dbParamsLocal << ",ZNAM=" << onLabel;
+        dbParamsLocal << ",ONAM=" << offLabel;
+        dbParamsLocal << ",SCAN=1 second";
+
+        dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
+    }
+}
+
+
 void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
 {
     bool loadRecord = true;
@@ -455,6 +525,19 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
             createBoardParamOnOff(*paramIt);
+
+        std::vector<Channel> c = boardIt->getChannels();
+
+        for(std::vector<Channel>::iterator channelIt = c.begin(); channelIt != c.end(); ++channelIt)
+        {
+            std::vector<ChannelParameterNumeric> cpn = channelIt->getChannelParameterNumerics();
+            for (std::vector<ChannelParameterNumeric>::iterator paramIt = cpn.begin(); paramIt != cpn.end(); ++paramIt)
+                createChannelParamNumeric(*paramIt);
+        
+            std::vector<ChannelParameterOnOff> cpo = channelIt->getChannelParameterOnOffs();
+            for (std::vector<ChannelParameterOnOff>::iterator paramIt = cpo.begin(); paramIt != cpo.end(); ++paramIt)
+                createChannelParamOnOff(*paramIt);
+        }
     }
 }
 
@@ -504,11 +587,18 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     const char *name;
     getParamName(addr, function, &name);
 
-//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
-    std::map<int, BoardParameterNumeric>::iterator it = boardParameterNumericList.find(function);
+    std::map<int, ChannelParameterNumeric>::iterator cpIt; 
+    std::map<int, BoardParameterNumeric>::iterator   bpIt;
 
-    if (it != boardParameterNumericList.end())
-        *value = it->second->getVal();
+//    printf("Function = %s, addr = %d, function = %d, name = %s\n", functionName, addr, function, name);
+
+    if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
+        *value = cpIt->second->getVal();
+    else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
+        *value = bpIt->second->getVal();
+
+    //std::map<int, BoardParameterNumeric>::iterator it = boardParameterNumericList.find(function);
+    //if (it != boardParameterNumericList.end())
 
     return (status==0) ? asynSuccess : asynError;
 }

@@ -59,6 +59,9 @@ public:
 
     virtual void printInfo() const;
 
+    std::string getMode()       { return modeStr;    }; 
+    std::string getEpicsParam() { return epicsParam; };
+
 protected:
     int         handle;
     std::size_t slot;

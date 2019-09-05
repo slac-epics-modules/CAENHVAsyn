@@ -79,6 +79,7 @@ class CAENHVAsyn : public asynPortDriver
 
     private:
 
+        // Methods to create system property EPICS paramater and records
         void createSystemPropertyU8(SystemPropertyU8);
         void createSystemPropertyU16(SystemPropertyU16);
         void createSystemPropertyU32(SystemPropertyU32);
@@ -87,13 +88,19 @@ class CAENHVAsyn : public asynPortDriver
         void createSystemPropertyString(SystemPropertyString);
         void createSystemPropertyFloat(SystemPropertyFloat);
 
+        // Methods to create board parameter EPICS paramater and records
         void createBoardParamNumeric(BoardParameterNumeric bp);
         void createBoardParamOnOff(BoardParameterOnOff bp);
 
+        // Methods to create channel parameteer EPICS paramater and records
+        void createChannelParamNumeric(ChannelParameterNumeric cp);
+        void createChannelParamOnOff(ChannelParameterOnOff cp);
+       
         const std::string driverName_;
         std::string portName_;
         Chassis *chassis;
 
+       // System property lists
        std::map<int, SystemPropertyU8>      systemPropertyU8List;
        std::map<int, SystemPropertyU16>     systemPropertyU16List;
        std::map<int, SystemPropertyU32>     systemPropertyU32List;
@@ -102,11 +109,13 @@ class CAENHVAsyn : public asynPortDriver
        std::map<int, SystemPropertyString>  systemPropertyStringList;
        std::map<int, SystemPropertyFloat>   systemPropertyFloatList;
 
+       // Board parameter lists
        std::map<int, BoardParameterNumeric> boardParameterNumericList;
        std::map<int, BoardParameterOnOff>   boardParameterOnOffList;
 
-       //std::map<int, const BoardParameter&> boardParameterList;
-       //std::map<int, int> boardParameterList;
+       // Channel parameter lists
+       std::map<int, ChannelParameterNumeric> channelParameterNumericList;
+       std::map<int, ChannelParameterOnOff>   channelParameterOnOffList;
 };
 
 #endif

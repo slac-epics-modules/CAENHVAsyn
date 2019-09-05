@@ -49,8 +49,8 @@ public:
 
     void printInfo() const;
 
-    std::vector<ChannelParameterNumeric> getBoardParameterNumerics() { return channelParameterNumerics; };
-    std::vector<ChannelParameterOnOff>   getBoardParameterOnOffs()   { return channelParameterOnOffs; };
+    std::vector<ChannelParameterNumeric> getChannelParameterNumerics() { return channelParameterNumerics; };
+    std::vector<ChannelParameterOnOff>   getChannelParameterOnOffs()   { return channelParameterOnOffs; };
 
 private:
 
