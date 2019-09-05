@@ -61,13 +61,10 @@ void Board::printInfo() const
     for (std::vector<BoardParameterOnOff>::const_iterator it = boardParameterOnOffs.begin(); it != boardParameterOnOffs.end(); ++it)
         (*it)->printInfo();
     
-
-    std::cout << "    Channels:" << std::endl;
+    std::cout << "    Channel parameters:" << std::endl;
     std::cout << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
         it->printInfo();
-
-    std::cout << std::endl;
 }
 
 void Board::GetBoardParams()
@@ -108,11 +105,8 @@ void Board::GetBoardParams()
         else if (type == PARAM_TYPE_ONOFF)
             boardParameterOnOffs.push_back( IBoardParameterOnOff::create(handle, slot, p[i], mode));
         else
-        {
             //throw std::runtime_error("Parameter type not  supported!");
-            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
-            std::cout << std::endl;
-        }
+            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
     }
 
     // Deallocate memory (Use RAII in the future for this)

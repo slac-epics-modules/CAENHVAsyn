@@ -33,7 +33,7 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
     // Generate the EPICS parameter name
     std::stringstream temp;
     temp.str("");
-    temp << "S" << s << "_" << processParamName(param);
+    temp << "S" << s << "_" << "C" << channel << "_" << processParamName(param);
     epicsParam = temp.str();
 
    // Generate mode string
@@ -49,10 +49,11 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
 
 void ChannelParameterBase::printInfo() const
 {
-    std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Type  = " << type << std::endl;
-    std::cout << "      Mode  = " << modeStr << std::endl;
-    std::cout << std::endl;
+    std::cout << "        Param = " << param \
+              << ", Type = "        << type \
+              << ", Mode = "        << modeStr \
+              << ", epicsParam = "  << epicsParam \
+              << std::endl;
 }
 
 ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
@@ -153,15 +154,14 @@ void IChannelParameterNumeric::setVal(float v)
 
 void IChannelParameterNumeric::printInfo() const
 {
-    std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Type  = " << type << std::endl;
-    std::cout << "      Mode  = " << modeStr << std::endl;
-    std::cout << "      Properties:" << std::endl;
-    std::cout << "        - Minval = " << getMinVal() << std::endl;
-    std::cout << "        - Maxval = " <<  getMaxVal() << std::endl;
-    std::cout << "        - Units  = " << units.c_str() << std::endl;
-    std::cout << "        - Value  = " << getVal() << std::endl;
-    std::cout << std::endl;
+    std::cout << "          Param = " << param \
+              << ", Mode  = "     << modeStr \
+              << ", Minval = "    << getMinVal() \
+              << ", Maxval = "    <<  getMaxVal() \
+              << ", Units = "    << units.c_str() \
+              << ", Value = "    << getVal() \
+              << ", epicsParam = " << epicsParam \
+              << std::endl;
 }
 
 ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
@@ -216,13 +216,12 @@ void IChannelParameterOnOff::setVal(const std::string& v)
 
 void IChannelParameterOnOff::printInfo() const
 {
-    std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Type  = " << type << std::endl;
-    std::cout << "      Mode  = " << modeStr << std::endl;
-    std::cout << "      Properties:" << std::endl;
-    std::cout << "        - On state  = " << getOnState()  << std::endl;
-    std::cout << "        - Off state = " << getOffState() << std::endl;
-    std::cout << "        - Value     = " << getVal() << std::endl;
-    std::cout << std::endl;
+    std::cout << "          Param = " << param \
+              << ", Mode = " << modeStr \
+              << ", On state = " << getOnState() \
+              << ", Off state = " << getOffState() \
+              << ", Value = " << getVal() \
+              << ", epicsParam = " << epicsParam \
+              << std::endl;
 }
 

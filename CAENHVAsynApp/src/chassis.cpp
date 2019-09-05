@@ -184,11 +184,8 @@ void Chassis::printInfo() const
     std::cout << "===========================" << std::endl;;
     std::cout << "  handle = " << handle << std::endl;
     std::cout << "  Number of slots: " << numSlots << std::endl;
-
-    std::cout << std::endl;
     std::cout << "  Properties:" << std::endl;;
     std::cout << "  ---------------------------" << std::endl;
-
     printProperties("float",    systemPropertyFloats  );
     printProperties("uint16_t", systemPropertyU16s    );
     printProperties("uint32_t", systemPropertyU32s    );
@@ -196,14 +193,11 @@ void Chassis::printInfo() const
     printProperties("int32_t",  systemPropertyI32s    );
     printProperties("uint8_t",  systemPropertyU8s     );
     printProperties("string",   systemPropertyStrings );
-
-    std::cout << std::endl;
     std::cout << "  Board information: " << std::endl;
     std::cout << "  ---------------------------" << std::endl;
     std::cout << "    Number of boards: " << boards.size() << std::endl;
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
         it->printInfo();
-
     std::cout << "===========================" << std::endl;;
     std::cout << std::endl;
 }

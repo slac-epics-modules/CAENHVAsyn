@@ -46,10 +46,11 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
 
 void SystemPropertyBase::printInfo() const
 {
-    std::cout << "      Name = " << prop << std::endl;
-    std::cout << "        - handle     = " << handle << std::endl;
-    std::cout << "        - mode       = " << mode << std::endl;
-    std::cout << "        - epicsParam = " << epicsParam << std::endl;
+    std::cout << "      Name = "   << prop \
+              << ", handle = "     << handle \
+              << ", mode = "       << mode \
+              << ", epicsParam = " << epicsParam \ 
+              << std::endl;
 }
 
 // U8 class

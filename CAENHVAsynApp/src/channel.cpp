@@ -32,23 +32,18 @@ Channel::Channel(int h, std::size_t s, std::size_t c)
 
 void Channel::printInfo() const
 {
-    std::cout << "    Channel parameters:" << std::endl;
-    std::cout << "    ..........................." << std::endl;
-    std::cout << "    Slot:    " << slot << std::endl;
-    std::cout << "    Channel: " << channel << std::endl;
-    //std::cout << "      Number of parameters: " << channelParameters.size() << std::endl;
-    //for (std::vector<ChannelParameter>::const_iterator it = channelParameters.begin(); it != channelParameters.end(); ++it)
-    //    (*it)->printInfo();
+    std::cout << "      Slot = " << slot \
+              << ", Channel = " << channel \
+              << std::endl;
 
-    std::cout << "      Number of Numeric parameters: " << channelParameterNumerics.size() << std::endl;
+    std::cout << "        Number of Numeric parameters: " << channelParameterNumerics.size() << std::endl;
     for (std::vector<ChannelParameterNumeric>::const_iterator it = channelParameterNumerics.begin(); it != channelParameterNumerics.end(); ++it)
         (*it)->printInfo();
 
-    std::cout << "      Number of OnOff parameters: " << channelParameterOnOffs.size() << std::endl;
+    std::cout << "        Number of OnOff parameters: " << channelParameterOnOffs.size() << std::endl;
     for (std::vector<ChannelParameterOnOff>::const_iterator it = channelParameterOnOffs.begin(); it != channelParameterOnOffs.end(); ++it)
         (*it)->printInfo();
 
-    std::cout << std::endl;
 }
 
 void Channel::GetChannelParams()
@@ -90,11 +85,8 @@ void Channel::GetChannelParams()
         else if (type == PARAM_TYPE_ONOFF)
             channelParameterOnOffs.push_back( IChannelParameterOnOff::create(handle, slot, channel, p[i], mode));
         else
-        {
             //throw std::runtime_error("Parameter type not  supported!");
-            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'"<< std::endl;
-            std::cout << std::endl;
-        }
+            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
     }
 
     // Deallocate memory (Use RAII in the future for this)

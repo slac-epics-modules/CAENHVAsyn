@@ -144,14 +144,14 @@ void IBoardParameterNumeric::setVal(float v)
 
 void IBoardParameterNumeric::printInfo()
 {
-    std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Mode  = " << modeStr << std::endl;
-    std::cout << "      Properties:" << std::endl;
-    std::cout << "        - Minval = " << getMinVal() << std::endl;
-    std::cout << "        - Maxval = " <<  getMaxVal() << std::endl;
-    std::cout << "        - Units  = " << units.c_str() << std::endl;
-    std::cout << "        - Value  = " << getVal() << std::endl;
-    std::cout << std::endl;
+    std::cout << "        Param = " << param \
+              << ", Mode  = "       << modeStr \
+              << ", Minval = "      << getMinVal() \
+              << ", Maxval = "      <<  getMaxVal() \
+              << ", Units  = "      << units.c_str() \
+              << ", Value  = "      << getVal() \
+              << ", epicsParam = " << epicsParam \
+              << std::endl;
 }
 
 
@@ -216,12 +216,12 @@ void IBoardParameterOnOff::setVal(const std::string& v)
 
 void IBoardParameterOnOff::printInfo()
 {
-    std::cout << "      Param = " << param << std::endl;
-    std::cout << "      Mode  = " << modeStr << std::endl;
-    std::cout << "      Properties:" << std::endl;
-    std::cout << "        - On state  = " << getOnState()  << std::endl;
-    std::cout << "        - Off state = " << getOffState() << std::endl;
-    std::cout << "        - Value     = " << getVal() << std::endl;
-    std::cout << std::endl;
+    std::cout << "        Param = " << param \
+              << ",  Mode = "      << modeStr \
+              << ",  On state = "  << getOnState() \
+              << ",  Off state = "  << getOffState() \
+              << ",  Value = "  << getVal() \
+              << ", epicsParam = " << epicsParam \
+              << std::endl;
 }
 
