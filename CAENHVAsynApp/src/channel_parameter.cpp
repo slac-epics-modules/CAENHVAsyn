@@ -44,17 +44,24 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
 
     // Generate the EPICS parameter name
     temp.str("");
-    temp << "S" << s << "_" << "C" << channel << "_" << processParamName(param);
+    temp << "S" << std::setfill('0') << std::setw(2) << s << "_" \
+         << "C" << std::setfill('0') << std::setw(2) << channel << "_" \
+         << processParamName(param);
     epicsParamName = temp.str();
 
     // Generate the EPICS record name
     temp.str("");
-    temp << "S" << s << ":" << "C" << channel << ":" << processParamName(param);
+    temp << "S" << std::setfill('0') << std::setw(2) << s << ":" \
+         << "C" << std::setfill('0') << std::setw(2) << channel << ":" \
+         << processParamName(param);
     epicsRecordName = temp.str();
 
     // Generate the EPICS description
     temp.str("");
-    temp << "'Slot " << s <<  ", Ch " << channel <<  ", " << param << " (" << modeStr << ")'";
+    temp << "'Slot " << s \
+         << ", Ch " << channel \
+         <<  ", " << param \
+         << " (" << modeStr << ")'";
     epicsDesc = temp.str();
 
 }

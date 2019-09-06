@@ -43,17 +43,21 @@ BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string& 
 
     // Generate the EPICS parameter name
     temp.str("");
-    temp << "S" << s << "_" << processParamName(param);
+    temp << "S" << std::setfill('0') << std::setw(2) << s << "_" \
+         << processParamName(param);
     epicsParamName = temp.str();
 
     // Generate the EPICS record name
     temp.str("");
-    temp << "S" << s << ":" << processParamName(param);
+    temp << "S" << std::setfill('0') << std::setw(2) << s << ":" \
+         << processParamName(param);
     epicsRecordName = temp.str();
 
     // Generate the EPICS description
     temp.str("");
-    temp << "'Slot " << s << ", " << param << " (" << modeStr << ")'";
+    temp << "'Slot " << s \
+         << ", " << param \
+         << " (" << modeStr << ")'";
     epicsDesc = temp.str();
 }
 
