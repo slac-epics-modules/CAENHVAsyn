@@ -1,4 +1,4 @@
-record(ao,      "$(R)") {
+record(ao,      "$(P)$(R)") {
     field(PINI, "NO")
     field(DESC, "$(DESC)")
     field(DTYP, "asynFloat64")

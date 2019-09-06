@@ -81,6 +81,9 @@ class CAENHVAsyn : public asynPortDriver
         virtual asynStatus readInt32          (asynUser *pasynUser, epicsInt32 *value);
         virtual asynStatus writeInt32         (asynUser *pasynUser, epicsInt32 value);
 
+        // EPICS record prefix. Use for autogeneration of PVs.
+        static std::string epicsPrefix;
+
     private:
 
         // Methods to create system property EPICS paramater and records

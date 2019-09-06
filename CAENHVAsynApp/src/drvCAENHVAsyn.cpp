@@ -21,11 +21,12 @@
 
 #include "drvCAENHVAsyn.h"
 
+// Default value for the EPICS record prefix is an empty string,
+// which means that the autogeration is disabled. 
+std::string CAENHVAsyn::epicsPrefix;
 
 void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = bp->getEpicsParamName();
     std::string recordName = bp->getEpicsRecordName();
     std::string desc       = bp->getEpicsDesc();
@@ -39,13 +40,14 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
 
     boardParameterNumericList.insert( std::make_pair<int, BoardParameterNumeric>(index, bp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU="   << egu;
@@ -72,8 +74,6 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
 
 void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = bp->getEpicsParamName();
     std::string recordName = bp->getEpicsRecordName();
     std::string desc       = bp->getEpicsDesc();
@@ -86,13 +86,14 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
 
     boardParameterOnOffList.insert( std::make_pair<int, BoardParameterOnOff>(index, bp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
@@ -117,8 +118,6 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
 
 void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = cp->getEpicsParamName();
     std::string recordName = cp->getEpicsRecordName();
     std::string desc       = cp->getEpicsDesc();
@@ -132,13 +131,14 @@ void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
 
     channelParameterNumericList.insert( std::make_pair<int, ChannelParameterNumeric>(index, cp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU="   << egu;
@@ -164,8 +164,6 @@ void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
 
 void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = cp->getEpicsParamName();
     std::string recordName = cp->getEpicsRecordName();
     std::string desc       = cp->getEpicsDesc();
@@ -179,13 +177,14 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
 
     channelParameterOnOffList.insert( std::make_pair<int, ChannelParameterOnOff>(index, cp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
@@ -209,8 +208,6 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
 
 void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -221,13 +218,14 @@ void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
 
     systemPropertyU8List.insert( std::make_pair<int, SystemPropertyU8>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -248,8 +246,6 @@ void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
 
 void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -260,13 +256,14 @@ void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
 
     systemPropertyU16List.insert( std::make_pair<int, SystemPropertyU16>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -287,8 +284,6 @@ void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
 
 void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -299,13 +294,14 @@ void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
 
     systemPropertyU32List.insert( std::make_pair<int, SystemPropertyU32>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -326,8 +322,6 @@ void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
 
 void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -338,13 +332,14 @@ void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
 
     systemPropertyI16List.insert( std::make_pair<int, SystemPropertyI16>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -365,8 +360,6 @@ void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
 
 void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -377,13 +370,14 @@ void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
 
     systemPropertyI32List.insert( std::make_pair<int, SystemPropertyI32>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -404,8 +398,6 @@ void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
 
 void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -416,14 +408,14 @@ void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
 
     systemPropertyStringList.insert( std::make_pair<int, SystemPropertyString>(index, sp) );
 
-std::cout << "Creqating -> " << recordName << " mode: " << mode << std::endl;
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",NELM=4096";
@@ -445,8 +437,6 @@ std::cout << "Creqating -> " << recordName << " mode: " << mode << std::endl;
 
 void CAENHVAsyn::createSystemPropertyFloat(SystemPropertyFloat sp)
 {
-    bool loadRecord = true;
-
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
     std::string desc       = sp->getEpicsDesc();
@@ -457,13 +447,14 @@ void CAENHVAsyn::createSystemPropertyFloat(SystemPropertyFloat sp)
 
     systemPropertyFloatList.insert( std::make_pair<int, SystemPropertyFloat>(index, sp) );
 
-    if (loadRecord)
+    if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
-        dbParamsLocal << "PORT="   << portName_;
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU=";
@@ -527,6 +518,11 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     std::cout << std::endl;
     //chassis->printInfo();
+
+    if (epicsPrefix.empty())
+        std::cout << "Autogeneration of PVs is disabled." << std::endl;
+    else
+        std::cout << "Autogeneration of PVs is enabled with prefix '" << epicsPrefix << "'" << std::endl;
 
     // System properties
     {
@@ -944,7 +940,7 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
 // Driver configuration functions //
 ////////////////////////////////////
 
-// CAENHVAsynConfig
+// + CAENHVAsynConfig //
 extern "C" int CAENHVAsynConfig(const char* portName, int systemType, char* ipAddr, const char* userName, const char* password)
 {
     new CAENHVAsyn(portName, systemType, ipAddr, userName, password);
@@ -973,11 +969,39 @@ static void configCallFunc(const iocshArgBuf *args)
 {
     CAENHVAsynConfig(args[0].sval, args[1].ival, args[2].sval, args[3].sval, args[4].sval);
 }
+// - CAENHVAsynConfig //
+
+// + setEpicsPrefix //
+extern "C" int setEpicsPrefix(const char *prefix)
+{
+    if ( ( ! prefix ) || ( prefix[0] == '\0' ) )
+        return 0;
+
+    CAENHVAsyn::epicsPrefix = prefix;
+
+    return 0;
+}
+
+static const iocshArg epicsPrefixArg0 = { "Prefix", iocshArgString };
+
+static const iocshArg * const epicsPrefixArgs[] =
+{
+    &epicsPrefixArg0
+};
+
+static const iocshFuncDef epicsPrefixFuncDef = { "setEpicsPrefix", 1, epicsPrefixArgs };
+
+static void epicsPrefixCallFunc(const iocshArgBuf *args)
+{
+    setEpicsPrefix(args[0].sval);
+}
+// - setEpicsPrefix //
 
 // iocshRegister
 void drvCAENHVAsynRegister(void)
 {
-    iocshRegister(&configFuncDef, configCallFunc);
+    iocshRegister( &configFuncDef,      configCallFunc      );
+    iocshRegister( &epicsPrefixFuncDef, epicsPrefixCallFunc );
 }
 
 extern "C" 

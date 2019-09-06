@@ -1,4 +1,4 @@
-record(longin,  "$(R)") {
+record(longin,  "$(P)$(R)") {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC)")
     field(PINI, "YES")
