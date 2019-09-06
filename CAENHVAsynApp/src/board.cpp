@@ -37,34 +37,33 @@ Board::Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, 
 
 Board::~Board()
 {
-    std::cout << "Destroying object for board in slot " << slot << "..." << std::endl;
 }
 
-void Board::printInfo() const
+void Board::printInfo(std::ostream& stream) const
 {
-    std::cout << "    Slot: " << slot \
-              << ", Model: " << model \
-              << ", Description: " <<  description \
-              << ", Number of channels: " << numChannels \
-              << ", Serial Number: " << serialNumber \
-              << ", Firmware release: " << firmwareRelease \
-              << std::endl;
+    stream << "    Slot: " << slot \
+           << ", Model: " << model \
+           << ", Description: " <<  description \
+           << ", Number of channels: " << numChannels \
+           << ", Serial Number: " << serialNumber \
+           << ", Firmware release: " << firmwareRelease \
+           << std::endl;
 
-    std::cout << "    Board parameters:" << std::endl;
-    std::cout << "    ..........................." << std::endl;
+    stream << "    Board parameters:" << std::endl;
+    stream << "    ..........................." << std::endl;
 
-    std::cout << "      Number of Numeric parameters: " << boardParameterNumerics.size() << std::endl;
+    stream << "      Number of Numeric parameters: " << boardParameterNumerics.size() << std::endl;
     for (std::vector<BoardParameterNumeric>::const_iterator it = boardParameterNumerics.begin(); it != boardParameterNumerics.end(); ++it)
-        (*it)->printInfo();
+        (*it)->printInfo(stream);
 
-    std::cout << "      Number of OnOff parameters: " << boardParameterOnOffs.size() << std::endl;
+    stream << "      Number of OnOff parameters: " << boardParameterOnOffs.size() << std::endl;
     for (std::vector<BoardParameterOnOff>::const_iterator it = boardParameterOnOffs.begin(); it != boardParameterOnOffs.end(); ++it)
-        (*it)->printInfo();
+        (*it)->printInfo(stream);
     
-    std::cout << "    Channel parameters:" << std::endl;
-    std::cout << "    ..........................." << std::endl;
+    stream << "    Channel parameters:" << std::endl;
+    stream << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
-        it->printInfo();
+        it->printInfo(stream);
 }
 
 void Board::GetBoardParams()
@@ -106,7 +105,7 @@ void Board::GetBoardParams()
             boardParameterOnOffs.push_back( IBoardParameterOnOff::create(handle, slot, p[i], mode));
         else
             //throw std::runtime_error("Parameter type not  supported!");
-            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
+            std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
     }
 
     // Deallocate memory (Use RAII in the future for this)

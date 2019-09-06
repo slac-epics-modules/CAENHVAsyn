@@ -49,7 +49,7 @@ public:
     Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw);
     ~Board();
 
-    void printInfo() const;
+    void printInfo(std::ostream& stream) const;
 
     std::vector<BoardParameterNumeric> getBoardParameterNumerics() { return boardParameterNumerics; };
     std::vector<BoardParameterOnOff>   getBoardParameterOnOffs()   { return boardParameterOnOffs;   };

@@ -177,37 +177,37 @@ int Chassis::InitSystem(int systemType, const std::string& ipAddr, const std::st
 }
 
 
-void Chassis::printInfo() const
+void Chassis::printInfo(std::ostream& stream) const
 {
-    std::cout << "===========================" << std::endl;;
-    std::cout << "Chassis object information:" << std::endl;;
-    std::cout << "===========================" << std::endl;;
-    std::cout << "  handle = " << handle << std::endl;
-    std::cout << "  Number of slots: " << numSlots << std::endl;
-    std::cout << "  Properties:" << std::endl;;
-    std::cout << "  ---------------------------" << std::endl;
-    printProperties("float",    systemPropertyFloats  );
-    printProperties("uint16_t", systemPropertyU16s    );
-    printProperties("uint32_t", systemPropertyU32s    );
-    printProperties("int16_t",  systemPropertyI16s    );
-    printProperties("int32_t",  systemPropertyI32s    );
-    printProperties("uint8_t",  systemPropertyU8s     );
-    printProperties("string",   systemPropertyStrings );
-    std::cout << "  Board information: " << std::endl;
-    std::cout << "  ---------------------------" << std::endl;
-    std::cout << "    Number of boards: " << boards.size() << std::endl;
+    stream << "===========================" << std::endl;;
+    stream << "Chassis object information:" << std::endl;;
+    stream << "===========================" << std::endl;;
+    stream << "  handle = " << handle << std::endl;
+    stream << "  Number of slots: " << numSlots << std::endl;
+    stream << "  Properties:" << std::endl;;
+    stream << "  ---------------------------" << std::endl;
+    printProperties( stream, "float",    systemPropertyFloats  );
+    printProperties( stream, "uint16_t", systemPropertyU16s    );
+    printProperties( stream, "uint32_t", systemPropertyU32s    );
+    printProperties( stream, "int16_t",  systemPropertyI16s    );
+    printProperties( stream, "int32_t",  systemPropertyI32s    );
+    printProperties( stream, "uint8_t",  systemPropertyU8s     );
+    printProperties( stream, "string",   systemPropertyStrings );
+    stream << "  Board information: " << std::endl;
+    stream << "  ---------------------------" << std::endl;
+    stream << "    Number of boards: " << boards.size() << std::endl;
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
-        it->printInfo();
-    std::cout << "===========================" << std::endl;;
-    std::cout << std::endl;
+        it->printInfo(stream);
+    stream << "===========================" << std::endl;;
+    stream << std::endl;
 }
 
 template <typename T>
-void Chassis::printProperties(const std::string& type, const T& pv) const
+void Chassis::printProperties(std::ostream& stream, const std::string& type, const T& pv) const
 {
     std::size_t n(pv.size());
-    std::cout << "    Number of properties of type " << type << ": " << n << std::endl;
+    stream << "    Number of properties of type " << type << ": " << n << std::endl;
     if (n)
         for (auto it = pv.begin(); it != pv.end(); ++it)
-            (*it)->printInfo();
+            (*it)->printInfo(stream);
 }

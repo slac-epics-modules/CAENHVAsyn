@@ -68,7 +68,7 @@ public:
     std::string getEpicsRecordName() { return epicsRecordName; };
     std::string getEpicsDesc()       { return epicsDesc;       };
 
-    void printInfo() const;
+    void printInfo(std::ostream& stream) const;
 
 protected:
     int         handle;

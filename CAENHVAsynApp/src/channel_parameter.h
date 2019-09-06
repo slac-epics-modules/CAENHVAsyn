@@ -57,7 +57,7 @@ public:
     ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
     virtual ~ChannelParameterBase() {};
 
-    virtual void printInfo() const = 0;
+    virtual void printInfo(std::ostream& stream) const = 0;
 
     std::string getMode()            { return modeStr;    }; 
     std::string getEpicsParamName()  { return epicsParamName;  };
@@ -90,7 +90,7 @@ public:
     float       getMaxVal() const { return maxVal; };
     std::string getUnits()  const { return units;  };
 
-    virtual void printInfo() const;
+    virtual void printInfo(std::ostream& stream) const;
 
     float getVal() const;
     void setVal(float value);
@@ -113,7 +113,7 @@ public:
     std::string getOnState()  const { return onState;  }; 
     std::string getOffState() const { return offState; }; 
 
-    virtual void printInfo() const;
+    virtual void printInfo(std::ostream& stream) const;
 
     uint32_t getVal() const;
     void setVal(uint32_t value);

@@ -52,7 +52,7 @@ public:
     Chassis(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
     ~Chassis();
 
-    void printInfo() const;
+    void printInfo(std::ostream& stream) const;
 
     std::vector<SystemPropertyU8>     getSystemPropertyU8s()     { return systemPropertyU8s;     };  
     std::vector<SystemPropertyU16>    getSystemPropertyU16s()    { return systemPropertyU16s;    };  
@@ -71,7 +71,7 @@ private:
     void GetCrateMap();
 
     template <typename T>
-    void printProperties(const std::string& type, const T& pv) const;
+    void printProperties(std::ostream& stream, const std::string& type, const T& pv) const;
 
     int handle;
 

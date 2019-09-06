@@ -30,19 +30,19 @@ Channel::Channel(int h, std::size_t s, std::size_t c)
     GetChannelParams();
 }
 
-void Channel::printInfo() const
+void Channel::printInfo(std::ostream& stream) const
 {
-    std::cout << "      Slot = " << slot \
-              << ", Channel = " << channel \
-              << std::endl;
+    stream << "      Slot = " << slot \
+           << ", Channel = " << channel \
+           << std::endl;
 
-    std::cout << "        Number of Numeric parameters: " << channelParameterNumerics.size() << std::endl;
+    stream << "        Number of Numeric parameters: " << channelParameterNumerics.size() << std::endl;
     for (std::vector<ChannelParameterNumeric>::const_iterator it = channelParameterNumerics.begin(); it != channelParameterNumerics.end(); ++it)
-        (*it)->printInfo();
+        (*it)->printInfo(stream);
 
-    std::cout << "        Number of OnOff parameters: " << channelParameterOnOffs.size() << std::endl;
+    stream << "        Number of OnOff parameters: " << channelParameterOnOffs.size() << std::endl;
     for (std::vector<ChannelParameterOnOff>::const_iterator it = channelParameterOnOffs.begin(); it != channelParameterOnOffs.end(); ++it)
-        (*it)->printInfo();
+        (*it)->printInfo(stream);
 
 }
 
@@ -92,7 +92,7 @@ void Channel::GetChannelParams()
             channelParameterOnOffs.push_back( IChannelParameterOnOff::create(handle, slot, channel, p[i], mode));
         else
             //throw std::runtime_error("Parameter type not  supported!");
-            std::cout << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
+            std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
     }
 
     // Deallocate memory (Use RAII in the future for this)

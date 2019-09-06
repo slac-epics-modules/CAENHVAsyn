@@ -56,14 +56,14 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
 
 };
 
-void SystemPropertyBase::printInfo() const
+void SystemPropertyBase::printInfo(std::ostream& stream) const
 {
-    std::cout << "      Name = "   << prop \
-              << ", handle = "     << handle \
-              << ", mode = "       << mode \
-              << ", epicsParamName = " << epicsParamName \
-              << ", epicsRecordName = " << epicsRecordName \
-              << std::endl;
+    stream << "      Name = "   << prop \
+           << ", handle = "     << handle \
+           << ", mode = "       << mode \
+           << ", epicsParamName = " << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
 }
 
 // U8 class

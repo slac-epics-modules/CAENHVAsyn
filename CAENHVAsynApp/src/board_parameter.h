@@ -87,7 +87,7 @@ public:
     float       getMaxVal() const { return maxVal; };
     std::string getUnits()  const { return units;  };
 
-    virtual void printInfo();
+    virtual void printInfo(std::ostream& stream) const;
 
     float getVal();
     void setVal(float value);
@@ -111,7 +111,7 @@ public:
     const std::string& getOnState()  const { return onState;  }; 
     const std::string& getOffState() const { return offState; }; 
 
-    virtual void printInfo();
+    virtual void printInfo(std::ostream& stream) const;
 
     uint32_t getVal();
     void setVal(uint32_t value);

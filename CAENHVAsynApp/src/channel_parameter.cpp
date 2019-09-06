@@ -162,17 +162,17 @@ void IChannelParameterNumeric::setVal(float value)
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void IChannelParameterNumeric::printInfo() const
+void IChannelParameterNumeric::printInfo(std::ostream& stream) const
 {
-    std::cout << "          Param = " << param \
-              << ", Mode  = "     << modeStr \
-              << ", Minval = "    << getMinVal() \
-              << ", Maxval = "    <<  getMaxVal() \
-              << ", Units = "    << units.c_str() \
-              << ", Value = "    << getVal() \
-              << ", epicsParamName = " << epicsParamName \
-              << ", epicsRecordName = " << epicsRecordName \
-              << std::endl;
+    stream << "          Param = " << param \
+           << ", Mode  = "     << modeStr \
+           << ", Minval = "    << getMinVal() \
+           << ", Maxval = "    <<  getMaxVal() \
+           << ", Units = "    << units.c_str() \
+           << ", Value = "    << getVal() \
+           << ", epicsParamName = " << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
 }
 
 ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
@@ -222,15 +222,15 @@ void IChannelParameterOnOff::setVal(uint32_t value)
            throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void IChannelParameterOnOff::printInfo() const
+void IChannelParameterOnOff::printInfo(std::ostream& stream) const
 {
-    std::cout << "          Param = " << param \
-              << ", Mode = " << modeStr \
-              << ", On state = " << getOnState() \
-              << ", Off state = " << getOffState() \
-              << ", Value = " << getVal() \
-              << ", epicsParamName = " << epicsParamName \
-              << ", epicsRecordName = " << epicsRecordName \
-              << std::endl;
+    stream << "          Param = " << param \
+           << ", Mode = " << modeStr \
+           << ", On state = " << getOnState() \
+           << ", Off state = " << getOffState() \
+           << ", Value = " << getVal() \
+           << ", epicsParamName = " << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
 }
 

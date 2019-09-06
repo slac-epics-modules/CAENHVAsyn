@@ -32,10 +32,11 @@
 #include <string.h>
 #include <map>
 #include <utility> 
+#include <iostream>
+#include <fstream>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <arpa/inet.h>
-#include <iostream>
 #include <epicsTypes.h>
 #include <epicsTime.h>
 #include <epicsThread.h>
@@ -56,16 +57,6 @@
 #define MAX_SIGNALS (3)
 #define NUM_PARAMS (1500)
 
-//// Argument list passed to load a record
-//struct recordParams
-//{
-//    std::string recName;
-//    std::string recDesc;
-//    std::string recTemplate;
-//    std::string paramName;
-//    asynParamType paramType;
-//};
-
 class CAENHVAsyn : public asynPortDriver
 {
     public:
@@ -83,6 +74,8 @@ class CAENHVAsyn : public asynPortDriver
 
         // EPICS record prefix. Use for autogeneration of PVs.
         static std::string epicsPrefix;
+        // Chassis information output file location
+        static std::string chassisInfoFilePath;
 
     private:
 
@@ -123,6 +116,21 @@ class CAENHVAsyn : public asynPortDriver
        // Channel parameter lists
        std::map<int, ChannelParameterNumeric> channelParameterNumericList;
        std::map<int, ChannelParameterOnOff>   channelParameterOnOffList;
+};
+
+
+class CAENHVAsynFileRAII
+{
+public:
+    CAENHVAsynFileRAII(const std::string& name) { printf("Opening file\n"); file.open(name); }; 
+    ~CAENHVAsynFileRAII() { printf("Closing file\n"); file.close(); }; 
+
+    //std::ostream& operator<< (std::ostream& stream) { return file << stream; }; 
+    //std::istream& operator>> (std::istream& stream) { stream >> file; return stream; }; 
+    CAENHVAsynFileRAII& operator>>(const CAENHVAsynFileRAII& rhs) { return *this; }; 
+
+private:
+    std::ofstream file;
 };
 
 #endif

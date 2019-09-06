@@ -24,6 +24,7 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled. 
 std::string CAENHVAsyn::epicsPrefix;
+std::string CAENHVAsyn::chassisInfoFilePath = "/tmp/";
 
 void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
 {
@@ -514,10 +515,23 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     if ( (systemType < 0) || (systemType > 3) )
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
+    // Create a Chassis object
     chassis = new Chassis(systemType, ipAddr, userName, password);
 
-    std::cout << std::endl;
-    //chassis->printInfo();
+    // Print Chassis information
+    //chassis->printInfo(std::cout);
+
+    // Print Chassis information to a temporal file
+    // This need to be reimplemented using RAII...
+    // Also, the user should be able to override the output location
+    std::string infoFileName(chassisInfoFilePath + this->driverName_ + "_" + this->portName_ + "_chassisInfo.txt");
+    std::ofstream infoFile;
+
+    std::cout << "Dumping chassis information on '" << infoFileName << "'... ";
+    infoFile.open(infoFileName);
+    chassis->printInfo(infoFile);
+    infoFile.close();
+    std::cout  << "Done" << std::endl;
 
     if (epicsPrefix.empty())
         std::cout << "Autogeneration of PVs is disabled." << std::endl;

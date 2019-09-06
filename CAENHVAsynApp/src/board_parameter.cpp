@@ -158,17 +158,16 @@ void IBoardParameterNumeric::setVal(float value)
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void IBoardParameterNumeric::printInfo()
+void IBoardParameterNumeric::printInfo(std::ostream& stream) const
 {
-    std::cout << "        Param = "     << param \
-              << ", Mode  = "           << modeStr \
-              << ", Minval = "          << getMinVal() \
-              << ", Maxval = "          <<  getMaxVal() \
-              << ", Units  = "          << units.c_str() \
-              << ", Value  = "          << getVal() \
-              << ", epicsParamName = "  << epicsParamName \
-              << ", epicsRecordName = " << epicsRecordName \
-              << std::endl;
+    stream << "        Param = "     << param \
+           << ", Mode  = "           << modeStr \
+           << ", Minval = "          << getMinVal() \
+           << ", Maxval = "          <<  getMaxVal() \
+           << ", Units  = "          << units.c_str() \
+           << ", epicsParamName = "  << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
 }
 
 
@@ -221,15 +220,14 @@ void IBoardParameterOnOff::setVal(uint32_t value)
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-void IBoardParameterOnOff::printInfo()
+void IBoardParameterOnOff::printInfo(std::ostream& stream) const
 {
-    std::cout << "        Param = " << param \
-              << ",  Mode = "      << modeStr \
-              << ",  On state = "  << getOnState() \
-              << ",  Off state = "  << getOffState() \
-              << ",  Value = "  << getVal() \
-              << ", epicsParamName = " << epicsParamName \
-              << ", epicsRecordName = " << epicsRecordName \
-              << std::endl;
+    stream << "        Param = " << param \
+           << ",  Mode = "      << modeStr \
+           << ",  On state = "  << getOnState() \
+           << ",  Off state = "  << getOffState() \
+           << ", epicsParamName = " << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
 }
 

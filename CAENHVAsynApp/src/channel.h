@@ -47,7 +47,7 @@ public:
     Channel(int h, std::size_t s, std::size_t c);
     ~Channel() {};
 
-    void printInfo() const;
+    void printInfo(std::ostream& stream) const;
 
     std::vector<ChannelParameterNumeric> getChannelParameterNumerics() { return channelParameterNumerics; };
     std::vector<ChannelParameterOnOff>   getChannelParameterOnOffs()   { return channelParameterOnOffs; };
