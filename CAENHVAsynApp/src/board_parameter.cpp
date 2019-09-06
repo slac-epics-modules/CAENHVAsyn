@@ -23,10 +23,10 @@
 
 
 BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m)
-: 
-    handle(h), 
-    slot(s), 
-    param(p), 
+:
+    handle(h),
+    slot(s),
+    param(p),
     mode(m)
 {
    // Generate mode string representation
@@ -96,11 +96,11 @@ IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::
 
     if (e == 6)
         temp_units = "M";
-    else if (e == 3) 
+    else if (e == 3)
         temp_units = "k";
-    else if (e == -3) 
+    else if (e == -3)
         temp_units = "m";
-    else if (e == -6) 
+    else if (e == -6)
         temp_units = "u";
 
     if (u == PARAM_UN_NONE)
@@ -140,7 +140,7 @@ float IBoardParameterNumeric::getVal()
         return 0.0;
 
     float temp;
-   
+
     uint16_t tempSlot = slot;
     if ( CAENHV_GetBdParam(handle, 1, &tempSlot, param.c_str(), &temp) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));

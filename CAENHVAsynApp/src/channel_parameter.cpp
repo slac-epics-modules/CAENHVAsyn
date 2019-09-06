@@ -23,12 +23,12 @@
 
 
 ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
-: 
-    handle(h), 
-    slot(s), 
-    channel(c), 
-    param(p), 
-    mode(m) 
+:
+    handle(h),
+    slot(s),
+    channel(c),
+    param(p),
+    mode(m)
 {
    // Generate mode string representation
    if (mode == PARAM_MODE_WRONLY)
@@ -100,11 +100,11 @@ IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::si
 
     if (e == 6)
         temp_units = "M";
-    else if (e == 3) 
+    else if (e == 3)
         temp_units = "k";
-    else if (e == -3) 
+    else if (e == -3)
         temp_units = "m";
-    else if (e == -6) 
+    else if (e == -6)
         temp_units = "u";
 
     if (u == PARAM_UN_NONE)
@@ -144,7 +144,7 @@ float IChannelParameterNumeric::getVal() const
         return 0.0;
 
     float temp;
-   
+
     uint16_t temp_chs = channel;
     if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
            throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));

@@ -22,7 +22,7 @@
 #include "drvCAENHVAsyn.h"
 
 // Default value for the EPICS record prefix is an empty string,
-// which means that the autogeration is disabled. 
+// which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
 std::string CAENHVAsyn::chassisInfoFilePath = "/tmp/";
 
@@ -511,7 +511,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
             throw std::runtime_error("Invalid IP address");
     }
 
-    // Only SYx527 are supported at the 
+    // Only SYx527 are supported at the
     if ( (systemType < 0) || (systemType > 3) )
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
@@ -575,12 +575,12 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     for (std::vector<Board>::iterator boardIt = b.begin(); boardIt != b.end(); ++boardIt)
     {
         std::vector<BoardParameterNumeric> pn = boardIt->getBoardParameterNumerics();
-        
+
         for (std::vector<BoardParameterNumeric>::iterator paramIt = pn.begin(); paramIt != pn.end(); ++paramIt)
             createBoardParamNumeric(*paramIt);
 
         std::vector<BoardParameterOnOff> po = boardIt->getBoardParameterOnOffs();
-        
+
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
             createBoardParamOnOff(*paramIt);
 
@@ -591,7 +591,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
             std::vector<ChannelParameterNumeric> cpn = channelIt->getChannelParameterNumerics();
             for (std::vector<ChannelParameterNumeric>::iterator paramIt = cpn.begin(); paramIt != cpn.end(); ++paramIt)
                 createChannelParamNumeric(*paramIt);
-        
+
             std::vector<ChannelParameterOnOff> cpo = channelIt->getChannelParameterOnOffs();
             for (std::vector<ChannelParameterOnOff>::iterator paramIt = cpo.begin(); paramIt != cpo.end(); ++paramIt)
                 createChannelParamOnOff(*paramIt);
@@ -703,7 +703,7 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, ChannelParameterNumeric>::iterator cpIt; 
+    std::map<int, ChannelParameterNumeric>::iterator cpIt;
     std::map<int, BoardParameterNumeric>::iterator   bpIt;
 
     if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
@@ -1018,7 +1018,7 @@ void drvCAENHVAsynRegister(void)
     iocshRegister( &epicsPrefixFuncDef, epicsPrefixCallFunc );
 }
 
-extern "C" 
+extern "C"
 {
     epicsExportRegistrar(drvCAENHVAsynRegister);
 }

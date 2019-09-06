@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <map>
-#include <utility> 
+#include <utility>
 #include <iostream>
 #include <fstream>
 #define __STDC_FORMAT_MACROS
@@ -95,7 +95,7 @@ class CAENHVAsyn : public asynPortDriver
         // Methods to create channel parameteer EPICS paramater and records
         void createChannelParamNumeric(ChannelParameterNumeric cp);
         void createChannelParamOnOff(ChannelParameterOnOff cp);
-       
+
         const std::string driverName_;
         std::string portName_;
         Chassis *chassis;
@@ -122,12 +122,12 @@ class CAENHVAsyn : public asynPortDriver
 class CAENHVAsynFileRAII
 {
 public:
-    CAENHVAsynFileRAII(const std::string& name) { printf("Opening file\n"); file.open(name); }; 
-    ~CAENHVAsynFileRAII() { printf("Closing file\n"); file.close(); }; 
+    CAENHVAsynFileRAII(const std::string& name) { printf("Opening file\n"); file.open(name); };
+    ~CAENHVAsynFileRAII() { printf("Closing file\n"); file.close(); };
 
-    //std::ostream& operator<< (std::ostream& stream) { return file << stream; }; 
-    //std::istream& operator>> (std::istream& stream) { stream >> file; return stream; }; 
-    CAENHVAsynFileRAII& operator>>(const CAENHVAsynFileRAII& rhs) { return *this; }; 
+    //std::ostream& operator<< (std::ostream& stream) { return file << stream; };
+    //std::istream& operator>> (std::istream& stream) { stream >> file; return stream; };
+    CAENHVAsynFileRAII& operator>>(const CAENHVAsynFileRAII& rhs) { return *this; };
 
 private:
     std::ofstream file;

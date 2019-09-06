@@ -59,7 +59,7 @@ void Board::printInfo(std::ostream& stream) const
     stream << "      Number of OnOff parameters: " << boardParameterOnOffs.size() << std::endl;
     for (std::vector<BoardParameterOnOff>::const_iterator it = boardParameterOnOffs.begin(); it != boardParameterOnOffs.end(); ++it)
         (*it)->printInfo(stream);
-    
+
     stream << "    Channel parameters:" << std::endl;
     stream << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)

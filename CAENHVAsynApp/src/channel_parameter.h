@@ -53,13 +53,13 @@ typedef std::shared_ptr< IChannelParameterOnOff   > ChannelParameterOnOff;
 
 class ChannelParameterBase
 {
-public: 
+public:
     ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
     virtual ~ChannelParameterBase() {};
 
     virtual void printInfo(std::ostream& stream) const = 0;
 
-    std::string getMode()            { return modeStr;    }; 
+    std::string getMode()            { return modeStr;    };
     std::string getEpicsParamName()  { return epicsParamName;  };
     std::string getEpicsRecordName() { return epicsRecordName; };
     std::string getEpicsDesc()       { return epicsDesc;       };
@@ -80,7 +80,7 @@ protected:
 class IChannelParameterNumeric : public ChannelParameterBase
 {
 public:
-    IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m); 
+    IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
     ~IChannelParameterNumeric() {};
 
     // Factory method
@@ -110,8 +110,8 @@ public:
     // Factory method
     static ChannelParameterOnOff create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
 
-    std::string getOnState()  const { return onState;  }; 
-    std::string getOffState() const { return offState; }; 
+    std::string getOnState()  const { return onState;  };
+    std::string getOffState() const { return offState; };
 
     virtual void printInfo(std::ostream& stream) const;
 

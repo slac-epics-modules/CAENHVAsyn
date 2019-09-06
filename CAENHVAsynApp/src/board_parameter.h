@@ -54,11 +54,11 @@ typedef std::shared_ptr< IBoardParameterOnOff   > BoardParameterOnOff;
 
 class BoardParameterBase
 {
-public: 
+public:
     BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m);
     virtual ~BoardParameterBase() {};
 
-    std::string getMode()            { return modeStr;         }; 
+    std::string getMode()            { return modeStr;         };
     std::string getEpicsParamName()  { return epicsParamName;  };
     std::string getEpicsRecordName() { return epicsRecordName; };
     std::string getEpicsDesc()       { return epicsDesc;       };
@@ -77,7 +77,7 @@ protected:
 class IBoardParameterNumeric : public BoardParameterBase
 {
 public:
-    IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m); 
+    IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m);
     ~IBoardParameterNumeric() {};
 
     // Factory method
@@ -108,8 +108,8 @@ public:
     // Factory method
     static BoardParameterOnOff create(int h, std::size_t s, const std::string&  p, uint32_t m);
 
-    const std::string& getOnState()  const { return onState;  }; 
-    const std::string& getOffState() const { return offState; }; 
+    const std::string& getOnState()  const { return onState;  };
+    const std::string& getOffState() const { return offState; };
 
     virtual void printInfo(std::ostream& stream) const;
 

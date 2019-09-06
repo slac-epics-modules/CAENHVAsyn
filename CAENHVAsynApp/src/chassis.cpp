@@ -51,36 +51,36 @@ void Chassis::GetPropList()
             {
                 case SYSPROP_TYPE_STR:
                     systemPropertyStrings.push_back(ISystemPropertyString::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_REAL:
                     systemPropertyFloats.push_back(ISystemPropertyFloat::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_UINT2:
                     systemPropertyU16s.push_back(ISystemPropertyU16::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_UINT4:
                     systemPropertyU32s.push_back(ISystemPropertyU32::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_INT2:
                     systemPropertyI16s.push_back(ISystemPropertyI16::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_INT4:
                     systemPropertyI32s.push_back(ISystemPropertyI32::create(handle, p, PropMode));
-                    break; 
-                
+                    break;
+
                 case SYSPROP_TYPE_BOOLEAN:
                     systemPropertyU8s.push_back(ISystemPropertyU8::create(handle, p, PropMode));
-                    break; 
+                    break;
             }
 
         }
     }
-       
+
     free(PropNameList);
 }
 
@@ -117,7 +117,7 @@ void Chassis::GetCrateMap()
         if ( *m != '\0' )
         {
             std::stringstream sn, fw;
-    
+
             // Process the serial number
             sn.str("");
             sn << SerNumList[i];
@@ -158,14 +158,14 @@ int Chassis::InitSystem(int systemType, const std::string& ipAddr, const std::st
     int h;
     std::string functionName("initSystem");
 
-    CAENHVRESULT r = CAENHV_InitSystem( static_cast<CAENHV_SYSTEM_TYPE_t>(systemType), 
-                                        LINKTYPE_TCPIP, 
+    CAENHVRESULT r = CAENHV_InitSystem( static_cast<CAENHV_SYSTEM_TYPE_t>(systemType),
+                                        LINKTYPE_TCPIP,
                                         const_cast<void*>( static_cast<const void*>( ipAddr.c_str() ) ),
                                         userName.c_str(),
-                                        password.c_str(), 
+                                        password.c_str(),
                                         &h );
 
-    std::stringstream retMessage; 
+    std::stringstream retMessage;
     retMessage << "CAENHV_InitSystem: " << CAENHV_GetError(h) << " (num. " << r << ")";
 
     printMessage(functionName, retMessage.str());

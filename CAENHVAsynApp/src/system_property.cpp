@@ -21,10 +21,10 @@
 
 #include "system_property.h"
 
-SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m) 
-: 
-    handle(h), 
-    prop(p), 
+SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
+:
+    handle(h),
+    prop(p),
     mode(m)
 {
     // Generate mode string
@@ -266,7 +266,7 @@ void ISystemPropertyI32::setVal(int32_t v)
         throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-// String class 
+// String class
 SystemPropertyString ISystemPropertyString::create(int h, const std::string&  p, uint32_t m)
 {
     return std::make_shared<ISystemPropertyString>(h, p, m);
@@ -309,7 +309,7 @@ void ISystemPropertyString::setVal(const std::string& v)
         throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
 }
 
-// Float class 
+// Float class
 SystemPropertyFloat ISystemPropertyFloat::create(int h, const std::string&  p, uint32_t m)
 {
     return std::make_shared<ISystemPropertyFloat>(h, p, m);
