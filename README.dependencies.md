@@ -1,4 +1,4 @@
-# CAENHVAsyn dependencies
+# CAENHVAsyn Dependencies
 
 This application depends on the following external packages:
 - CAEN HV Wrapper Library
@@ -65,4 +65,19 @@ xxx_DBD += CAENHVAsyn.dbd
 # =====================================================
 xxx_LIBS += CAENHVAsyn
 xxx_LIBS += asyn
+```
+
+## xxxApp/Db/Makefile
+
+Include these lines if you want to use the auto-generation of PVs.
+
+```
+DB_INSTALLS += $(CAENHVASYN)/db/ai.template
+DB_INSTALLS += $(CAENHVASYN)/db/ao.template
+DB_INSTALLS += $(CAENHVASYN)/db/bi.template
+DB_INSTALLS += $(CAENHVASYN)/db/bo.template
+DB_INSTALLS += $(CAENHVASYN)/db/stringin.template
+DB_INSTALLS += $(CAENHVASYN)/db/stringout.template
+DB_INSTALLS += $(CAENHVASYN)/db/longin.template
+DB_INSTALLS += $(CAENHVASYN)/db/longout.template
 ```
