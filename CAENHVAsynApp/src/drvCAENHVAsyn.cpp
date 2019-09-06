@@ -971,8 +971,8 @@ static void configCallFunc(const iocshArgBuf *args)
 }
 // - CAENHVAsynConfig //
 
-// + setEpicsPrefix //
-extern "C" int setEpicsPrefix(const char *prefix)
+// + CAENHVAsynSetEpicsPrefix //
+extern "C" int CAENHVAsynSetEpicsPrefix(const char *prefix)
 {
     if ( ( ! prefix ) || ( prefix[0] == '\0' ) )
         return 0;
@@ -989,13 +989,13 @@ static const iocshArg * const epicsPrefixArgs[] =
     &epicsPrefixArg0
 };
 
-static const iocshFuncDef epicsPrefixFuncDef = { "setEpicsPrefix", 1, epicsPrefixArgs };
+static const iocshFuncDef epicsPrefixFuncDef = { "CAENHVAsynSetEpicsPrefix", 1, epicsPrefixArgs };
 
 static void epicsPrefixCallFunc(const iocshArgBuf *args)
 {
-    setEpicsPrefix(args[0].sval);
+    CAENHVAsynSetEpicsPrefix(args[0].sval);
 }
-// - setEpicsPrefix //
+// - CAENHVAsynSetEpicsPrefix //
 
 // iocshRegister
 void drvCAENHVAsynRegister(void)
