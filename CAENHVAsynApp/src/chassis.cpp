@@ -58,23 +58,23 @@ void Chassis::GetPropList()
                     break;
 
                 case SYSPROP_TYPE_UINT2:
-                    systemPropertyU16s.push_back(ISystemPropertyU16::create(handle, p, PropMode));
+                    systemPropertyIntegers.push_back(ISystemPropertyIntegerTemplate<uint16_t>::create(handle, p, PropMode));
                     break;
 
                 case SYSPROP_TYPE_UINT4:
-                    systemPropertyU32s.push_back(ISystemPropertyU32::create(handle, p, PropMode));
+                    systemPropertyIntegers.push_back(ISystemPropertyIntegerTemplate<uint32_t>::create(handle, p, PropMode));
                     break;
 
                 case SYSPROP_TYPE_INT2:
-                    systemPropertyI16s.push_back(ISystemPropertyI16::create(handle, p, PropMode));
+                    systemPropertyIntegers.push_back(ISystemPropertyIntegerTemplate<int16_t>::create(handle, p, PropMode));
                     break;
 
                 case SYSPROP_TYPE_INT4:
-                    systemPropertyI32s.push_back(ISystemPropertyI32::create(handle, p, PropMode));
+                    systemPropertyIntegers.push_back(ISystemPropertyIntegerTemplate<int32_t>::create(handle, p, PropMode));
                     break;
 
                 case SYSPROP_TYPE_BOOLEAN:
-                    systemPropertyU8s.push_back(ISystemPropertyU8::create(handle, p, PropMode));
+                    systemPropertyIntegers.push_back(ISystemPropertyIntegerTemplate<uint8_t>::create(handle, p, PropMode));
                     break;
             }
 
@@ -186,13 +186,9 @@ void Chassis::printInfo(std::ostream& stream) const
     stream << "  Number of slots: " << numSlots << std::endl;
     stream << "  Properties:" << std::endl;;
     stream << "  ---------------------------" << std::endl;
-    printProperties( stream, "float",    systemPropertyFloats  );
-    printProperties( stream, "uint16_t", systemPropertyU16s    );
-    printProperties( stream, "uint32_t", systemPropertyU32s    );
-    printProperties( stream, "int16_t",  systemPropertyI16s    );
-    printProperties( stream, "int32_t",  systemPropertyI32s    );
-    printProperties( stream, "uint8_t",  systemPropertyU8s     );
-    printProperties( stream, "string",   systemPropertyStrings );
+    printProperties( stream, "integer", systemPropertyIntegers );
+    printProperties( stream, "float",   systemPropertyFloats   );
+    printProperties( stream, "string",  systemPropertyStrings  );
     stream << "  Board information: " << std::endl;
     stream << "  ---------------------------" << std::endl;
     stream << "    Number of boards: " << boards.size() << std::endl;

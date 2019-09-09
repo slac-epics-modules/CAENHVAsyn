@@ -206,8 +206,7 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
     }
 }
 
-
-void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
+void CAENHVAsyn::createSystemPropertyInteger(SystemPropertyInteger sp)
 {
     std::string paramName  = sp->getEpicsParamName();
     std::string recordName = sp->getEpicsRecordName();
@@ -217,159 +216,7 @@ void CAENHVAsyn::createSystemPropertyU8(SystemPropertyU8 sp)
     int index;
     createParam(paramName.c_str(), asynParamInt32, &index);
 
-    systemPropertyU8List.insert( std::make_pair<int, SystemPropertyU8>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbParamsLocal << ",SCAN=1 second";
-            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyU16(SystemPropertyU16 sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamInt32, &index);
-
-    systemPropertyU16List.insert( std::make_pair<int, SystemPropertyU16>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbParamsLocal << ",SCAN=1 second";
-            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyU32(SystemPropertyU32 sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamInt32, &index);
-
-    systemPropertyU32List.insert( std::make_pair<int, SystemPropertyU32>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbParamsLocal << ",SCAN=1 second";
-            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyI16(SystemPropertyI16 sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamInt32, &index);
-
-    systemPropertyI16List.insert( std::make_pair<int, SystemPropertyI16>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbParamsLocal << ",SCAN=1 second";
-            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyI32(SystemPropertyI32 sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamInt32, &index);
-
-    systemPropertyI32List.insert( std::make_pair<int, SystemPropertyI32>(index, sp) );
+    systemPropertyIntegerList.insert( std::make_pair<int, SystemPropertyInteger>(index, sp) );
 
     if (!epicsPrefix.empty())
     {
@@ -546,27 +393,9 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     }
 
     {
-        std::vector<SystemPropertyU16> s = chassis->getSystemPropertyU16s();
-        for (std::vector<SystemPropertyU16>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyU16(*it);
-    }
-
-    {
-        std::vector<SystemPropertyU32> s = chassis->getSystemPropertyU32s();
-        for (std::vector<SystemPropertyU32>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyU32(*it);
-    }
-
-    {
-        std::vector<SystemPropertyI16> s = chassis->getSystemPropertyI16s();
-        for (std::vector<SystemPropertyI16>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyI16(*it);
-    }
-
-    {
-        std::vector<SystemPropertyI32> s = chassis->getSystemPropertyI32s();
-        for (std::vector<SystemPropertyI32>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyI32(*it);
+        std::vector<SystemPropertyInteger> s = chassis->getSystemPropertyIntegers();
+        for (std::vector<SystemPropertyInteger>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyInteger(*it);
     }
 
     // Boards
@@ -611,19 +440,10 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyU16>::iterator u16_it;
-    std::map<int, SystemPropertyU32>::iterator u32_it;
-    std::map<int, SystemPropertyI16>::iterator i16_it;
-    std::map<int, SystemPropertyI32>::iterator i32_it;
+    std::map<int, SystemPropertyInteger>::iterator spIt;
 
-    if ((u16_it = systemPropertyU16List.find(function)) != systemPropertyU16List.end())
-        *value = u16_it->second->getVal();
-    else if ((u32_it = systemPropertyU32List.find(function)) != systemPropertyU32List.end())
-        *value = u32_it->second->getVal();
-    else if ((i16_it = systemPropertyI16List.find(function)) != systemPropertyI16List.end())
-        *value = i16_it->second->getVal();
-    else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
-        *value = i32_it->second->getVal();
+    if ((spIt = systemPropertyIntegerList.find(function)) != systemPropertyIntegerList.end())
+        *value = spIt->second->getVal();
     else
         status = asynPortDriver::readInt32(pasynUser, value);
 
@@ -657,19 +477,10 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyU16>::iterator u16_it;
-    std::map<int, SystemPropertyU32>::iterator u32_it;
-    std::map<int, SystemPropertyI16>::iterator i16_it;
-    std::map<int, SystemPropertyI32>::iterator i32_it;
+    std::map<int, SystemPropertyInteger>::iterator spIt;
 
-    if ((u16_it = systemPropertyU16List.find(function)) != systemPropertyU16List.end())
-        u16_it->second->setVal(value);
-    else if ((u32_it = systemPropertyU32List.find(function)) != systemPropertyU32List.end())
-        u32_it->second->setVal(value);
-    else if ((i16_it = systemPropertyI16List.find(function)) != systemPropertyI16List.end())
-        i16_it->second->setVal(value);
-    else if ((i32_it = systemPropertyI32List.find(function)) != systemPropertyI32List.end())
-        i32_it->second->setVal(value);
+    if ((spIt = systemPropertyIntegerList.find(function)) != systemPropertyIntegerList.end())
+        spIt->second->setVal(value);
     else
         status = asynPortDriver::writeInt32(pasynUser, value);
 

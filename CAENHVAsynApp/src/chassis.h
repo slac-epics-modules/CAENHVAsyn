@@ -54,13 +54,9 @@ public:
 
     void printInfo(std::ostream& stream) const;
 
-    std::vector<SystemPropertyU8>     getSystemPropertyU8s()     { return systemPropertyU8s;     };
-    std::vector<SystemPropertyU16>    getSystemPropertyU16s()    { return systemPropertyU16s;    };
-    std::vector<SystemPropertyU32>    getSystemPropertyU32s()    { return systemPropertyU32s;    };
-    std::vector<SystemPropertyI16>    getSystemPropertyI16s()    { return systemPropertyI16s;    };
-    std::vector<SystemPropertyI32>    getSystemPropertyI32s()    { return systemPropertyI32s;    };
-    std::vector<SystemPropertyFloat>  getSystemPropertyFloats()  { return systemPropertyFloats;  };
-    std::vector<SystemPropertyString> getSystemPropertyStrings() { return systemPropertyStrings; };
+    std::vector<SystemPropertyInteger> getSystemPropertyIntegers() { return systemPropertyIntegers; };
+    std::vector<SystemPropertyFloat>  getSystemPropertyFloats()    { return systemPropertyFloats;   };
+    std::vector<SystemPropertyString> getSystemPropertyStrings()   { return systemPropertyStrings;  };
 
     std::vector<Board> getBoards() { return boards; };
 
@@ -82,13 +78,9 @@ private:
     std::vector<Board> boards;
 
     // Chassis properties
-    std::vector<SystemPropertyU8>     systemPropertyU8s;
-    std::vector<SystemPropertyU16>    systemPropertyU16s;
-    std::vector<SystemPropertyU32>    systemPropertyU32s;
-    std::vector<SystemPropertyI16>    systemPropertyI16s;
-    std::vector<SystemPropertyI32>    systemPropertyI32s;
-    std::vector<SystemPropertyFloat>  systemPropertyFloats;
-    std::vector<SystemPropertyString> systemPropertyStrings;
+    std::vector<SystemPropertyInteger> systemPropertyIntegers;
+    std::vector<SystemPropertyFloat>   systemPropertyFloats;
+    std::vector<SystemPropertyString>  systemPropertyStrings;
 };
 
 #endif

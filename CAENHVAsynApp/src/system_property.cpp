@@ -66,206 +66,6 @@ void SystemPropertyBase::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
-// U8 class
-SystemPropertyU8 ISystemPropertyU8::create(int h, const std::string&  p, uint32_t m)
-{
-    return std::make_shared<ISystemPropertyU8>(h, p, m);
-}
-
-ISystemPropertyU8::ISystemPropertyU8(int h, const std::string&  p, uint32_t m)
-:
-    SystemPropertyBase(h,p,m)
-{
-}
-
-uint8_t ISystemPropertyU8::getVal()
-{
-
-    if (mode == SYSPROP_MODE_WRONLY)
-        return 0;
-
-    uint8_t temp;
-
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void ISystemPropertyU8::setVal(uint8_t v)
-{
-
-    if (mode == SYSPROP_MODE_RDONLY)
-        return;
-
-    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &v);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
-// U16 class
-SystemPropertyU16 ISystemPropertyU16::create(int h, const std::string&  p, uint32_t m)
-{
-    return std::make_shared<ISystemPropertyU16>(h, p, m);
-}
-
-ISystemPropertyU16::ISystemPropertyU16(int h, const std::string&  p, uint32_t m)
-:
-    SystemPropertyBase(h,p,m)
-{
-}
-
-uint16_t ISystemPropertyU16::getVal()
-{
-
-    if (mode == SYSPROP_MODE_WRONLY)
-        return 0;
-
-    uint16_t temp;
-
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void ISystemPropertyU16::setVal(uint16_t v)
-{
-
-    if (mode == SYSPROP_MODE_RDONLY)
-        return;
-
-    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &v);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
-// U32 class
-SystemPropertyU32 ISystemPropertyU32::create(int h, const std::string&  p, uint32_t m)
-{
-    return std::make_shared<ISystemPropertyU32>(h, p, m);
-}
-
-ISystemPropertyU32::ISystemPropertyU32(int h, const std::string&  p, uint32_t m)
-:
-    SystemPropertyBase(h,p,m)
-{
-}
-
-uint32_t ISystemPropertyU32::getVal()
-{
-
-    if (mode == SYSPROP_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void ISystemPropertyU32::setVal(uint32_t v)
-{
-
-    if (mode == SYSPROP_MODE_RDONLY)
-        return;
-
-    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &v);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
-// I16 class
-SystemPropertyI16 ISystemPropertyI16::create(int h, const std::string&  p, uint32_t m)
-{
-    return std::make_shared<ISystemPropertyI16>(h, p, m);
-}
-
-ISystemPropertyI16::ISystemPropertyI16(int h, const std::string&  p, uint32_t m)
-:
-    SystemPropertyBase(h,p,m)
-{
-}
-
-int16_t ISystemPropertyI16::getVal()
-{
-
-    if (mode == SYSPROP_MODE_WRONLY)
-        return 0;
-
-    int16_t temp;
-
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void ISystemPropertyI16::setVal(int16_t v)
-{
-
-    if (mode == SYSPROP_MODE_RDONLY)
-        return;
-
-    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &v);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
-// I32 class
-SystemPropertyI32 ISystemPropertyI32::create(int h, const std::string&  p, uint32_t m)
-{
-    return std::make_shared<ISystemPropertyI32>(h, p, m);
-}
-
-ISystemPropertyI32::ISystemPropertyI32(int h, const std::string&  p, uint32_t m)
-:
-    SystemPropertyBase(h,p,m)
-{
-}
-
-int32_t ISystemPropertyI32::getVal()
-{
-
-    if (mode == SYSPROP_MODE_WRONLY)
-        return 0;
-
-    int32_t temp;
-
-    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void ISystemPropertyI32::setVal(int32_t v)
-{
-
-    if (mode == SYSPROP_MODE_RDONLY)
-        return;
-
-    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &v);
-
-    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
-        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
 // String class
 SystemPropertyString ISystemPropertyString::create(int h, const std::string&  p, uint32_t m)
 {
@@ -278,7 +78,7 @@ ISystemPropertyString::ISystemPropertyString(int h, const std::string&  p, uint3
 {
 }
 
-std::string ISystemPropertyString::getVal()
+std::string ISystemPropertyString::getVal() const
 {
 
     if (mode == SYSPROP_MODE_WRONLY)
@@ -321,9 +121,8 @@ ISystemPropertyFloat::ISystemPropertyFloat(int h, const std::string&  p, uint32_
 {
 }
 
-float ISystemPropertyFloat::getVal()
+float ISystemPropertyFloat::getVal() const
 {
-
     if (mode == SYSPROP_MODE_WRONLY)
         return 0.0;
 
@@ -339,7 +138,6 @@ float ISystemPropertyFloat::getVal()
 
 void ISystemPropertyFloat::setVal(float v)
 {
-
     if (mode == SYSPROP_MODE_RDONLY)
         return;
 
@@ -348,3 +146,45 @@ void ISystemPropertyFloat::setVal(float v)
     if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
         throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
 }
+
+// Integer class template
+template<typename T>
+std::shared_ptr< ISystemPropertyIntegerTemplate<T> > ISystemPropertyIntegerTemplate<T>::create(int h, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<ISystemPropertyIntegerTemplate>(h, p, m);
+}
+
+template<typename T>
+int32_t ISystemPropertyIntegerTemplate<T>::getVal()
+{
+    if (mode == SYSPROP_MODE_WRONLY)
+        return 0;
+
+    T temp;
+
+    CAENHVRESULT r = CAENHV_GetSysProp(handle, prop.c_str(), &temp);
+
+    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
+        throw std::runtime_error("CAENHV_GetSysProp failed: " + std::string(CAENHV_GetError(handle)));
+
+    return static_cast<int32_t>(temp);
+}
+
+template<typename T>
+void ISystemPropertyIntegerTemplate<T>::setVal(int32_t value)
+{
+    if (mode == SYSPROP_MODE_RDONLY)
+        return;
+
+    T temp = static_cast<T>(value);
+    CAENHVRESULT r = CAENHV_SetSysProp(handle, prop.c_str(), &temp);
+
+    if ( r != CAENHV_OK && r != CAENHV_GETPROPNOTIMPL && r != CAENHV_NOTGETPROP )
+        throw std::runtime_error("CAENHV_SetSysProp failed: " + std::string(CAENHV_GetError(handle)));
+}
+
+template class ISystemPropertyIntegerTemplate<uint32_t>;
+template class ISystemPropertyIntegerTemplate<uint16_t>;
+template class ISystemPropertyIntegerTemplate<int32_t>;
+template class ISystemPropertyIntegerTemplate<int16_t>;
+template class ISystemPropertyIntegerTemplate<uint8_t>;

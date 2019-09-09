@@ -40,22 +40,13 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 
-
+class ISystemPropertyInteger;
 class ISystemPropertyFloat;
-class ISystemPropertyU16;
-class ISystemPropertyU32;
-class ISystemPropertyI16;
-class ISystemPropertyI32;
-class ISystemPropertyU8;
 class ISystemPropertyString;
 
-typedef std::shared_ptr< ISystemPropertyFloat  > SystemPropertyFloat;
-typedef std::shared_ptr< ISystemPropertyU16    > SystemPropertyU16;
-typedef std::shared_ptr< ISystemPropertyU32    > SystemPropertyU32;
-typedef std::shared_ptr< ISystemPropertyI16    > SystemPropertyI16;
-typedef std::shared_ptr< ISystemPropertyI32    > SystemPropertyI32;
-typedef std::shared_ptr< ISystemPropertyU8     > SystemPropertyU8;
-typedef std::shared_ptr< ISystemPropertyString > SystemPropertyString;
+typedef std::shared_ptr< ISystemPropertyInteger > SystemPropertyInteger;
+typedef std::shared_ptr< ISystemPropertyFloat   > SystemPropertyFloat;
+typedef std::shared_ptr< ISystemPropertyString  > SystemPropertyString;
 
 class SystemPropertyBase
 {
@@ -89,73 +80,8 @@ public:
     // Factory method
     static SystemPropertyString create(int h, const std::string&  p, uint32_t m);
 
-    std::string getVal();
+    std::string getVal() const;
     void        setVal(const std::string& v);
-};
-
-class ISystemPropertyU8 : public SystemPropertyBase
-{
-public:
-    ISystemPropertyU8(int h, const std::string&  p, uint32_t m);
-    ~ISystemPropertyU8() {};
-
-    // Factory method
-    static SystemPropertyU8 create(int h, const std::string&  p, uint32_t m);
-
-    uint8_t getVal();
-    void    setVal(uint8_t v);
-};
-
-class ISystemPropertyU16 : public SystemPropertyBase
-{
-public:
-    ISystemPropertyU16(int h, const std::string&  p, uint32_t m);
-    ~ISystemPropertyU16() {};
-
-    // Factory method
-    static SystemPropertyU16 create(int h, const std::string&  p, uint32_t m);
-
-    uint16_t getVal();
-    void     setVal(uint16_t v);
-};
-
-class ISystemPropertyU32 : public SystemPropertyBase
-{
-public:
-    ISystemPropertyU32(int h, const std::string&  p, uint32_t m);
-    ~ISystemPropertyU32() {};
-
-    // Factory method
-    static SystemPropertyU32 create(int h, const std::string&  p, uint32_t m);
-
-    uint32_t getVal();
-    void     setVal(uint32_t v);
-};
-
-class ISystemPropertyI16 : public SystemPropertyBase
-{
-public:
-    ISystemPropertyI16(int h, const std::string&  p, uint32_t m);
-    ~ISystemPropertyI16() {};
-
-    // Factory method
-    static SystemPropertyI16 create(int h, const std::string&  p, uint32_t m);
-
-    int16_t getVal();
-    void    setVal(int16_t v);
-};
-
-class ISystemPropertyI32 : public SystemPropertyBase
-{
-public:
-    ISystemPropertyI32(int h, const std::string&  p, uint32_t m);
-    ~ISystemPropertyI32() {};
-
-    // Factory method
-    static SystemPropertyI32 create(int h, const std::string&  p, uint32_t m);
-
-    int32_t getVal();
-    void    setVal(int32_t v);
 };
 
 class ISystemPropertyFloat : public SystemPropertyBase
@@ -167,8 +93,34 @@ public:
     // Factory method
     static SystemPropertyFloat create(int h, const std::string&  p, uint32_t m);
 
-    float getVal();
+    float getVal() const;
     void  setVal(float v);
+};
+
+// Base clase for integer parameters
+class ISystemPropertyInteger : public SystemPropertyBase
+{
+public:
+    ISystemPropertyInteger(int h, const std::string&  p, uint32_t m)  : SystemPropertyBase(h,p,m) {};
+    virtual ~ISystemPropertyInteger() {};
+
+    virtual int32_t getVal() = 0;
+    virtual void setVal(int32_t value) = 0;
+};
+
+// Integer parameter class template
+template<typename T>
+class ISystemPropertyIntegerTemplate : public ISystemPropertyInteger
+{
+public:
+    ISystemPropertyIntegerTemplate(int h, const std::string&  p, uint32_t m) : ISystemPropertyInteger(h,p,m) {};
+    virtual ~ISystemPropertyIntegerTemplate() {};
+
+    // Factory method
+    static std::shared_ptr< ISystemPropertyIntegerTemplate > create(int h, const std::string&  p, uint32_t m);
+
+    virtual int32_t getVal();
+    virtual void setVal(int32_t value);
 };
 
 #endif

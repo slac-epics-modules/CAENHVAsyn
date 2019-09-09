@@ -80,13 +80,9 @@ class CAENHVAsyn : public asynPortDriver
     private:
 
         // Methods to create system property EPICS paramater and records
-        void createSystemPropertyU8(SystemPropertyU8);
-        void createSystemPropertyU16(SystemPropertyU16);
-        void createSystemPropertyU32(SystemPropertyU32);
-        void createSystemPropertyI16(SystemPropertyI16);
-        void createSystemPropertyI32(SystemPropertyI32);
-        void createSystemPropertyString(SystemPropertyString);
-        void createSystemPropertyFloat(SystemPropertyFloat);
+        void createSystemPropertyInteger(SystemPropertyInteger sp);
+        void createSystemPropertyString(SystemPropertyString sp);
+        void createSystemPropertyFloat(SystemPropertyFloat sp);
 
         // Methods to create board parameter EPICS paramater and records
         void createBoardParamNumeric(BoardParameterNumeric bp);
@@ -101,11 +97,7 @@ class CAENHVAsyn : public asynPortDriver
         Chassis *chassis;
 
        // System property lists
-       std::map<int, SystemPropertyU8>      systemPropertyU8List;
-       std::map<int, SystemPropertyU16>     systemPropertyU16List;
-       std::map<int, SystemPropertyU32>     systemPropertyU32List;
-       std::map<int, SystemPropertyI16>     systemPropertyI16List;
-       std::map<int, SystemPropertyI32>     systemPropertyI32List;
+       std::map<int, SystemPropertyInteger> systemPropertyIntegerList;
        std::map<int, SystemPropertyString>  systemPropertyStringList;
        std::map<int, SystemPropertyFloat>   systemPropertyFloatList;
 
