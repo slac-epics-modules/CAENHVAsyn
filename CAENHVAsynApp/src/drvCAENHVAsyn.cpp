@@ -141,7 +141,7 @@ void CAENHVAsyn::createBoardParamChStatus(BoardParameterChStatus bp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
-            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordFieldBdParamChStatus.begin(); it != recordFieldBdParamChStatus.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
@@ -156,7 +156,7 @@ void CAENHVAsyn::createBoardParamChStatus(BoardParameterChStatus bp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordFieldBdParamChStatus.begin(); it != recordFieldBdParamChStatus.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
@@ -287,7 +287,7 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
-            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordFieldChParamChStatus.begin(); it != recordFieldChParamChStatus.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
@@ -302,7 +302,7 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordFieldChParamChStatus.begin(); it != recordFieldChParamChStatus.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");

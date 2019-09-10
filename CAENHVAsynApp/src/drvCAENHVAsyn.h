@@ -60,9 +60,9 @@
 // Map used to generated binary records for system parameters of type 'PARAM_TYPE_CHSTATUS'.
 // There will be a bi and or bo record for each bit status.
 // This maps contains MASK, a suffix appended to the record name, Record description.
-//const std::map< int, std::pair< std::string, std::string > > statusRecordMap =
+// - This map is for Board parameters of type 'PARAM_TYPE_CHSTATUS'
 typedef const std::map< int, std::pair< std::string, std::string > > statusRecordMap_t;
-statusRecordMap_t statusRecordMap =
+statusRecordMap_t recordFieldBdParamChStatus =
 {
     { 0x001, std::pair<std::string,std::string>( "_ON", "Ch is on"                   ) },
     { 0x002, std::pair<std::string,std::string>( "_RU", "Ch is ramping up"           ) },
@@ -76,6 +76,25 @@ statusRecordMap_t statusRecordMap =
     { 0x200, std::pair<std::string,std::string>( "_IT", "Ch is in internal trip"     ) },
     { 0x400, std::pair<std::string,std::string>( "_CE", "Ch is in calibration error" ) },
     { 0x800, std::pair<std::string,std::string>( "_UN", "Ch is unplugged"            ) },
+};
+// - This map is for Channel parameters of type 'PARAM_TYPE_CHSTATUS'
+statusRecordMap_t   recordFieldChParamChStatus =
+{
+    { 0x0001, std::pair<std::string,std::string>( "_ON", "Ch is on"                         ) },
+    { 0x0002, std::pair<std::string,std::string>( "_RU", "Ch is ramping up"                 ) },
+    { 0x0004, std::pair<std::string,std::string>( "_RD", "Ch is ramping down"               ) },
+    { 0x0008, std::pair<std::string,std::string>( "_OC", "Ch is in overcurrent"             ) },
+    { 0x0010, std::pair<std::string,std::string>( "_OV", "Ch is in overvoltage"             ) },
+    { 0x0020, std::pair<std::string,std::string>( "_UV", "Ch is in undervoltage"            ) },
+    { 0x0040, std::pair<std::string,std::string>( "_ET", "Ch is in external trip"           ) },
+    { 0x0080, std::pair<std::string,std::string>( "_MV", "Ch is in max V"                   ) },
+    { 0x0100, std::pair<std::string,std::string>( "_ED", "Ch is in external disable"        ) },
+    { 0x0200, std::pair<std::string,std::string>( "_IT", "Ch is in internal trip"           ) },
+    { 0x0400, std::pair<std::string,std::string>( "_CE", "Ch is in calibration error"       ) },
+    { 0x0800, std::pair<std::string,std::string>( "_UN", "Ch is unplugged"                  ) },
+    { 0x2000, std::pair<std::string,std::string>( "_OVP", "Ch is in OverVoltage Protection" ) },
+    { 0x4000, std::pair<std::string,std::string>( "_PF", "Ch is in Power Fail"              ) },
+    { 0x8000, std::pair<std::string,std::string>( "_TE", "Ch is in Temperature Error"       ) },
 };
 
 class CAENHVAsyn : public asynPortDriver
