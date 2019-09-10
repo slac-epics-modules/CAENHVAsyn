@@ -45,11 +45,12 @@
 
 class IChannelParameterNumeric;
 class IChannelParameterOnOff;
+class IChannelParameterChStatus;
 
 // Shared pointer types
-typedef std::shared_ptr< IChannelParameterNumeric > ChannelParameterNumeric;
-typedef std::shared_ptr< IChannelParameterOnOff   > ChannelParameterOnOff;
-
+typedef std::shared_ptr< IChannelParameterNumeric  > ChannelParameterNumeric;
+typedef std::shared_ptr< IChannelParameterOnOff    > ChannelParameterOnOff;
+typedef std::shared_ptr< IChannelParameterChStatus > ChannelParameterChStatus;
 
 class ChannelParameterBase
 {
@@ -121,6 +122,21 @@ public:
 private:
     std::string onState;
     std::string offState;
+};
+
+class IChannelParameterChStatus : public ChannelParameterBase
+{
+public:
+    IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+    ~IChannelParameterChStatus() {};
+
+    // Factory method
+    static ChannelParameterChStatus create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+
+    virtual void printInfo(std::ostream& stream) const;
+
+    uint32_t getVal()               const;
+    void     setVal(uint32_t value) const;
 };
 
 #endif

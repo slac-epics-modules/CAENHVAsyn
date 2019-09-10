@@ -57,6 +57,27 @@
 #define MAX_SIGNALS (3)
 #define NUM_PARAMS (1500)
 
+// Map used to generated binary records for system parameters of type 'PARAM_TYPE_CHSTATUS'.
+// There will be a bi and or bo record for each bit status.
+// This maps contains MASK, a suffix appended to the record name, Record description.
+//const std::map< int, std::pair< std::string, std::string > > statusRecordMap =
+typedef const std::map< int, std::pair< std::string, std::string > > statusRecordMap_t;
+statusRecordMap_t statusRecordMap =
+{
+    { 0x001, std::pair<std::string,std::string>( "_ON", "Ch is on"                   ) },
+    { 0x002, std::pair<std::string,std::string>( "_RU", "Ch is ramping up"           ) },
+    { 0x004, std::pair<std::string,std::string>( "_RD", "Ch is ramping down"         ) },
+    { 0x008, std::pair<std::string,std::string>( "_OC", "Ch is in overcurrent"       ) },
+    { 0x010, std::pair<std::string,std::string>( "_OV", "Ch is in overvoltage"       ) },
+    { 0x020, std::pair<std::string,std::string>( "_UV", "Ch is in undervoltage"      ) },
+    { 0x040, std::pair<std::string,std::string>( "_ET", "Ch is in external trip"     ) },
+    { 0x080, std::pair<std::string,std::string>( "_MV", "Ch is in max V"             ) },
+    { 0x100, std::pair<std::string,std::string>( "_ED", "Ch is in external disable"  ) },
+    { 0x200, std::pair<std::string,std::string>( "_IT", "Ch is in internal trip"     ) },
+    { 0x400, std::pair<std::string,std::string>( "_CE", "Ch is in calibration error" ) },
+    { 0x800, std::pair<std::string,std::string>( "_UN", "Ch is unplugged"            ) },
+};
+
 class CAENHVAsyn : public asynPortDriver
 {
     public:
@@ -87,10 +108,12 @@ class CAENHVAsyn : public asynPortDriver
         // Methods to create board parameter EPICS paramater and records
         void createBoardParamNumeric(BoardParameterNumeric bp);
         void createBoardParamOnOff(BoardParameterOnOff bp);
+        void createBoardParamChStatus(BoardParameterChStatus bp);
 
         // Methods to create channel parameteer EPICS paramater and records
         void createChannelParamNumeric(ChannelParameterNumeric cp);
         void createChannelParamOnOff(ChannelParameterOnOff cp);
+        void createChannelParamChStatus(ChannelParameterChStatus cp);
 
         const std::string driverName_;
         std::string portName_;
@@ -102,12 +125,14 @@ class CAENHVAsyn : public asynPortDriver
        std::map<int, SystemPropertyFloat>   systemPropertyFloatList;
 
        // Board parameter lists
-       std::map<int, BoardParameterNumeric> boardParameterNumericList;
-       std::map<int, BoardParameterOnOff>   boardParameterOnOffList;
+       std::map<int, BoardParameterNumeric>  boardParameterNumericList;
+       std::map<int, BoardParameterOnOff>    boardParameterOnOffList;
+       std::map<int, BoardParameterChStatus> boardParameterChStatusList;
 
        // Channel parameter lists
-       std::map<int, ChannelParameterNumeric> channelParameterNumericList;
-       std::map<int, ChannelParameterOnOff>   channelParameterOnOffList;
+       std::map<int, ChannelParameterNumeric>  channelParameterNumericList;
+       std::map<int, ChannelParameterOnOff>    channelParameterOnOffList;
+       std::map<int, ChannelParameterChStatus> channelParameterChStatusList;
 };
 
 

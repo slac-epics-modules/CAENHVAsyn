@@ -55,8 +55,8 @@ public:
     void printInfo(std::ostream& stream) const;
 
     std::vector<SystemPropertyInteger> getSystemPropertyIntegers() { return systemPropertyIntegers; };
-    std::vector<SystemPropertyFloat>  getSystemPropertyFloats()    { return systemPropertyFloats;   };
-    std::vector<SystemPropertyString> getSystemPropertyStrings()   { return systemPropertyStrings;  };
+    std::vector<SystemPropertyFloat>   getSystemPropertyFloats()   { return systemPropertyFloats;   };
+    std::vector<SystemPropertyString>  getSystemPropertyStrings()  { return systemPropertyStrings;  };
 
     std::vector<Board> getBoards() { return boards; };
 

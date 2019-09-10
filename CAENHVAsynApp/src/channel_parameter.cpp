@@ -164,13 +164,13 @@ void IChannelParameterNumeric::setVal(float value)
 
 void IChannelParameterNumeric::printInfo(std::ostream& stream) const
 {
-    stream << "          Param = " << param \
-           << ", Mode  = "     << modeStr \
-           << ", Minval = "    << getMinVal() \
-           << ", Maxval = "    <<  getMaxVal() \
-           << ", Units = "    << units.c_str() \
-           << ", Value = "    << getVal() \
-           << ", epicsParamName = " << epicsParamName \
+    stream << "          Param = "   << param \
+           << ", Mode  = "           << modeStr \
+           << ", Minval = "          << getMinVal() \
+           << ", Maxval = "          <<  getMaxVal() \
+           << ", Units = "           << units.c_str() \
+           << ", Value = "           << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
            << ", epicsRecordName = " << epicsRecordName \
            << std::endl;
 }
@@ -224,13 +224,57 @@ void IChannelParameterOnOff::setVal(uint32_t value)
 
 void IChannelParameterOnOff::printInfo(std::ostream& stream) const
 {
-    stream << "          Param = " << param \
-           << ", Mode = " << modeStr \
-           << ", On state = " << getOnState() \
-           << ", Off state = " << getOffState() \
-           << ", Value = " << getVal() \
-           << ", epicsParamName = " << epicsParamName \
+    stream << "          Param = "   << param \
+           << ", Mode = "            << modeStr \
+           << ", On state = "        << getOnState() \
+           << ", Off state = "       << getOffState() \
+           << ", Value = "           << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
            << ", epicsRecordName = " << epicsRecordName \
            << std::endl;
 }
 
+IChannelParameterChStatus::IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+:
+    ChannelParameterBase(h, s, c, p, m)
+{
+}
+
+ChannelParameterChStatus IChannelParameterChStatus::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IChannelParameterChStatus>(h, s, c, p, m);
+}
+
+uint32_t IChannelParameterChStatus::getVal() const
+{
+    if (mode == PARAM_MODE_WRONLY)
+        return 0;
+
+    uint32_t temp;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
+
+    return temp;
+}
+
+void IChannelParameterChStatus::setVal(uint32_t value) const
+{
+    if (mode == PARAM_MODE_RDONLY)
+        return;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
+}
+
+void IChannelParameterChStatus::printInfo(std::ostream& stream) const
+{
+    stream << "          Param = "   << param \
+           << ", Mode  = "           << modeStr \
+           << ", Value = "           << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
+}

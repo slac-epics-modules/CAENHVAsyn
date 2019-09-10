@@ -40,7 +40,6 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 #include "board_parameter.h"
-//#include "channel_parameter.h"
 #include "channel.h"
 
 class Board
@@ -51,9 +50,10 @@ public:
 
     void printInfo(std::ostream& stream) const;
 
-    std::vector<BoardParameterNumeric> getBoardParameterNumerics() { return boardParameterNumerics; };
-    std::vector<BoardParameterOnOff>   getBoardParameterOnOffs()   { return boardParameterOnOffs;   };
-    std::vector<Channel>               getChannels()               { return channels;               };
+    std::vector<BoardParameterNumeric>  getBoardParameterNumerics()   { return boardParameterNumerics;   };
+    std::vector<BoardParameterOnOff>    getBoardParameterOnOffs()     { return boardParameterOnOffs;     };
+    std::vector<BoardParameterChStatus> getBoardParameterChStatuses() { return boardParameterChStatuses; };
+    std::vector<Channel>                getChannels()                 { return channels;                 };
 
 private:
 
@@ -68,13 +68,11 @@ private:
     std::string                 serialNumber;
     std::string                 firmwareRelease;
 
-    std::vector<BoardParameterNumeric> boardParameterNumerics;
-    std::vector<BoardParameterOnOff>   boardParameterOnOffs;
+    std::vector<BoardParameterNumeric>  boardParameterNumerics;
+    std::vector<BoardParameterOnOff>    boardParameterOnOffs;
+    std::vector<BoardParameterChStatus> boardParameterChStatuses;
 
     std::vector<Channel> channels;
-
-//std::vector<Channel> channels;
-//    std::vector<ChannelParameter> channelParameters;
 };
 
 #endif

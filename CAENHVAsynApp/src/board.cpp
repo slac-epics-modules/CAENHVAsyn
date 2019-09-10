@@ -103,6 +103,8 @@ void Board::GetBoardParams()
             boardParameterNumerics.push_back( IBoardParameterNumeric::create(handle, slot, p[i], mode));
         else if (type == PARAM_TYPE_ONOFF)
             boardParameterOnOffs.push_back( IBoardParameterOnOff::create(handle, slot, p[i], mode));
+        else if (type == PARAM_TYPE_CHSTATUS)
+            boardParameterChStatuses.push_back( IBoardParameterChStatus::create(handle, slot, p[i], mode));
         else
             //throw std::runtime_error("Parameter type not  supported!");
             std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;

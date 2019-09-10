@@ -99,6 +99,7 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
         dbParamsLocal << ",ONAM="  << offLabel;
+        dbParamsLocal << ",MASK=1";
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
@@ -115,7 +116,61 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
     }
 }
 
+void CAENHVAsyn::createBoardParamChStatus(BoardParameterChStatus bp)
+{
+    std::string paramName  = bp->getEpicsParamName();
+    std::string recordName = bp->getEpicsRecordName();
+    std::string mode       = bp->getMode();
 
+    int index;
+    createParam(paramName.c_str(), asynParamFloat64, &index);
+
+    boardParameterChStatusList.insert( std::make_pair<int, BoardParameterChStatus>(index, bp) );
+
+    if (!epicsPrefix.empty())
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="  << portName_;
+        dbParamsLocal << ",PARAM=" << paramName;
+        dbParamsLocal << ",ZNAM=Off";
+        dbParamsLocal << ",ONAM=On";
+
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            {
+                std::stringstream dbParamsLocal2;
+                dbParamsLocal2.str("");
+                dbParamsLocal2 <<  dbParamsLocal.str();
+                dbParamsLocal2 << ",SCAN=1 second";
+                dbParamsLocal2 << ",MASK=" << it->first;
+                dbParamsLocal2 << ",DESC="  << it->second.second;
+                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
+                dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
+            }
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            {
+                std::stringstream dbParamsLocal2;
+                dbParamsLocal2.str("");
+                dbParamsLocal2 <<  dbParamsLocal.str();
+                dbParamsLocal2 << ",SCAN=Passive";
+                dbParamsLocal2 << ",MASK=" << it->first;
+                dbParamsLocal2 << ",DESC="  << it->second.second;
+                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
+                dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
+            }
+        }
+
+    }
+}
 
 void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
 {
@@ -190,6 +245,7 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << onLabel;
         dbParamsLocal << ",ONAM="  << offLabel;
+        dbParamsLocal << ",MASK=1";
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
@@ -203,6 +259,62 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
             dbParamsLocal << ",R="    << recordName << ":St";
             dbLoadRecords("db/bo.template", dbParamsLocal.str().c_str());
         }
+    }
+}
+
+void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
+{
+    std::string paramName  = cp->getEpicsParamName();
+    std::string recordName = cp->getEpicsRecordName();
+    std::string mode       = cp->getMode();
+
+    int index;
+    createParam(paramName.c_str(), asynParamFloat64, &index);
+
+    channelParameterChStatusList.insert( std::make_pair<int, ChannelParameterChStatus>(index, cp) );
+
+    if (!epicsPrefix.empty())
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="  << portName_;
+        dbParamsLocal << ",PARAM=" << paramName;
+        dbParamsLocal << ",ZNAM=Off";
+        dbParamsLocal << ",ONAM=On";
+
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            {
+                std::stringstream dbParamsLocal2;
+                dbParamsLocal2.str("");
+                dbParamsLocal2 <<  dbParamsLocal.str();
+                dbParamsLocal2 << ",SCAN=1 second";
+                dbParamsLocal2 << ",MASK=" << it->first;
+                dbParamsLocal2 << ",DESC="  << it->second.second;
+                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
+                dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
+            }
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            for (statusRecordMap_t::const_iterator it = statusRecordMap.begin(); it != statusRecordMap.end(); ++it)
+            {
+                std::stringstream dbParamsLocal2;
+                dbParamsLocal2.str("");
+                dbParamsLocal2 <<  dbParamsLocal;
+                dbParamsLocal2 << ",SCAN=Passive";
+                dbParamsLocal2 << ",MASK=" << it->first;
+                dbParamsLocal2 << ",DESC="  << it->second.second;
+                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":St";
+                dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
+            }
+        }
+
     }
 }
 
@@ -419,6 +531,11 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
             createBoardParamOnOff(*paramIt);
 
+        std::vector<BoardParameterChStatus> pcs = boardIt->getBoardParameterChStatuses();
+
+        for (std::vector<BoardParameterChStatus>::iterator paramIt = pcs.begin(); paramIt != pcs.end(); ++paramIt)
+            createBoardParamChStatus(*paramIt);
+
         std::vector<Channel> c = boardIt->getChannels();
 
         for(std::vector<Channel>::iterator channelIt = c.begin(); channelIt != c.end(); ++channelIt)
@@ -430,6 +547,10 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
             std::vector<ChannelParameterOnOff> cpo = channelIt->getChannelParameterOnOffs();
             for (std::vector<ChannelParameterOnOff>::iterator paramIt = cpo.begin(); paramIt != cpo.end(); ++paramIt)
                 createChannelParamOnOff(*paramIt);
+
+            std::vector<ChannelParameterChStatus> cpcs = channelIt->getChannelParameterChStatuses();
+            for (std::vector<ChannelParameterChStatus>::iterator paramIt = cpcs.begin(); paramIt != cpcs.end(); ++paramIt)
+                createChannelParamChStatus(*paramIt);
         }
     }
 }
@@ -622,19 +743,33 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     getParamName(addr, function, &name);
 
     // Iterators
-    std::map< int, BoardParameterOnOff   >::iterator bpIt;
-    std::map< int, ChannelParameterOnOff >::iterator cpIt;
+    std::map< int, BoardParameterOnOff      >::iterator bpoIt;
+    std::map< int, BoardParameterChStatus   >::iterator bpcsIt;
+    std::map< int, ChannelParameterOnOff    >::iterator cpoIt;
+    std::map< int, ChannelParameterChStatus >::iterator cpcsIt;
 
     // Look for the function number in the parameter lists
-    if ( ( bpIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
+    if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
     {
-       uint32_t temp = bpIt->second->getVal();
+       uint32_t temp = bpoIt->second->getVal();
        temp &= mask;
        *value = temp;
     }
-    else if ( ( cpIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
+    else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
     {
-       uint32_t temp = cpIt->second->getVal();
+       uint32_t temp = bpcsIt->second->getVal();
+       temp &= mask;
+       *value = temp;
+    }
+    else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
+    {
+       uint32_t temp = cpoIt->second->getVal();
+       temp &= mask;
+       *value = temp;
+    }
+    else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
+    {
+       uint32_t temp = cpcsIt->second->getVal();
        temp &= mask;
        *value = temp;
     }
@@ -678,14 +813,20 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     val |= value;
 
     // Iterators
-    std::map< int, BoardParameterOnOff   >::iterator bpIt;
-    std::map< int, ChannelParameterOnOff >::iterator cpIt;
+    std::map< int, BoardParameterOnOff      >::iterator bpoIt;
+    std::map< int, BoardParameterChStatus   >::iterator bpcsIt;
+    std::map< int, ChannelParameterOnOff    >::iterator cpoIt;
+    std::map< int, ChannelParameterChStatus >::iterator cpcsIt;
 
     // Look for the function number in the parameter lists
-    if ( ( bpIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
-        bpIt->second->setVal(val);
-    else if ( ( cpIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
-        cpIt->second->setVal(val);
+    if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
+        bpoIt->second->setVal(val);
+    else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
+        bpcsIt->second->setVal(val);
+    else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
+        cpoIt->second->setVal(val);
+    else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
+        cpcsIt->second->setVal(val);
     else
         status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 

@@ -49,8 +49,9 @@ public:
 
     void printInfo(std::ostream& stream) const;
 
-    std::vector<ChannelParameterNumeric> getChannelParameterNumerics() { return channelParameterNumerics; };
-    std::vector<ChannelParameterOnOff>   getChannelParameterOnOffs()   { return channelParameterOnOffs; };
+    std::vector<ChannelParameterNumeric>  getChannelParameterNumerics()   { return channelParameterNumerics;   };
+    std::vector<ChannelParameterOnOff>    getChannelParameterOnOffs()     { return channelParameterOnOffs;     };
+    std::vector<ChannelParameterChStatus> getChannelParameterChStatuses() { return channelParameterChStatuses; };
 
 private:
 
@@ -60,9 +61,9 @@ private:
     std::size_t                 slot;
     std::size_t                 channel;
 
-    std::vector<ChannelParameterNumeric> channelParameterNumerics;
-    std::vector<ChannelParameterOnOff>   channelParameterOnOffs;
-
+    std::vector<ChannelParameterNumeric>  channelParameterNumerics;
+    std::vector<ChannelParameterOnOff>    channelParameterOnOffs;
+    std::vector<ChannelParameterChStatus> channelParameterChStatuses;
 };
 
 #endif

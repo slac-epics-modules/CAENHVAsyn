@@ -3,7 +3,7 @@ record(bo,      "$(P)$(R)") {
     field(DESC, "$(DESC)")
     field(PINI, "NO")
     field(SCAN, "Passive")
-    field(OUT,  "@asynMask($(PORT),0,1)$(PARAM)")
+    field(OUT,  "@asynMask($(PORT),0,$(MASK))$(PARAM)")
     field(ZNAM, "$(ZNAM)")
     field(ONAM, "$(ONAM)")
 }

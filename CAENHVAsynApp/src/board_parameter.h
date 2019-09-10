@@ -41,15 +41,15 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 
-
-
 class BoardParameterBase;
 class IBoardParameterNumeric;
 class IBoardParameterOnOff;
+class IBoardParameterChStatus;
 
 // Shared pointer types
-typedef std::shared_ptr< IBoardParameterNumeric > BoardParameterNumeric;
-typedef std::shared_ptr< IBoardParameterOnOff   > BoardParameterOnOff;
+typedef std::shared_ptr< IBoardParameterNumeric  > BoardParameterNumeric;
+typedef std::shared_ptr< IBoardParameterOnOff    > BoardParameterOnOff;
+typedef std::shared_ptr< IBoardParameterChStatus > BoardParameterChStatus;
 
 
 class BoardParameterBase
@@ -121,6 +121,19 @@ private:
     std::string onState;
     std::string offState;
     std::string value;
+};
+
+class IBoardParameterChStatus : public BoardParameterBase
+{
+public:
+    IBoardParameterChStatus(int h, std::size_t s, const std::string&  p, uint32_t m);
+    ~IBoardParameterChStatus() {};
+
+    // Factory method
+    static BoardParameterChStatus create(int h, std::size_t s, const std::string&  p, uint32_t m);
+
+    uint32_t getVal()               const;
+    void     setVal(uint32_t value) const;
 };
 
 #endif
