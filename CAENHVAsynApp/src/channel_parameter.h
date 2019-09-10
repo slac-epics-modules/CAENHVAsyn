@@ -46,11 +46,13 @@
 class IChannelParameterNumeric;
 class IChannelParameterOnOff;
 class IChannelParameterChStatus;
+class IChannelParameterBinary;
 
 // Shared pointer types
 typedef std::shared_ptr< IChannelParameterNumeric  > ChannelParameterNumeric;
 typedef std::shared_ptr< IChannelParameterOnOff    > ChannelParameterOnOff;
 typedef std::shared_ptr< IChannelParameterChStatus > ChannelParameterChStatus;
+typedef std::shared_ptr< IChannelParameterBinary   > ChannelParameterBinary;
 
 class ChannelParameterBase
 {
@@ -137,6 +139,21 @@ public:
 
     uint32_t getVal()               const;
     void     setVal(uint32_t value) const;
+};
+
+class IChannelParameterBinary : public ChannelParameterBase
+{
+public:
+    IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+    ~IChannelParameterBinary() {};
+
+    // Factory method
+    static ChannelParameterBinary create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+
+    virtual void printInfo(std::ostream& stream) const;
+
+    int32_t getVal()              const;
+    void    setVal(int32_t value) const;
 };
 
 #endif

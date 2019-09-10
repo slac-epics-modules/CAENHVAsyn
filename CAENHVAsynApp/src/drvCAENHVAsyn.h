@@ -133,6 +133,7 @@ class CAENHVAsyn : public asynPortDriver
         void createChannelParamNumeric(ChannelParameterNumeric cp);
         void createChannelParamOnOff(ChannelParameterOnOff cp);
         void createChannelParamChStatus(ChannelParameterChStatus cp);
+        void createChannelParamBinary(ChannelParameterBinary cp);
 
         const std::string driverName_;
         std::string portName_;
@@ -152,6 +153,7 @@ class CAENHVAsyn : public asynPortDriver
        std::map<int, ChannelParameterNumeric>  channelParameterNumericList;
        std::map<int, ChannelParameterOnOff>    channelParameterOnOffList;
        std::map<int, ChannelParameterChStatus> channelParameterChStatusList;
+       std::map<int, ChannelParameterBinary>   channelParameterBinaryList;
 };
 
 

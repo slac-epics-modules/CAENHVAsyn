@@ -318,6 +318,44 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
     }
 }
 
+void CAENHVAsyn::createChannelParamBinary(ChannelParameterBinary cp)
+{
+    std::string paramName  = cp->getEpicsParamName();
+    std::string recordName = cp->getEpicsRecordName();
+    std::string desc       = cp->getEpicsDesc();
+    std::string mode       = cp->getMode();
+
+    int index;
+    createParam(paramName.c_str(), asynParamInt32, &index);
+
+    channelParameterBinaryList.insert( std::make_pair<int, ChannelParameterBinary>(index, cp) );
+
+    if (!epicsPrefix.empty())
+    {
+        std::stringstream dbParamsLocal;
+
+        // Create list of paramater to pass to the  dbLoadRecords function
+        dbParamsLocal.str("");
+        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
+        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PARAM=" << paramName;
+        dbParamsLocal << ",DESC="  << desc;
+
+        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":Rd";
+            dbParamsLocal << ",SCAN=1 second";
+            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
+        }
+
+        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
+        {
+            dbParamsLocal << ",R=" << recordName << ":St";
+            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
+        }
+    }
+}
+
 void CAENHVAsyn::createSystemPropertyInteger(SystemPropertyInteger sp)
 {
     std::string paramName  = sp->getEpicsParamName();
@@ -551,6 +589,10 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
             std::vector<ChannelParameterChStatus> cpcs = channelIt->getChannelParameterChStatuses();
             for (std::vector<ChannelParameterChStatus>::iterator paramIt = cpcs.begin(); paramIt != cpcs.end(); ++paramIt)
                 createChannelParamChStatus(*paramIt);
+
+            std::vector<ChannelParameterBinary> cpb = channelIt->getChannelParameterBinaries();
+            for (std::vector<ChannelParameterBinary>::iterator paramIt = cpb.begin(); paramIt != cpb.end(); ++paramIt)
+                createChannelParamBinary(*paramIt);
         }
     }
 }

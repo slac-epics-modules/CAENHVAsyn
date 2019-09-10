@@ -52,6 +52,7 @@ public:
     std::vector<ChannelParameterNumeric>  getChannelParameterNumerics()   { return channelParameterNumerics;   };
     std::vector<ChannelParameterOnOff>    getChannelParameterOnOffs()     { return channelParameterOnOffs;     };
     std::vector<ChannelParameterChStatus> getChannelParameterChStatuses() { return channelParameterChStatuses; };
+    std::vector<ChannelParameterBinary>   getChannelParameterBinaries()   { return channelParameterBinaries;   };
 
 private:
 
@@ -64,6 +65,7 @@ private:
     std::vector<ChannelParameterNumeric>  channelParameterNumerics;
     std::vector<ChannelParameterOnOff>    channelParameterOnOffs;
     std::vector<ChannelParameterChStatus> channelParameterChStatuses;
+    std::vector<ChannelParameterBinary>   channelParameterBinaries;
 };
 
 #endif

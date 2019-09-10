@@ -278,3 +278,48 @@ void IChannelParameterChStatus::printInfo(std::ostream& stream) const
            << ", epicsRecordName = " << epicsRecordName \
            << std::endl;
 }
+
+IChannelParameterBinary::IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+:
+    ChannelParameterBase(h, s, c, p, m)
+{
+}
+
+ChannelParameterBinary IChannelParameterBinary::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IChannelParameterBinary>(h, s, c, p, m);
+}
+
+int32_t IChannelParameterBinary::getVal() const
+{
+    if (mode == PARAM_MODE_WRONLY)
+        return 0;
+
+    uint32_t temp;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
+
+    return temp;
+}
+
+void IChannelParameterBinary::setVal(int32_t value) const
+{
+    if (mode == PARAM_MODE_RDONLY)
+        return;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
+}
+
+void IChannelParameterBinary::printInfo(std::ostream& stream) const
+{
+    stream << "          Param = "   << param \
+           << ", Mode  = "           << modeStr \
+           << ", Value = "           << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
+}

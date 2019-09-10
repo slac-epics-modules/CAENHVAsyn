@@ -48,6 +48,10 @@ void Channel::printInfo(std::ostream& stream) const
     for (std::vector<ChannelParameterChStatus>::const_iterator it = channelParameterChStatuses.begin(); it != channelParameterChStatuses.end(); ++it)
         (*it)->printInfo(stream);
 
+    stream << "        Number of Binary parameters: " << channelParameterBinaries.size() << std::endl;
+    for (std::vector<ChannelParameterBinary>::const_iterator it = channelParameterBinaries.begin(); it != channelParameterBinaries.end(); ++it)
+        (*it)->printInfo(stream);
+
 }
 
 void Channel::GetChannelParams()
@@ -96,6 +100,8 @@ void Channel::GetChannelParams()
             channelParameterOnOffs.push_back( IChannelParameterOnOff::create(handle, slot, channel, p[i], mode) );
         else if (type == PARAM_TYPE_CHSTATUS)
             channelParameterChStatuses.push_back( IChannelParameterChStatus::create(handle, slot, channel, p[i], mode) );
+        else if (type == PARAM_TYPE_BINARY)
+            channelParameterBinaries.push_back( IChannelParameterBinary::create(handle, slot, channel, p[i], mode) );
         else
             //throw std::runtime_error("Parameter type not  supported!");
             std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
