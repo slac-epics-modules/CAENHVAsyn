@@ -387,15 +387,21 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     // System properties
     {
-        std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
-        for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyString(*it);
-    }
-
-    {
         std::vector<SystemPropertyInteger> s = chassis->getSystemPropertyIntegers();
         for (std::vector<SystemPropertyInteger>::iterator it = s.begin(); it != s.end(); ++it)
             createSystemPropertyInteger(*it);
+    }
+
+    {
+        std::vector<SystemPropertyFloat> s = chassis->getSystemPropertyFloats();
+        for (std::vector<SystemPropertyFloat>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyFloat(*it);
+    }
+
+    {
+        std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
+        for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
+            createSystemPropertyString(*it);
     }
 
     // Boards
@@ -428,6 +434,9 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     }
 }
 
+////////////////////////////////////////////
+// Methods overridden from asynPortDriver //
+////////////////////////////////////////////
 asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
     static std::string method("readInt32");
@@ -440,13 +449,16 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyInteger>::iterator spIt;
+    // Iterators
+    std::map< int, SystemPropertyInteger >::iterator spIt;
 
-    if ((spIt = systemPropertyIntegerList.find(function)) != systemPropertyIntegerList.end())
+    // Look for the function number in the parameter lists
+    if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
         *value = spIt->second->getVal();
     else
         status = asynPortDriver::readInt32(pasynUser, value);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -477,13 +489,16 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyInteger>::iterator spIt;
+    // Iterators
+    std::map< int, SystemPropertyInteger >::iterator spIt;
 
-    if ((spIt = systemPropertyIntegerList.find(function)) != systemPropertyIntegerList.end())
+    // Look for the function number in the parameter lists
+    if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
         spIt->second->setVal(value);
     else
         status = asynPortDriver::writeInt32(pasynUser, value);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -514,16 +529,22 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, ChannelParameterNumeric>::iterator cpIt;
-    std::map<int, BoardParameterNumeric>::iterator   bpIt;
+    // Iterators
+    std::map< int, ChannelParameterNumeric >::iterator cpIt;
+    std::map< int, BoardParameterNumeric   >::iterator bpIt;
+    std::map< int, SystemPropertyFloat     >::iterator spIt;
 
-    if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
+    // Look for the function number in the parameter lists
+    if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
         *value = cpIt->second->getVal();
-    else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
+    else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
         *value = bpIt->second->getVal();
+    else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
+        *value = spIt->second->getVal();
     else
         status = asynPortDriver::readFloat64(pasynUser, value);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -554,16 +575,22 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, ChannelParameterNumeric>::iterator cpIt;
-    std::map<int, BoardParameterNumeric>::iterator   bpIt;
+    // Iterators
+    std::map< int, ChannelParameterNumeric >::iterator cpIt;
+    std::map< int, BoardParameterNumeric   >::iterator bpIt;
+    std::map< int, SystemPropertyFloat     >::iterator spIt;
 
-    if ((cpIt = channelParameterNumericList.find(function)) != channelParameterNumericList.end())
+    // Look for the function number in the parameter lists
+    if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
         cpIt->second->setVal(value);
-    else if ((bpIt = boardParameterNumericList.find(function)) != boardParameterNumericList.end())
+    else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
         bpIt->second->setVal(value);
+    else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
+        spIt->second->setVal(value);
     else
         status = asynPortDriver::writeFloat64(pasynUser, value);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -594,16 +621,18 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, BoardParameterOnOff>::iterator bpIt;
-    std::map<int, ChannelParameterOnOff>::iterator cpIt;
+    // Iterators
+    std::map< int, BoardParameterOnOff   >::iterator bpIt;
+    std::map< int, ChannelParameterOnOff >::iterator cpIt;
 
-    if ((bpIt = boardParameterOnOffList.find(function )) != boardParameterOnOffList.end())
+    // Look for the function number in the parameter lists
+    if ( ( bpIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
     {
        uint32_t temp = bpIt->second->getVal();
        temp &= mask;
        *value = temp;
     }
-    else if ((cpIt = channelParameterOnOffList.find(function )) != channelParameterOnOffList.end())
+    else if ( ( cpIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
     {
        uint32_t temp = cpIt->second->getVal();
        temp &= mask;
@@ -612,6 +641,7 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     else
         status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -647,20 +677,19 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     val &= ~mask;
     val |= value;
 
-    std::map<int, BoardParameterOnOff>::iterator bpIt;
-    std::map<int, ChannelParameterOnOff>::iterator cpIt;
+    // Iterators
+    std::map< int, BoardParameterOnOff   >::iterator bpIt;
+    std::map< int, ChannelParameterOnOff >::iterator cpIt;
 
+    // Look for the function number in the parameter lists
     if ( ( bpIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
-    {
         bpIt->second->setVal(val);
-    }
-    else if ( ( cpIt = channelParameterOnOffList.find(function ) ) != channelParameterOnOffList.end() )
-    {
+    else if ( ( cpIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
         cpIt->second->setVal(val);
-    }
     else
         status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -691,8 +720,10 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyString>::iterator spIt;
+    // Iterators
+    std::map< int, SystemPropertyString >::iterator spIt;
 
+    // Look for the function number in the parameter lists
     if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
     {
         std::string temp = spIt->second->getVal();
@@ -702,6 +733,7 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     else
         status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
@@ -732,8 +764,10 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     const char *name;
     getParamName(addr, function, &name);
 
-    std::map<int, SystemPropertyString>::iterator spIt;
+    // Iterators
+    std::map< int, SystemPropertyString >::iterator spIt;
 
+    // Look for the function number in the parameter lists
     if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
     {
         std::string temp(value);
@@ -743,6 +777,7 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     else
         status = asynPortDriver::writeOctet(pasynUser, value, maxChars, nActual);
 
+    // Log status and return
     if (0 == status)
     {
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
