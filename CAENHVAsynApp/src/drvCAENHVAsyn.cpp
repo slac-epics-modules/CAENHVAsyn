@@ -97,8 +97,8 @@ void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
         dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",ZNAM="  << onLabel;
-        dbParamsLocal << ",ONAM="  << offLabel;
+        dbParamsLocal << ",ZNAM="  << offLabel;
+        dbParamsLocal << ",ONAM="  << onLabel;
         dbParamsLocal << ",MASK=1";
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
@@ -243,8 +243,8 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
         dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",ZNAM="  << onLabel;
-        dbParamsLocal << ",ONAM="  << offLabel;
+        dbParamsLocal << ",ZNAM="  << offLabel;
+        dbParamsLocal << ",ONAM="  << onLabel;
         dbParamsLocal << ",MASK=1";
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
