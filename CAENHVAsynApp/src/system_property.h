@@ -80,8 +80,8 @@ public:
     // Factory method
     static SystemPropertyString create(int h, const std::string&  p, uint32_t m);
 
-    std::string getVal() const;
-    void        setVal(const std::string& v);
+    std::string getVal()                     const;
+    void        setVal(const std::string& v) const;
 };
 
 class ISystemPropertyFloat : public SystemPropertyBase
@@ -93,8 +93,8 @@ public:
     // Factory method
     static SystemPropertyFloat create(int h, const std::string&  p, uint32_t m);
 
-    float getVal() const;
-    void  setVal(float v);
+    float getVal()        const;
+    void  setVal(float v) const;
 };
 
 // Base clase for integer parameters
@@ -104,8 +104,8 @@ public:
     ISystemPropertyInteger(int h, const std::string&  p, uint32_t m)  : SystemPropertyBase(h,p,m) {};
     virtual ~ISystemPropertyInteger() {};
 
-    virtual int32_t getVal() = 0;
-    virtual void setVal(int32_t value) = 0;
+    virtual int32_t getVal()              const = 0;
+    virtual void    setVal(int32_t value) const = 0;
 };
 
 // Integer parameter class template
@@ -119,8 +119,8 @@ public:
     // Factory method
     static std::shared_ptr< ISystemPropertyIntegerTemplate > create(int h, const std::string&  p, uint32_t m);
 
-    virtual int32_t getVal();
-    virtual void setVal(int32_t value);
+    virtual int32_t getVal()              const;
+    virtual void    setVal(int32_t value) const;
 };
 
 #endif

@@ -52,8 +52,8 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
 void SystemPropertyBase::printInfo(std::ostream& stream) const
 {
     stream << "      Name = "   << prop \
-           << ", handle = "     << handle \
-           << ", mode = "       << modeStr \
+           << ", Handle = "     << handle \
+           << ", Mode = "       << modeStr \
            << ", epicsParamName = " << epicsParamName \
            << ", epicsRecordName = " << epicsRecordName \
            << std::endl;
@@ -87,7 +87,7 @@ std::string ISystemPropertyString::getVal() const
     return temp;
 }
 
-void ISystemPropertyString::setVal(const std::string& v)
+void ISystemPropertyString::setVal(const std::string& v) const
 {
 
     if (mode == SYSPROP_MODE_RDONLY)
@@ -129,7 +129,7 @@ float ISystemPropertyFloat::getVal() const
     return temp;
 }
 
-void ISystemPropertyFloat::setVal(float v)
+void ISystemPropertyFloat::setVal(float v) const
 {
     if (mode == SYSPROP_MODE_RDONLY)
         return;
@@ -148,7 +148,7 @@ std::shared_ptr< ISystemPropertyIntegerTemplate<T> > ISystemPropertyIntegerTempl
 }
 
 template<typename T>
-int32_t ISystemPropertyIntegerTemplate<T>::getVal()
+int32_t ISystemPropertyIntegerTemplate<T>::getVal() const
 {
     if (mode == SYSPROP_MODE_WRONLY)
         return 0;
@@ -164,7 +164,7 @@ int32_t ISystemPropertyIntegerTemplate<T>::getVal()
 }
 
 template<typename T>
-void ISystemPropertyIntegerTemplate<T>::setVal(int32_t value)
+void ISystemPropertyIntegerTemplate<T>::setVal(int32_t value) const
 {
     if (mode == SYSPROP_MODE_RDONLY)
         return;
