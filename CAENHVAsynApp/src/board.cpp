@@ -60,6 +60,14 @@ void Board::printInfo(std::ostream& stream) const
     for (std::vector<BoardParameterOnOff>::const_iterator it = boardParameterOnOffs.begin(); it != boardParameterOnOffs.end(); ++it)
         (*it)->printInfo(stream);
 
+    stream << "      Number of ChStatus parameters: " << boardParameterChStatuses.size() << std::endl;
+    for (std::vector<BoardParameterChStatus>::const_iterator it = boardParameterChStatuses.begin(); it != boardParameterChStatuses.end(); ++it)
+        (*it)->printInfo(stream);
+
+    stream << "      Number of BdStatus parameters: " << boardParameterBdStatuses.size() << std::endl;
+    for (std::vector<BoardParameterBdStatus>::const_iterator it = boardParameterBdStatuses.begin(); it != boardParameterBdStatuses.end(); ++it)
+        (*it)->printInfo(stream);
+
     stream << "    Channel parameters:" << std::endl;
     stream << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
@@ -105,6 +113,8 @@ void Board::GetBoardParams()
             boardParameterOnOffs.push_back( IBoardParameterOnOff::create(handle, slot, p[i], mode));
         else if (type == PARAM_TYPE_CHSTATUS)
             boardParameterChStatuses.push_back( IBoardParameterChStatus::create(handle, slot, p[i], mode));
+        else if (type == PARAM_TYPE_BDSTATUS)
+            boardParameterBdStatuses.push_back( IBoardParameterBdStatus::create(handle, slot, p[i], mode));
         else
             //throw std::runtime_error("Parameter type not  supported!");
             std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;

@@ -53,6 +53,7 @@ public:
     std::vector<BoardParameterNumeric>  getBoardParameterNumerics()   { return boardParameterNumerics;   };
     std::vector<BoardParameterOnOff>    getBoardParameterOnOffs()     { return boardParameterOnOffs;     };
     std::vector<BoardParameterChStatus> getBoardParameterChStatuses() { return boardParameterChStatuses; };
+    std::vector<BoardParameterBdStatus> getBoardParameterBdStatuses() { return boardParameterBdStatuses; };
     std::vector<Channel>                getChannels()                 { return channels;                 };
 
 private:
@@ -71,6 +72,7 @@ private:
     std::vector<BoardParameterNumeric>  boardParameterNumerics;
     std::vector<BoardParameterOnOff>    boardParameterOnOffs;
     std::vector<BoardParameterChStatus> boardParameterChStatuses;
+    std::vector<BoardParameterBdStatus> boardParameterBdStatuses;
 
     std::vector<Channel> channels;
 };

@@ -95,7 +95,6 @@ void BoardParameterBase<T>::printInfo(std::ostream& stream) const
            << ", Value = " << getVal() \
            << ", epicsParamName = "  << epicsParamName \
            << ", epicsRecordName = " << epicsRecordName \
-           << ", epicsDesc = " << epicsDesc \
            << std::endl;
 }
 
@@ -228,4 +227,16 @@ IBoardParameterChStatus::IBoardParameterChStatus(int h, std::size_t s, const std
 BoardParameterChStatus IBoardParameterChStatus::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IBoardParameterChStatus>(h, s, p, m);
+}
+
+// Class for BdStatus parameters
+IBoardParameterBdStatus::IBoardParameterBdStatus(int h, std::size_t s, const std::string&  p, uint32_t m)
+:
+    BoardParameterBase<uint32_t>(h, s, p, m)
+{
+}
+
+BoardParameterBdStatus IBoardParameterBdStatus::create(int h, std::size_t s, const std::string&  p, uint32_t m)
+{
+    return std::make_shared<IBoardParameterBdStatus>(h, s, p, m);
 }

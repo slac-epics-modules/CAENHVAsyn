@@ -47,11 +47,13 @@ class BoardParameterBase;
 class IBoardParameterNumeric;
 class IBoardParameterOnOff;
 class IBoardParameterChStatus;
+class IBoardParameterBdStatus;
 
 // Shared pointer types
 typedef std::shared_ptr< IBoardParameterNumeric  > BoardParameterNumeric;
 typedef std::shared_ptr< IBoardParameterOnOff    > BoardParameterOnOff;
 typedef std::shared_ptr< IBoardParameterChStatus > BoardParameterChStatus;
+typedef std::shared_ptr< IBoardParameterBdStatus > BoardParameterBdStatus;
 
 // Base class for all parameter types
 template<typename T>
@@ -133,6 +135,17 @@ public:
 
     // Factory method
     static BoardParameterChStatus create(int h, std::size_t s, const std::string&  p, uint32_t m);
+};
+
+// Class for BdStatus parameters
+class IBoardParameterBdStatus : public BoardParameterBase<uint32_t>
+{
+public:
+    IBoardParameterBdStatus(int h, std::size_t s, const std::string&  p, uint32_t m);
+    virtual ~IBoardParameterBdStatus() {};
+
+    // Factory method
+    static BoardParameterBdStatus create(int h, std::size_t s, const std::string&  p, uint32_t m);
 };
 
 #endif

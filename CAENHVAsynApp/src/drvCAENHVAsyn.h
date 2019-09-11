@@ -97,6 +97,20 @@ statusRecordMap_t   recordFieldChParamChStatus =
     { 0x8000, std::pair<std::string,std::string>( "_TE", "Ch is in Temperature Error"       ) },
 };
 
+// Map used to generate binary records for the system parameters of type 'PARAM_TYPE_BDSTATUS'.
+// There will be a bi and or bo record for each bit status.
+// This maps contains MASK, a suffix appended to the record name, Record description.
+// - This map is for Board parameters of type 'PARAM_TYPE_CHSTATUS'
+statusRecordMap_t recordFieldBdParamBdStatus =
+{
+    { 0x001, std::pair<std::string,std::string>( "_PF",   "Bd is in power-fail status"                ) },
+    { 0x002, std::pair<std::string,std::string>( "_FCE",  "Bd has a firmware checksum error"          ) },
+    { 0x004, std::pair<std::string,std::string>( "_CEHV", "Bd has calibration error on HV"            ) },
+    { 0x008, std::pair<std::string,std::string>( "_CET",  "Bd has a calibration error on temperature" ) },
+    { 0x010, std::pair<std::string,std::string>( "_UT",   "Bd is in under-temperature status"         ) },
+    { 0x020, std::pair<std::string,std::string>( "_OT",   "Bd is in over-temperature status"          ) },
+};
+
 class CAENHVAsyn : public asynPortDriver
 {
     public:
@@ -128,6 +142,7 @@ class CAENHVAsyn : public asynPortDriver
         void createBoardParamNumeric(BoardParameterNumeric bp);
         void createBoardParamOnOff(BoardParameterOnOff bp);
         void createBoardParamChStatus(BoardParameterChStatus bp);
+        void createBoardParamBdStatus(BoardParameterBdStatus bp);
 
         // Methods to create channel parameteer EPICS paramater and records
         void createChannelParamNumeric(ChannelParameterNumeric cp);
@@ -148,6 +163,7 @@ class CAENHVAsyn : public asynPortDriver
        std::map<int, BoardParameterNumeric>  boardParameterNumericList;
        std::map<int, BoardParameterOnOff>    boardParameterOnOffList;
        std::map<int, BoardParameterChStatus> boardParameterChStatusList;
+       std::map<int, BoardParameterBdStatus> boardParameterBdStatusList;
 
        // Channel parameter lists
        std::map<int, ChannelParameterNumeric>  channelParameterNumericList;
