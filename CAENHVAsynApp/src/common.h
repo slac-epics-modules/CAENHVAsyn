@@ -37,8 +37,11 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <iostream>
+#include "CAENHVWrapper.h"
+
 
 void printMessage(const std::string& f, const std::string& s);
 std::string processParamName(std::string name);
+std::string processUnits(uint16_t units, int8_t exp);
 
 #endif

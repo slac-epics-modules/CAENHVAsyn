@@ -92,49 +92,11 @@ IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::si
    if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Unit", &u ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
-   uint8_t e;
+   int8_t e;
    if ( CAENHV_GetChParamProp(handle, slot, channel, param.c_str(), "Exp", &e ) != CAENHV_OK )
        throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
-    std::string temp_units;
-
-    if (e == 6)
-        temp_units = "M";
-    else if (e == 3)
-        temp_units = "k";
-    else if (e == -3)
-        temp_units = "m";
-    else if (e == -6)
-        temp_units = "u";
-
-    if (u == PARAM_UN_NONE)
-        temp_units = "";
-    else if (u == PARAM_UN_AMPERE)
-        temp_units += "A";
-    else if (u == PARAM_UN_VOLT)
-        temp_units += "V";
-    else if (u == PARAM_UN_WATT)
-        temp_units += "W";
-    else if (u == PARAM_UN_CELSIUS)
-        temp_units += "C";
-    else if (u == PARAM_UN_HERTZ)
-        temp_units += "Hz";
-    else if (u == PARAM_UN_BAR)
-        temp_units += "Bar";
-    else if (u == PARAM_UN_VPS)
-        temp_units += "VPS";
-    else if (u == PARAM_UN_SECOND)
-        temp_units += "s";
-    else if (u == PARAM_UN_RPM)
-        temp_units += "rpm";
-    else if (u == PARAM_UN_COUNT)
-        temp_units += "count";
-    else if (u == PARAM_UN_BIT)
-        temp_units += "mit";
-    else
-        temp_units =  "???";
-
-    units = temp_units;
+     units = processUnits(u, e);
 }
 
 
