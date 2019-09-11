@@ -42,6 +42,18 @@ std::string processParamName(std::string name)
     return temp;
 }
 
+std::string processMode(uint32_t mode)
+{
+    if (mode == PARAM_MODE_WRONLY)
+        return "WO";
+    else if (mode == PARAM_MODE_RDONLY)
+        return  "RO";
+    else if (mode == PARAM_MODE_RDWR)
+        return  "RW";
+    else
+        return  "?";
+}
+
 std::string processUnits(uint16_t units, int8_t exp)
 {
     std::string temp_units;

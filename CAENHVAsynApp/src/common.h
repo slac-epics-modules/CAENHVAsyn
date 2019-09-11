@@ -42,6 +42,7 @@
 
 void printMessage(const std::string& f, const std::string& s);
 std::string processParamName(std::string name);
+std::string processMode(uint32_t mode);
 std::string processUnits(uint16_t units, int8_t exp);
 
 #endif

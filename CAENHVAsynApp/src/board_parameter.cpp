@@ -31,14 +31,7 @@ BoardParameterBase<T>::BoardParameterBase(int h, std::size_t s, const std::strin
     mode(m)
 {
     // Generate mode string representation
-    if (mode == PARAM_MODE_WRONLY)
-        modeStr = "WO";
-    else if (mode == PARAM_MODE_RDONLY)
-        modeStr = "RO";
-    else if (mode == PARAM_MODE_RDWR)
-        modeStr = "RW";
-    else
-        modeStr = "?";
+    modeStr = processMode(mode);
 
     std::stringstream temp;
 

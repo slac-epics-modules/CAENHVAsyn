@@ -28,14 +28,7 @@ SystemPropertyBase::SystemPropertyBase(int h, const std::string&  p, uint32_t m)
     mode(m)
 {
     // Generate mode string
-    if (mode == PARAM_MODE_WRONLY)
-        modeStr = "WO";
-    else if (mode == PARAM_MODE_RDONLY)
-        modeStr = "RO";
-    else if (mode == PARAM_MODE_RDWR)
-        modeStr = "RW";
-    else
-        modeStr = "?";
+    modeStr = processMode(mode);
 
     std::stringstream temp;
 
@@ -60,7 +53,7 @@ void SystemPropertyBase::printInfo(std::ostream& stream) const
 {
     stream << "      Name = "   << prop \
            << ", handle = "     << handle \
-           << ", mode = "       << mode \
+           << ", mode = "       << modeStr \
            << ", epicsParamName = " << epicsParamName \
            << ", epicsRecordName = " << epicsRecordName \
            << std::endl;
