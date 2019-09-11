@@ -41,7 +41,9 @@
 #include "CAENHVWrapper.h"
 #include "common.h"
 
+template<typename T>
 class BoardParameterBase;
+
 class IBoardParameterNumeric;
 class IBoardParameterOnOff;
 class IBoardParameterChStatus;
@@ -51,7 +53,8 @@ typedef std::shared_ptr< IBoardParameterNumeric  > BoardParameterNumeric;
 typedef std::shared_ptr< IBoardParameterOnOff    > BoardParameterOnOff;
 typedef std::shared_ptr< IBoardParameterChStatus > BoardParameterChStatus;
 
-
+// Base class for all parameter types
+template<typename T>
 class BoardParameterBase
 {
 public:
@@ -62,6 +65,11 @@ public:
     std::string getEpicsParamName()  { return epicsParamName;  };
     std::string getEpicsRecordName() { return epicsRecordName; };
     std::string getEpicsDesc()       { return epicsDesc;       };
+
+    virtual void printInfo(std::ostream& stream) const;
+
+    virtual T    getVal()        const;
+    virtual void setVal(T value) const;
 
 protected:
     int         handle;
@@ -74,7 +82,8 @@ protected:
     std::string epicsDesc;
 };
 
-class IBoardParameterNumeric : public BoardParameterBase
+// Class for Numeric parameters
+class IBoardParameterNumeric : public BoardParameterBase<float>
 {
 public:
     IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m);
@@ -89,17 +98,14 @@ public:
 
     virtual void printInfo(std::ostream& stream) const;
 
-    float getVal();
-    void setVal(float value);
-
 private:
     float       minVal;
     float       maxVal;
     std::string units;
-    float       value;
 };
 
-class  IBoardParameterOnOff : public BoardParameterBase
+// Class for OnOff parameters
+class  IBoardParameterOnOff : public BoardParameterBase<uint32_t>
 {
 public:
     IBoardParameterOnOff(int h, std::size_t s, const std::string&  p, uint32_t m);
@@ -113,27 +119,20 @@ public:
 
     virtual void printInfo(std::ostream& stream) const;
 
-    uint32_t getVal();
-    void setVal(uint32_t value);
-
-
 private:
     std::string onState;
     std::string offState;
-    std::string value;
 };
 
-class IBoardParameterChStatus : public BoardParameterBase
+// Class for ChStatus parameters
+class IBoardParameterChStatus : public BoardParameterBase<uint32_t>
 {
 public:
     IBoardParameterChStatus(int h, std::size_t s, const std::string&  p, uint32_t m);
-    ~IBoardParameterChStatus() {};
+    virtual ~IBoardParameterChStatus() {};
 
     // Factory method
     static BoardParameterChStatus create(int h, std::size_t s, const std::string&  p, uint32_t m);
-
-    uint32_t getVal()               const;
-    void     setVal(uint32_t value) const;
 };
 
 #endif

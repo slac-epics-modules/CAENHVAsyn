@@ -21,23 +21,24 @@
 
 #include "board_parameter.h"
 
-
-BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m)
+// Base class for all parameter types
+template<typename T>
+BoardParameterBase<T>::BoardParameterBase(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
     handle(h),
     slot(s),
     param(p),
     mode(m)
 {
-   // Generate mode string representation
-   if (mode == PARAM_MODE_WRONLY)
-       modeStr = "WO";
-   else if (mode == PARAM_MODE_RDONLY)
-       modeStr = "RO";
-   else if (mode == PARAM_MODE_RDWR)
-       modeStr = "RW";
-   else
-       modeStr = "?";
+    // Generate mode string representation
+    if (mode == PARAM_MODE_WRONLY)
+        modeStr = "WO";
+    else if (mode == PARAM_MODE_RDONLY)
+        modeStr = "RO";
+    else if (mode == PARAM_MODE_RDWR)
+        modeStr = "RW";
+    else
+        modeStr = "?";
 
     std::stringstream temp;
 
@@ -61,6 +62,44 @@ BoardParameterBase::BoardParameterBase(int h, std::size_t s, const std::string& 
     epicsDesc = temp.str();
 }
 
+template<typename T>
+T BoardParameterBase<T>::getVal() const
+{
+    if (mode == PARAM_MODE_WRONLY)
+        return T();
+
+    T temp;
+
+    uint16_t tempSlot = slot;
+    if ( CAENHV_GetBdParam(handle, 1, &tempSlot, param.c_str(), &temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+
+    return temp;
+}
+
+template<typename T>
+void BoardParameterBase<T>::setVal(T value) const
+{
+    if (mode == PARAM_MODE_RDONLY)
+        return;
+
+    uint16_t tempSlot = slot;
+    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
+}
+template<typename T>
+void BoardParameterBase<T>::printInfo(std::ostream& stream) const
+{
+    stream << "        Param = "     << param \
+           << ", Mode = "            << modeStr \
+           << ", Value = " << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << ", epicsDesc = " << epicsDesc \
+           << std::endl;
+}
+
+// Class for Numeric parameters
 BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IBoardParameterNumeric>(h, s, p, m);
@@ -69,7 +108,7 @@ BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const
 
 IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
-    BoardParameterBase(h, s, p, m)
+    BoardParameterBase<float>(h, s, p, m)
 {
    float temp;
 
@@ -133,31 +172,6 @@ IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::
     units = temp_units;
 }
 
-
-float IBoardParameterNumeric::getVal()
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0.0;
-
-    float temp;
-
-    uint16_t tempSlot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &tempSlot, param.c_str(), &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IBoardParameterNumeric::setVal(float value)
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
 void IBoardParameterNumeric::printInfo(std::ostream& stream) const
 {
     stream << "        Param = "     << param \
@@ -170,7 +184,7 @@ void IBoardParameterNumeric::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
-
+// Class for OnOff parameters
 BoardParameterOnOff IBoardParameterOnOff::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IBoardParameterOnOff>(h, s, p, m);
@@ -178,7 +192,7 @@ BoardParameterOnOff IBoardParameterOnOff::create(int h, std::size_t s, const std
 
 IBoardParameterOnOff::IBoardParameterOnOff(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
-    BoardParameterBase(h, s, p, m)
+    BoardParameterBase<uint32_t>(h, s, p, m)
 {
    char temp[30];
 
@@ -193,30 +207,6 @@ IBoardParameterOnOff::IBoardParameterOnOff(int h, std::size_t s, const std::stri
     offState = temp;
 }
 
-uint32_t IBoardParameterOnOff::getVal()
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    uint16_t temp_slot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &temp_slot, param.c_str(), &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IBoardParameterOnOff::setVal(uint32_t value)
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-}
-
 void IBoardParameterOnOff::printInfo(std::ostream& stream) const
 {
     stream << "        Param = "     << param \
@@ -228,37 +218,14 @@ void IBoardParameterOnOff::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
+// Class for ChStatus parameters
 IBoardParameterChStatus::IBoardParameterChStatus(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
-    BoardParameterBase(h, s, p, m)
+    BoardParameterBase<uint32_t>(h, s, p, m)
 {
 }
 
 BoardParameterChStatus IBoardParameterChStatus::create(int h, std::size_t s, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IBoardParameterChStatus>(h, s, p, m);
-}
-
-uint32_t IBoardParameterChStatus::getVal() const
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    uint16_t tempSlot = slot;
-    if ( CAENHV_GetBdParam(handle, 1, &tempSlot, param.c_str(), &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IBoardParameterChStatus::setVal(uint32_t value) const
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t tempSlot = slot;
-    if ( CAENHV_SetBdParam(handle, 1, &tempSlot, param.c_str(), &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetBdParamProp failed: " + std::string(CAENHV_GetError(handle)));
 }
