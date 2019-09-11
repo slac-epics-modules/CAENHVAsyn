@@ -42,7 +42,7 @@
 
 #include "board_parameter.h"
 
-
+class ChannelParameterBase;
 class IChannelParameterNumeric;
 class IChannelParameterOnOff;
 class IChannelParameterChStatus;
