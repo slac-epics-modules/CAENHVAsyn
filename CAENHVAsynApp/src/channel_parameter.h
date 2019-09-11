@@ -54,11 +54,11 @@ typedef std::shared_ptr< IChannelParameterChStatus > ChannelParameterChStatus;
 typedef std::shared_ptr< IChannelParameterBinary   > ChannelParameterBinary;
 
 template<typename T>
-class ChannelParameterBaseTemplate
+class ChannelParameterBase
 {
 public:
-    ChannelParameterBaseTemplate(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
-    virtual ~ChannelParameterBaseTemplate() {};
+    ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+    virtual ~ChannelParameterBase() {};
 
     std::string getMode()            { return modeStr;    };
     std::string getEpicsParamName()  { return epicsParamName;  };
@@ -84,7 +84,7 @@ protected:
 };
 
 // Class for Numeric parameters
-class IChannelParameterNumeric : public ChannelParameterBaseTemplate<float>
+class IChannelParameterNumeric : public ChannelParameterBase<float>
 {
 public:
     IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -106,7 +106,7 @@ private:
 };
 
 // Class for OnOff parameters
-class IChannelParameterOnOff : public ChannelParameterBaseTemplate<uint32_t>
+class IChannelParameterOnOff : public ChannelParameterBase<uint32_t>
 {
 public:
     IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -126,7 +126,7 @@ private:
 };
 
 // Class for ChStatus parameters
-class IChannelParameterChStatus : public ChannelParameterBaseTemplate<uint32_t>
+class IChannelParameterChStatus : public ChannelParameterBase<uint32_t>
 {
 public:
     IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -139,7 +139,7 @@ public:
 };
 
 // Class for Binary parameters
-class IChannelParameterBinary : public ChannelParameterBaseTemplate<int32_t>
+class IChannelParameterBinary : public ChannelParameterBase<int32_t>
 {
 public:
     IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);

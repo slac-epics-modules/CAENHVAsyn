@@ -23,7 +23,7 @@
 
 // Base class for all parameter types
 template<typename T>
-ChannelParameterBaseTemplate<T>::ChannelParameterBaseTemplate(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+ChannelParameterBase<T>::ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
     handle(h),
     slot(s),
@@ -60,7 +60,7 @@ ChannelParameterBaseTemplate<T>::ChannelParameterBaseTemplate(int h, std::size_t
 }
 
 template<typename T>
-T ChannelParameterBaseTemplate<T>::getVal() const
+T ChannelParameterBase<T>::getVal() const
 {
     if (mode == PARAM_MODE_WRONLY)
         return T();
@@ -75,7 +75,7 @@ T ChannelParameterBaseTemplate<T>::getVal() const
 }
 
 template<typename T>
-void ChannelParameterBaseTemplate<T>::setVal(T value) const
+void ChannelParameterBase<T>::setVal(T value) const
 {
     if (mode == PARAM_MODE_RDONLY)
         return;
@@ -86,7 +86,7 @@ void ChannelParameterBaseTemplate<T>::setVal(T value) const
 }
 
 template<typename T>
-void ChannelParameterBaseTemplate<T>::printInfo(std::ostream& stream) const
+void ChannelParameterBase<T>::printInfo(std::ostream& stream) const
 {
     stream << "          Param = "   << param \
            << ", Mode  = "           << modeStr \
@@ -104,7 +104,7 @@ ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, s
 
 IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBaseTemplate<float>(h, s, c, p, m)
+    ChannelParameterBase<float>(h, s, c, p, m)
 {
    float temp;
 
@@ -151,7 +151,7 @@ ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::
 
 IChannelParameterOnOff::IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBaseTemplate<uint32_t>(h, s, c, p, m)
+    ChannelParameterBase<uint32_t>(h, s, c, p, m)
 {
    char temp[30];
 
@@ -182,7 +182,7 @@ void IChannelParameterOnOff::printInfo(std::ostream& stream) const
 // Class for ChStatus parameters
 IChannelParameterChStatus::IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBaseTemplate<uint32_t>(h, s, c, p, m)
+    ChannelParameterBase<uint32_t>(h, s, c, p, m)
 {
 }
 
@@ -204,7 +204,7 @@ void IChannelParameterChStatus::printInfo(std::ostream& stream) const
 // Class for Binary parameters
 IChannelParameterBinary::IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBaseTemplate<int32_t>(h, s, c, p, m)
+    ChannelParameterBase<int32_t>(h, s, c, p, m)
 {
 }
 
