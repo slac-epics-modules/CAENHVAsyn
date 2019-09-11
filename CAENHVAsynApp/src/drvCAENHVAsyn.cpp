@@ -26,26 +26,27 @@
 std::string CAENHVAsyn::epicsPrefix;
 std::string CAENHVAsyn::chassisInfoFilePath = "/tmp/";
 
-void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
+template <typename T>
+void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
 {
-    std::string paramName  = bp->getEpicsParamName();
-    std::string recordName = bp->getEpicsRecordName();
-    std::string desc       = bp->getEpicsDesc();
-    std::string mode       = bp->getMode();
-    std::string egu        = bp->getUnits();
-    float       min        = bp->getMinVal();
-    float       max        = bp->getMaxVal();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string desc       = p->getEpicsDesc();
+    std::string mode       = p->getMode();
+    std::string egu        = p->getUnits();
+    float       min        = p->getMinVal();
+    float       max        = p->getMaxVal();
 
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    boardParameterNumericList.insert( std::make_pair<int, BoardParameterNumeric>(index, bp) );
+    list.insert( std::make_pair<int, T>(index, p) );
 
     if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
-        // Create list of paramater to pass to the  dbLoadRecords function
+        // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
         dbParamsLocal << ",PORT="   << portName_;
@@ -73,189 +74,34 @@ void CAENHVAsyn::createBoardParamNumeric(BoardParameterNumeric bp)
     }
 }
 
-void CAENHVAsyn::createBoardParamOnOff(BoardParameterOnOff bp)
+// This is a particular case as the System parameter of type REAL doesn't have
+// max, min, and units values
+template <>
+void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPropertyFloat>& list)
 {
-    std::string paramName  = bp->getEpicsParamName();
-    std::string recordName = bp->getEpicsRecordName();
-    std::string desc       = bp->getEpicsDesc();
-    std::string mode       = bp->getMode();
-    std::string onLabel    = bp->getOnState();
-    std::string offLabel   = bp->getOffState();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string desc       = p->getEpicsDesc();
+    std::string mode       = p->getMode();
 
     int index;
-    createParam(paramName.c_str(), asynParamUInt32Digital, &index);
+    createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    boardParameterOnOffList.insert( std::make_pair<int, BoardParameterOnOff>(index, bp) );
+    list.insert( std::make_pair<int, SystemPropertyFloat>(index, p) );
 
     if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
-        // Create list of paramater to pass to the  dbLoadRecords function
+        // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
         dbParamsLocal << ",PORT="   << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",ZNAM="  << offLabel;
-        dbParamsLocal << ",ONAM="  << onLabel;
-        dbParamsLocal << ",MASK=1";
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",SCAN=1 second";
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbLoadRecords("db/bi.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R="    << recordName << ":St";
-            dbLoadRecords("db/bo.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createBoardParamChStatus(BoardParameterChStatus bp)
-{
-    std::string paramName  = bp->getEpicsParamName();
-    std::string recordName = bp->getEpicsRecordName();
-    std::string mode       = bp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamFloat64, &index);
-
-    boardParameterChStatusList.insert( std::make_pair<int, BoardParameterChStatus>(index, bp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="  << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",ZNAM=Off";
-        dbParamsLocal << ",ONAM=On";
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            for (statusRecordMap_t::const_iterator it = recordFieldBdParamChStatus.begin(); it != recordFieldBdParamChStatus.end(); ++it)
-            {
-                std::stringstream dbParamsLocal2;
-                dbParamsLocal2.str("");
-                dbParamsLocal2 <<  dbParamsLocal.str();
-                dbParamsLocal2 << ",SCAN=1 second";
-                dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
-                dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
-            }
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            for (statusRecordMap_t::const_iterator it = recordFieldBdParamChStatus.begin(); it != recordFieldBdParamChStatus.end(); ++it)
-            {
-                std::stringstream dbParamsLocal2;
-                dbParamsLocal2.str("");
-                dbParamsLocal2 <<  dbParamsLocal.str();
-                dbParamsLocal2 << ",SCAN=Passive";
-                dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
-                dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
-            }
-        }
-
-    }
-}
-
-void CAENHVAsyn::createBoardParamBdStatus(BoardParameterBdStatus bp)
-{
-    std::string paramName  = bp->getEpicsParamName();
-    std::string recordName = bp->getEpicsRecordName();
-    std::string mode       = bp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamFloat64, &index);
-
-    boardParameterBdStatusList.insert( std::make_pair<int, BoardParameterBdStatus>(index, bp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="  << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",ZNAM=Off";
-        dbParamsLocal << ",ONAM=On";
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            for (statusRecordMap_t::const_iterator it = recordFieldBdParamBdStatus.begin(); it != recordFieldBdParamBdStatus.end(); ++it)
-            {
-                std::stringstream dbParamsLocal2;
-                dbParamsLocal2.str("");
-                dbParamsLocal2 <<  dbParamsLocal.str();
-                dbParamsLocal2 << ",SCAN=1 second";
-                dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
-                dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
-            }
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            for (statusRecordMap_t::const_iterator it = recordFieldBdParamBdStatus.begin(); it != recordFieldBdParamBdStatus.end(); ++it)
-            {
-                std::stringstream dbParamsLocal2;
-                dbParamsLocal2.str("");
-                dbParamsLocal2 <<  dbParamsLocal.str();
-                dbParamsLocal2 << ",SCAN=Passive";
-                dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
-                dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
-            }
-        }
-
-    }
-}
-
-void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
-{
-    std::string paramName  = cp->getEpicsParamName();
-    std::string recordName = cp->getEpicsRecordName();
-    std::string desc       = cp->getEpicsDesc();
-    std::string mode       = cp->getMode();
-    std::string egu        = cp->getUnits();
-    float       min        = cp->getMinVal();
-    float       max        = cp->getMaxVal();
-
-    int index;
-    createParam(paramName.c_str(), asynParamFloat64, &index);
-
-    channelParameterNumericList.insert( std::make_pair<int, ChannelParameterNumeric>(index, cp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",EGU="   << egu;
-        dbParamsLocal << ",LOPR="  << min;
-        dbParamsLocal << ",HOPR="  << max;
+        dbParamsLocal << ",EGU=";
+        dbParamsLocal << ",LOPR=";
+        dbParamsLocal << ",HOPR=";
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
@@ -266,34 +112,35 @@ void CAENHVAsyn::createChannelParamNumeric(ChannelParameterNumeric cp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            dbParamsLocal << ",DRVL=" << min;
-            dbParamsLocal << ",DRVH=" << max;
+            dbParamsLocal << ",DRVL=";
+            dbParamsLocal << ",DRVH=";
             dbParamsLocal << ",R="    << recordName << ":St";
             dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
         }
+
     }
 }
 
-void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
+template <typename T>
+void CAENHVAsyn::createParamBinary(T p, std::map<int, T>& list)
 {
-    std::string paramName  = cp->getEpicsParamName();
-    std::string recordName = cp->getEpicsRecordName();
-    std::string desc       = cp->getEpicsDesc();
-    std::string mode       = cp->getMode();
-    std::string onLabel    = cp->getOnState();
-    std::string offLabel   = cp->getOffState();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string desc       = p->getEpicsDesc();
+    std::string mode       = p->getMode();
+    std::string onLabel    = p->getOnState();
+    std::string offLabel   = p->getOffState();
 
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-
-    channelParameterOnOffList.insert( std::make_pair<int, ChannelParameterOnOff>(index, cp) );
+    list.insert( std::make_pair<int, T>(index, p) );
 
     if (!epicsPrefix.empty())
     {
         std::stringstream dbParamsLocal;
 
-        // Create list of paramater to pass to the  dbLoadRecords function
+        // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
         dbParamsLocal << ",PORT="   << portName_;
@@ -318,16 +165,17 @@ void CAENHVAsyn::createChannelParamOnOff(ChannelParameterOnOff cp)
     }
 }
 
-void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
+template <typename T>
+void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRecordMap_t& recordMap)
 {
-    std::string paramName  = cp->getEpicsParamName();
-    std::string recordName = cp->getEpicsRecordName();
-    std::string mode       = cp->getMode();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string mode       = p->getMode();
 
     int index;
-    createParam(paramName.c_str(), asynParamFloat64, &index);
+    createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    channelParameterChStatusList.insert( std::make_pair<int, ChannelParameterChStatus>(index, cp) );
+    list.insert( std::make_pair<int, T>(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -343,7 +191,7 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
-            for (statusRecordMap_t::const_iterator it = recordFieldChParamChStatus.begin(); it != recordFieldChParamChStatus.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
@@ -358,15 +206,15 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            for (statusRecordMap_t::const_iterator it = recordFieldChParamChStatus.begin(); it != recordFieldChParamChStatus.end(); ++it)
+            for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
-                dbParamsLocal2 <<  dbParamsLocal;
+                dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=Passive";
                 dbParamsLocal2 << ",MASK=" << it->first;
                 dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":St";
+                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
                 dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
             }
         }
@@ -374,17 +222,18 @@ void CAENHVAsyn::createChannelParamChStatus(ChannelParameterChStatus cp)
     }
 }
 
-void CAENHVAsyn::createChannelParamBinary(ChannelParameterBinary cp)
+template <typename T>
+void CAENHVAsyn::createParamInteger(T p, std::map<int, T>& list)
 {
-    std::string paramName  = cp->getEpicsParamName();
-    std::string recordName = cp->getEpicsRecordName();
-    std::string desc       = cp->getEpicsDesc();
-    std::string mode       = cp->getMode();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string desc       = p->getEpicsDesc();
+    std::string mode       = p->getMode();
 
     int index;
     createParam(paramName.c_str(), asynParamInt32, &index);
 
-    channelParameterBinaryList.insert( std::make_pair<int, ChannelParameterBinary>(index, cp) );
+    list.insert( std::make_pair<int, T>(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -412,55 +261,18 @@ void CAENHVAsyn::createChannelParamBinary(ChannelParameterBinary cp)
     }
 }
 
-void CAENHVAsyn::createSystemPropertyInteger(SystemPropertyInteger sp)
+template <typename T>
+void CAENHVAsyn::createParamString(T p, std::map<int, T>& list)
 {
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamInt32, &index);
-
-    systemPropertyIntegerList.insert( std::make_pair<int, SystemPropertyInteger>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbParamsLocal << ",SCAN=1 second";
-            dbLoadRecords("db/longin.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/longout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
+    std::string paramName  = p->getEpicsParamName();
+    std::string recordName = p->getEpicsRecordName();
+    std::string desc       = p->getEpicsDesc();
+    std::string mode       = p->getMode();
 
     int index;
     createParam(paramName.c_str(), asynParamOctet, &index);
 
-    systemPropertyStringList.insert( std::make_pair<int, SystemPropertyString>(index, sp) );
+    list.insert( std::make_pair<int, T>(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -485,49 +297,6 @@ void CAENHVAsyn::createSystemPropertyString(SystemPropertyString sp)
         {
             dbParamsLocal << ",R=" << recordName << ":St";
             dbLoadRecords("db/stringout.template", dbParamsLocal.str().c_str());
-        }
-    }
-}
-
-void CAENHVAsyn::createSystemPropertyFloat(SystemPropertyFloat sp)
-{
-    std::string paramName  = sp->getEpicsParamName();
-    std::string recordName = sp->getEpicsRecordName();
-    std::string desc       = sp->getEpicsDesc();
-    std::string mode       = sp->getMode();
-
-    int index;
-    createParam(paramName.c_str(), asynParamFloat64, &index);
-
-    systemPropertyFloatList.insert( std::make_pair<int, SystemPropertyFloat>(index, sp) );
-
-    if (!epicsPrefix.empty())
-    {
-        std::stringstream dbParamsLocal;
-
-        // Create list of paramater to pass to the  dbLoadRecords function
-        dbParamsLocal.str("");
-        dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
-        dbParamsLocal << ",PARAM=" << paramName;
-        dbParamsLocal << ",DESC="  << desc;
-        dbParamsLocal << ",EGU=";
-        dbParamsLocal << ",LOPR=";
-        dbParamsLocal << ",HOPR=";
-
-        if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
-        {
-            dbParamsLocal << ",SCAN=1 second";
-            dbParamsLocal << ",R=" << recordName << ":Rd";
-            dbLoadRecords("db/ai.template", dbParamsLocal.str().c_str());
-        }
-
-        if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
-        {
-            dbParamsLocal << ",DRVL=";
-            dbParamsLocal << ",DRVH=";
-            dbParamsLocal << ",R=" << recordName << ":St";
-            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
         }
     }
 }
@@ -595,19 +364,20 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     {
         std::vector<SystemPropertyInteger> s = chassis->getSystemPropertyIntegers();
         for (std::vector<SystemPropertyInteger>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyInteger(*it);
+            createParamInteger<SystemPropertyInteger>(*it, systemPropertyIntegerList);
     }
 
     {
         std::vector<SystemPropertyFloat> s = chassis->getSystemPropertyFloats();
         for (std::vector<SystemPropertyFloat>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyFloat(*it);
+            createParamFloat<SystemPropertyFloat>(*it, systemPropertyFloatList);
     }
 
     {
         std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
         for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
-            createSystemPropertyString(*it);
+            createParamString<SystemPropertyString>(*it, systemPropertyStringList);
+
     }
 
     // Boards
@@ -618,22 +388,22 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         std::vector<BoardParameterNumeric> pn = boardIt->getBoardParameterNumerics();
 
         for (std::vector<BoardParameterNumeric>::iterator paramIt = pn.begin(); paramIt != pn.end(); ++paramIt)
-            createBoardParamNumeric(*paramIt);
+            createParamFloat<BoardParameterNumeric>(*paramIt, boardParameterNumericList);
 
         std::vector<BoardParameterOnOff> po = boardIt->getBoardParameterOnOffs();
 
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
-            createBoardParamOnOff(*paramIt);
+            createParamBinary<BoardParameterOnOff>(*paramIt, boardParameterOnOffList);
 
         std::vector<BoardParameterChStatus> pcs = boardIt->getBoardParameterChStatuses();
 
         for (std::vector<BoardParameterChStatus>::iterator paramIt = pcs.begin(); paramIt != pcs.end(); ++paramIt)
-            createBoardParamChStatus(*paramIt);
+            createParamMBinary<BoardParameterChStatus>(*paramIt, boardParameterChStatusList, recordFieldBdParamChStatus);
 
         std::vector<BoardParameterBdStatus> pbs = boardIt->getBoardParameterBdStatuses();
 
         for (std::vector<BoardParameterBdStatus>::iterator paramIt = pbs.begin(); paramIt != pbs.end(); ++paramIt)
-            createBoardParamBdStatus(*paramIt);
+            createParamMBinary<BoardParameterBdStatus>(*paramIt, boardParameterBdStatusList, recordFieldBdParamBdStatus);
 
         std::vector<Channel> c = boardIt->getChannels();
 
@@ -641,19 +411,19 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         {
             std::vector<ChannelParameterNumeric> cpn = channelIt->getChannelParameterNumerics();
             for (std::vector<ChannelParameterNumeric>::iterator paramIt = cpn.begin(); paramIt != cpn.end(); ++paramIt)
-                createChannelParamNumeric(*paramIt);
+                createParamFloat<ChannelParameterNumeric>(*paramIt, channelParameterNumericList);
 
             std::vector<ChannelParameterOnOff> cpo = channelIt->getChannelParameterOnOffs();
             for (std::vector<ChannelParameterOnOff>::iterator paramIt = cpo.begin(); paramIt != cpo.end(); ++paramIt)
-                createChannelParamOnOff(*paramIt);
+                createParamBinary<ChannelParameterOnOff>(*paramIt, channelParameterOnOffList);
 
             std::vector<ChannelParameterChStatus> cpcs = channelIt->getChannelParameterChStatuses();
             for (std::vector<ChannelParameterChStatus>::iterator paramIt = cpcs.begin(); paramIt != cpcs.end(); ++paramIt)
-                createChannelParamChStatus(*paramIt);
+                createParamMBinary<ChannelParameterChStatus>(*paramIt, channelParameterChStatusList, recordFieldChParamChStatus);
 
             std::vector<ChannelParameterBinary> cpb = channelIt->getChannelParameterBinaries();
             for (std::vector<ChannelParameterBinary>::iterator paramIt = cpb.begin(); paramIt != cpb.end(); ++paramIt)
-                createChannelParamBinary(*paramIt);
+                createParamInteger<ChannelParameterBinary>(*paramIt, channelParameterBinaryList);
         }
     }
 }

@@ -133,22 +133,18 @@ class CAENHVAsyn : public asynPortDriver
 
     private:
 
-        // Methods to create system property EPICS paramater and records
-        void createSystemPropertyInteger(SystemPropertyInteger sp);
-        void createSystemPropertyString(SystemPropertyString sp);
-        void createSystemPropertyFloat(SystemPropertyFloat sp);
 
-        // Methods to create board parameter EPICS paramater and records
-        void createBoardParamNumeric(BoardParameterNumeric bp);
-        void createBoardParamOnOff(BoardParameterOnOff bp);
-        void createBoardParamChStatus(BoardParameterChStatus bp);
-        void createBoardParamBdStatus(BoardParameterBdStatus bp);
-
-        // Methods to create channel parameteer EPICS paramater and records
-        void createChannelParamNumeric(ChannelParameterNumeric cp);
-        void createChannelParamOnOff(ChannelParameterOnOff cp);
-        void createChannelParamChStatus(ChannelParameterChStatus cp);
-        void createChannelParamBinary(ChannelParameterBinary cp);
+        // Methods to create EPICS asyn parameters and records for all system, board, and channel parameters
+        template<typename T>
+        void createParamFloat(T p, std::map<int, T>& list);
+        template <typename T>
+        void createParamBinary(T p, std::map<int, T>& list);
+        template <typename T>
+        void createParamMBinary(T p, std::map<int, T>& list, const statusRecordMap_t& recordMap);
+        template <typename T>
+        void createParamInteger(T p, std::map<int, T>& list);
+        template <typename T>
+        void createParamString(T p, std::map<int, T>& list);
 
         const std::string driverName_;
         std::string portName_;
