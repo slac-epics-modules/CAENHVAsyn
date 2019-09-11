@@ -42,7 +42,6 @@
 
 #include "board_parameter.h"
 
-class ChannelParameterBase;
 class IChannelParameterNumeric;
 class IChannelParameterOnOff;
 class IChannelParameterChStatus;
@@ -54,18 +53,22 @@ typedef std::shared_ptr< IChannelParameterOnOff    > ChannelParameterOnOff;
 typedef std::shared_ptr< IChannelParameterChStatus > ChannelParameterChStatus;
 typedef std::shared_ptr< IChannelParameterBinary   > ChannelParameterBinary;
 
-class ChannelParameterBase
+template<typename T>
+class ChannelParameterBaseTemplate
 {
 public:
-    ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
-    virtual ~ChannelParameterBase() {};
-
-    virtual void printInfo(std::ostream& stream) const = 0;
+    ChannelParameterBaseTemplate(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
+    virtual ~ChannelParameterBaseTemplate() {};
 
     std::string getMode()            { return modeStr;    };
     std::string getEpicsParamName()  { return epicsParamName;  };
     std::string getEpicsRecordName() { return epicsRecordName; };
     std::string getEpicsDesc()       { return epicsDesc;       };
+
+    virtual void printInfo(std::ostream& stream) const;
+
+    virtual T    getVal()        const;
+    virtual void setVal(T value) const;
 
 protected:
     int         handle;
@@ -80,7 +83,8 @@ protected:
     std::string epicsDesc;
 };
 
-class IChannelParameterNumeric : public ChannelParameterBase
+// Class for Numeric parameters
+class IChannelParameterNumeric : public ChannelParameterBaseTemplate<float>
 {
 public:
     IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -95,16 +99,14 @@ public:
 
     virtual void printInfo(std::ostream& stream) const;
 
-    float getVal() const;
-    void setVal(float value);
-
 private:
     float       minVal;
     float       maxVal;
     std::string units;
 };
 
-class IChannelParameterOnOff : public ChannelParameterBase
+// Class for OnOff parameters
+class IChannelParameterOnOff : public ChannelParameterBaseTemplate<uint32_t>
 {
 public:
     IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -118,15 +120,13 @@ public:
 
     virtual void printInfo(std::ostream& stream) const;
 
-    uint32_t getVal() const;
-    void setVal(uint32_t value);
-
 private:
     std::string onState;
     std::string offState;
 };
 
-class IChannelParameterChStatus : public ChannelParameterBase
+// Class for ChStatus parameters
+class IChannelParameterChStatus : public ChannelParameterBaseTemplate<uint32_t>
 {
 public:
     IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -136,12 +136,10 @@ public:
     static ChannelParameterChStatus create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
 
     virtual void printInfo(std::ostream& stream) const;
-
-    uint32_t getVal()               const;
-    void     setVal(uint32_t value) const;
 };
 
-class IChannelParameterBinary : public ChannelParameterBase
+// Class for Binary parameters
+class IChannelParameterBinary : public ChannelParameterBaseTemplate<int32_t>
 {
 public:
     IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
@@ -151,9 +149,6 @@ public:
     static ChannelParameterBinary create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m);
 
     virtual void printInfo(std::ostream& stream) const;
-
-    int32_t getVal()              const;
-    void    setVal(int32_t value) const;
 };
 
 #endif

@@ -104,7 +104,6 @@ BoardParameterNumeric IBoardParameterNumeric::create(int h, std::size_t s, const
     return std::make_shared<IBoardParameterNumeric>(h, s, p, m);
 }
 
-
 IBoardParameterNumeric::IBoardParameterNumeric(int h, std::size_t s, const std::string&  p, uint32_t m)
 :
     BoardParameterBase<float>(h, s, p, m)

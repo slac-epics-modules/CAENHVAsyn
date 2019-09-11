@@ -21,8 +21,9 @@
 
 #include "channel_parameter.h"
 
-
-ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
+// Base class for all parameter types
+template<typename T>
+ChannelParameterBaseTemplate<T>::ChannelParameterBaseTemplate(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
     handle(h),
     slot(s),
@@ -30,15 +31,15 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
     param(p),
     mode(m)
 {
-   // Generate mode string representation
-   if (mode == PARAM_MODE_WRONLY)
-       modeStr = "WO";
-   else if (mode == PARAM_MODE_RDONLY)
-       modeStr = "RO";
-   else if (mode == PARAM_MODE_RDWR)
-       modeStr = "RW";
-   else
-       modeStr = "?";
+    // Generate mode string representation
+    if (mode == PARAM_MODE_WRONLY)
+        modeStr = "WO";
+    else if (mode == PARAM_MODE_RDONLY)
+        modeStr = "RO";
+    else if (mode == PARAM_MODE_RDWR)
+        modeStr = "RW";
+    else
+        modeStr = "?";
 
     std::stringstream temp;
 
@@ -63,9 +64,46 @@ ChannelParameterBase::ChannelParameterBase(int h, std::size_t s, std::size_t c, 
          <<  ", " << param \
          << " (" << modeStr << ")'";
     epicsDesc = temp.str();
-
 }
 
+template<typename T>
+T ChannelParameterBaseTemplate<T>::getVal() const
+{
+    if (mode == PARAM_MODE_WRONLY)
+        return T();
+
+    T temp;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
+
+    return temp;
+}
+
+template<typename T>
+void ChannelParameterBaseTemplate<T>::setVal(T value) const
+{
+    if (mode == PARAM_MODE_RDONLY)
+        return;
+
+    uint16_t temp_chs = channel;
+    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
+           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
+}
+
+template<typename T>
+void ChannelParameterBaseTemplate<T>::printInfo(std::ostream& stream) const
+{
+    stream << "          Param = "   << param \
+           << ", Mode  = "           << modeStr \
+           << ", Value = "           << getVal() \
+           << ", epicsParamName = "  << epicsParamName \
+           << ", epicsRecordName = " << epicsRecordName \
+           << std::endl;
+}
+
+// Class for Numeric parameters
 ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IChannelParameterNumeric>(h, s, c, p, m);
@@ -73,7 +111,7 @@ ChannelParameterNumeric IChannelParameterNumeric::create(int h, std::size_t s, s
 
 IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBase(h, s, c, p, m)
+    ChannelParameterBaseTemplate<float>(h, s, c, p, m)
 {
    float temp;
 
@@ -99,31 +137,6 @@ IChannelParameterNumeric::IChannelParameterNumeric(int h, std::size_t s, std::si
      units = processUnits(u, e);
 }
 
-
-float IChannelParameterNumeric::getVal() const
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0.0;
-
-    float temp;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IChannelParameterNumeric::setVal(float value)
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
-}
-
 void IChannelParameterNumeric::printInfo(std::ostream& stream) const
 {
     stream << "          Param = "   << param \
@@ -137,6 +150,7 @@ void IChannelParameterNumeric::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
+// Class for OnOff parameters
 ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IChannelParameterOnOff>(h, s, c, p, m);
@@ -144,7 +158,7 @@ ChannelParameterOnOff IChannelParameterOnOff::create(int h, std::size_t s, std::
 
 IChannelParameterOnOff::IChannelParameterOnOff(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBase(h, s, c, p, m)
+    ChannelParameterBaseTemplate<uint32_t>(h, s, c, p, m)
 {
    char temp[30];
 
@@ -160,30 +174,6 @@ IChannelParameterOnOff::IChannelParameterOnOff(int h, std::size_t s, std::size_t
 
 }
 
-uint32_t IChannelParameterOnOff::getVal() const
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IChannelParameterOnOff::setVal(uint32_t value)
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
-}
-
 void IChannelParameterOnOff::printInfo(std::ostream& stream) const
 {
     stream << "          Param = "   << param \
@@ -196,39 +186,16 @@ void IChannelParameterOnOff::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
+// Class for ChStatus parameters
 IChannelParameterChStatus::IChannelParameterChStatus(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBase(h, s, c, p, m)
+    ChannelParameterBaseTemplate<uint32_t>(h, s, c, p, m)
 {
 }
 
 ChannelParameterChStatus IChannelParameterChStatus::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IChannelParameterChStatus>(h, s, c, p, m);
-}
-
-uint32_t IChannelParameterChStatus::getVal() const
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IChannelParameterChStatus::setVal(uint32_t value) const
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
 void IChannelParameterChStatus::printInfo(std::ostream& stream) const
@@ -241,39 +208,16 @@ void IChannelParameterChStatus::printInfo(std::ostream& stream) const
            << std::endl;
 }
 
+// Class for Binary parameters
 IChannelParameterBinary::IChannelParameterBinary(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 :
-    ChannelParameterBase(h, s, c, p, m)
+    ChannelParameterBaseTemplate<int32_t>(h, s, c, p, m)
 {
 }
 
 ChannelParameterBinary IChannelParameterBinary::create(int h, std::size_t s, std::size_t c, const std::string&  p, uint32_t m)
 {
     return std::make_shared<IChannelParameterBinary>(h, s, c, p, m);
-}
-
-int32_t IChannelParameterBinary::getVal() const
-{
-    if (mode == PARAM_MODE_WRONLY)
-        return 0;
-
-    uint32_t temp;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_GetChParam(handle, slot, param.c_str(), 1, &temp_chs, &temp) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_GetChParam failed: " + std::string(CAENHV_GetError(handle)));
-
-    return temp;
-}
-
-void IChannelParameterBinary::setVal(int32_t value) const
-{
-    if (mode == PARAM_MODE_RDONLY)
-        return;
-
-    uint16_t temp_chs = channel;
-    if ( CAENHV_SetChParam(handle, slot, param.c_str(), 1, &temp_chs, &value) != CAENHV_OK )
-           throw std::runtime_error("CAENHV_SetChParam failed: " + std::string(CAENHV_GetError(handle)));
 }
 
 void IChannelParameterBinary::printInfo(std::ostream& stream) const
