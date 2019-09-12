@@ -168,19 +168,4 @@ class CAENHVAsyn : public asynPortDriver
        std::map<int, ChannelParameterBinary>   channelParameterBinaryList;
 };
 
-
-class CAENHVAsynFileRAII
-{
-public:
-    CAENHVAsynFileRAII(const std::string& name) { printf("Opening file\n"); file.open(name); };
-    ~CAENHVAsynFileRAII() { printf("Closing file\n"); file.close(); };
-
-    //std::ostream& operator<< (std::ostream& stream) { return file << stream; };
-    //std::istream& operator>> (std::istream& stream) { stream >> file; return stream; };
-    CAENHVAsynFileRAII& operator>>(const CAENHVAsynFileRAII& rhs) { return *this; };
-
-private:
-    std::ofstream file;
-};
-
 #endif
