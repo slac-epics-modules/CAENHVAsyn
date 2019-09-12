@@ -49,7 +49,7 @@ void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
         // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PORT="  << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU="   << egu;
@@ -96,7 +96,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
         // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PORT="  << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",EGU=";
@@ -143,7 +143,7 @@ void CAENHVAsyn::createParamBinary(T p, std::map<int, T>& list)
         // Create list of parameter to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PORT="  << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",ZNAM="  << offLabel;
@@ -198,8 +198,8 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=1 second";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.second;
+                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
                 dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
             }
         }
@@ -213,8 +213,8 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=Passive";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC="  << it->second.second;
-                dbParamsLocal2 << ",R=" << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.second;
+                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
                 dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
             }
         }
@@ -242,7 +242,7 @@ void CAENHVAsyn::createParamInteger(T p, std::map<int, T>& list)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PORT="  << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
 
@@ -281,7 +281,7 @@ void CAENHVAsyn::createParamString(T p, std::map<int, T>& list)
         // Create list of paramater to pass to the  dbLoadRecords function
         dbParamsLocal.str("");
         dbParamsLocal << "P="      << CAENHVAsyn::epicsPrefix;
-        dbParamsLocal << ",PORT="   << portName_;
+        dbParamsLocal << ",PORT="  << portName_;
         dbParamsLocal << ",PARAM=" << paramName;
         dbParamsLocal << ",DESC="  << desc;
         dbParamsLocal << ",NELM=4096";
@@ -377,7 +377,6 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
         for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
             createParamString<SystemPropertyString>(*it, systemPropertyStringList);
-
     }
 
     // Boards
