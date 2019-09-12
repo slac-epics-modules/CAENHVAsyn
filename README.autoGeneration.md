@@ -70,7 +70,7 @@ For example, the board parameter `HVMax`, which has read-only access, of the boa
 For board properties of type `PARAM_TYPE_BDSTATUS`, one/two bi/bo PVs are generated for each bit status. All the PV will use the same Asyn parameter name, with a appropiate mask value to selecte the correct bit in the status word. The name of each indivial PV will have the following strcuture:
 
 ```
-<PREFIX>:S<SLOT_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><_BIT_SUFFIX>:<SUFFIX>
+<PREFIX>:S<SLOT_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><BIT_SUFFIX>:<SUFFIX>
 ```
 
 Where the **BIT_SUFFIX** wil be different for each bit status as described in the following table:
@@ -89,7 +89,7 @@ Bit position    | BIT_SUFFIX    | Bit Function Description
 For board properties of type `PARAM_TYPE_BDSTATUS`, one/two bi/bo PVs are generated for each bit status. All the PV will use the same Asyn parameter name, with a appropiate mask value to selecte the correct bit in the status word. The name of each indivial PV will have the following strcuture:
 
 ```
-<PREFIX>:S<SLOT_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><_BIT_SUFFIX>:<SUFFIX>
+<PREFIX>:S<SLOT_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><BIT_SUFFIX>:<SUFFIX>
 ```
 
 Where the **BIT_SUFFIX** wil be different for each bit status as described in the following table:
@@ -136,7 +136,7 @@ For example, the board parameter `V0Set` which has read-write access, of the fif
 For channel properties of type `PARAM_TYPE_BDSTATUS`, one/two bi/bo PVs are generated for each bit status. All the PV will use the same Asyn parameter name, with a appropiate mask value to selecte the correct bit in the status word. The name of each indivial PV will have the following strcuture:
 
 ```
-<PREFIX>:S<SLOT_NUMBER>:C<CHANNEL_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><_BIT_SUFFIX>:<SUFFIX>
+<PREFIX>:S<SLOT_NUMBER>:C<CHANNEL_NUMBER>:<PROCESSED_SYSTEM_PARAMETER><BIT_SUFFIX>:<SUFFIX>
 ```
 
 Where the **BIT_SUFFIX** wil be different for each bit status as described in the following table:
