@@ -174,3 +174,6 @@ SYSPROP_TYPE_INT4               | asynParamInt32            | longin/longout    
 SYSPROP_TYPE_BOOLEAN            | asynParamInt32            | longin/longout    | asynInt32
 PARAM_TYPE_NUMERIC              | asynParamFloat64          | ai/ao             | asynFloat64
 PARAM_TYPE_ONOFF                | asynParamUInt32Digital    | bi/bo             | asynUInt32Digital
+PARAM_TYPE_BDSTATUS             | asynParamUInt32Digital    | bi/bo             | asynUInt32Digital
+PARAM_TYPE_CHSTATUS             | asynParamUInt32Digital    | bi/bo             | asynUInt32Digital
+PARAM_TYPE_BINARY               | asynParamInt32            | longin/longout    | asynInt32
