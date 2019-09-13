@@ -109,7 +109,6 @@ void Crate::GetCrateMap()
 
 
     numSlots = NrOfSlot;
-    boards.reserve(numSlots);
     char *m = ModelList, *d = ModelList;
 
     for (std::size_t i(0); i < NrOfSlot; ++i, m += strlen(m) + 1, d += strlen(d) + 1)
@@ -127,7 +126,7 @@ void Crate::GetCrateMap()
             fw << unsigned(FmwRelMaxList[i]) << "." << unsigned(FmwRelMinList[i]);
 
             // Create a new Slot object and add it to the vector
-            boards.emplace_back(handle, i, m, d, NrOfChList[i], sn.str(), fw.str());
+            boards.push_back( IBoard::create(handle, i, m, d, NrOfChList[i], sn.str(), fw.str()) );
         }
     }
 
@@ -193,7 +192,7 @@ void Crate::printInfo(std::ostream& stream) const
     stream << "  Board information: " << std::endl;
     stream << "  ---------------------------" << std::endl;
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
-        it->printInfo(stream);
+        (*it)->printInfo(stream);
     stream << "=========================" << std::endl;;
     stream << std::endl;
 }
@@ -208,7 +207,7 @@ void Crate::printCrateMap(std::ostream& stream) const
     stream << "  Board information: " << std::endl;
     stream << "  ---------------------------" << std::endl;
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
-        it->printBoardInfo(stream);
+        (*it)->printBoardInfo(stream);
     stream << "  ---------------------------" << std::endl;
     stream << "=============================" << std::endl;;
 }

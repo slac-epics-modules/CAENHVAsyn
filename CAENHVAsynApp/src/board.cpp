@@ -21,7 +21,7 @@
 
 #include "board.h"
 
-Board::Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw)
+IBoard::IBoard(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw)
 :
     handle(h),
     slot(s),
@@ -35,11 +35,16 @@ Board::Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, 
     GetBoardChannels();
 }
 
-Board::~Board()
+IBoard::~IBoard()
 {
 }
 
-void Board::printInfo(std::ostream& stream) const
+Board IBoard::create(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw)
+{
+    return std::make_shared<IBoard>(h, s, m, d, n, sn, fw);
+}
+
+void IBoard::printInfo(std::ostream& stream) const
 {
     printBoardInfo(stream);
 
@@ -68,7 +73,7 @@ void Board::printInfo(std::ostream& stream) const
         it->printInfo(stream);
 }
 
-void Board::printBoardInfo(std::ostream& stream) const
+void IBoard::printBoardInfo(std::ostream& stream) const
 {
     stream << "    Slot: " << slot \
            << ", Model: " << model \
@@ -79,7 +84,7 @@ void Board::printBoardInfo(std::ostream& stream) const
            << std::endl;
 }
 
-void Board::GetBoardParams()
+void IBoard::GetBoardParams()
 {
     // Get Board Parameter Info
     std::string functionName("GetBoardParams");
@@ -129,7 +134,7 @@ void Board::GetBoardParams()
     free(ParNameList);
 }
 
-void Board::GetBoardChannels()
+void IBoard::GetBoardChannels()
 {
     channels.reserve(numChannels);
 

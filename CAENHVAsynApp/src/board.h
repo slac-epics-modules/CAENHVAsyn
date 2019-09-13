@@ -42,11 +42,18 @@
 #include "board_parameter.h"
 #include "channel.h"
 
-class Board
+class IBoard;
+
+typedef std::shared_ptr<IBoard> Board;
+
+class IBoard
 {
 public:
-    Board(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw);
-    ~Board();
+    IBoard(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw);
+    ~IBoard();
+
+    // Factory method
+    static Board create(int h, std::size_t s, std::string m, std::string d, std::size_t n, std::string sn, std::string fw);
 
     void printInfo(std::ostream& stream) const;
     void printBoardInfo(std::ostream& stream) const;

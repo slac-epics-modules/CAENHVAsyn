@@ -389,27 +389,27 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     for (std::vector<Board>::iterator boardIt = b.begin(); boardIt != b.end(); ++boardIt)
     {
-        std::vector<BoardParameterNumeric> pn = boardIt->getBoardParameterNumerics();
+        std::vector<BoardParameterNumeric> pn = (*boardIt)->getBoardParameterNumerics();
 
         for (std::vector<BoardParameterNumeric>::iterator paramIt = pn.begin(); paramIt != pn.end(); ++paramIt)
             createParamFloat<BoardParameterNumeric>(*paramIt, boardParameterNumericList);
 
-        std::vector<BoardParameterOnOff> po = boardIt->getBoardParameterOnOffs();
+        std::vector<BoardParameterOnOff> po = (*boardIt)->getBoardParameterOnOffs();
 
         for (std::vector<BoardParameterOnOff>::iterator paramIt = po.begin(); paramIt != po.end(); ++paramIt)
             createParamBinary<BoardParameterOnOff>(*paramIt, boardParameterOnOffList);
 
-        std::vector<BoardParameterChStatus> pcs = boardIt->getBoardParameterChStatuses();
+        std::vector<BoardParameterChStatus> pcs = (*boardIt)->getBoardParameterChStatuses();
 
         for (std::vector<BoardParameterChStatus>::iterator paramIt = pcs.begin(); paramIt != pcs.end(); ++paramIt)
             createParamMBinary<BoardParameterChStatus>(*paramIt, boardParameterChStatusList, recordFieldBdParamChStatus);
 
-        std::vector<BoardParameterBdStatus> pbs = boardIt->getBoardParameterBdStatuses();
+        std::vector<BoardParameterBdStatus> pbs = (*boardIt)->getBoardParameterBdStatuses();
 
         for (std::vector<BoardParameterBdStatus>::iterator paramIt = pbs.begin(); paramIt != pbs.end(); ++paramIt)
             createParamMBinary<BoardParameterBdStatus>(*paramIt, boardParameterBdStatusList, recordFieldBdParamBdStatus);
 
-        std::vector<Channel> c = boardIt->getChannels();
+        std::vector<Channel> c = (*boardIt)->getChannels();
 
         for(std::vector<Channel>::iterator channelIt = c.begin(); channelIt != c.end(); ++channelIt)
         {
