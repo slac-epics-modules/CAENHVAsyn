@@ -70,7 +70,7 @@ void IBoard::printInfo(std::ostream& stream) const
     stream << "    Channel parameters:" << std::endl;
     stream << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
-        it->printInfo(stream);
+        (*it)->printInfo(stream);
 }
 
 void IBoard::printBoardInfo(std::ostream& stream) const
@@ -136,8 +136,6 @@ void IBoard::GetBoardParams()
 
 void IBoard::GetBoardChannels()
 {
-    channels.reserve(numChannels);
-
     for (std::size_t i(0); i < numChannels; ++i)
-        channels.emplace_back(handle, slot, i);
+        channels.push_back( IChannel::create(handle, slot, i) );
 }

@@ -21,7 +21,7 @@
 
 #include "channel.h"
 
-Channel::Channel(int h, std::size_t s, std::size_t c)
+IChannel::IChannel(int h, std::size_t s, std::size_t c)
 :
     handle(h),
     slot(s),
@@ -30,7 +30,12 @@ Channel::Channel(int h, std::size_t s, std::size_t c)
     GetChannelParams();
 }
 
-void Channel::printInfo(std::ostream& stream) const
+Channel IChannel::create(int h, std::size_t s, std::size_t c)
+{
+    return std::make_shared<IChannel>(h, s, c);
+}
+
+void IChannel::printInfo(std::ostream& stream) const
 {
     stream << "      Slot = " << slot \
            << ", Channel = " << channel \
@@ -54,7 +59,7 @@ void Channel::printInfo(std::ostream& stream) const
 
 }
 
-void Channel::GetChannelParams()
+void IChannel::GetChannelParams()
 {
     // Get Channel Parameter Info
     std::string functionName("GetChannelParams");

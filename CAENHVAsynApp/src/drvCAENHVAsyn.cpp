@@ -413,19 +413,19 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
         for(std::vector<Channel>::iterator channelIt = c.begin(); channelIt != c.end(); ++channelIt)
         {
-            std::vector<ChannelParameterNumeric> cpn = channelIt->getChannelParameterNumerics();
+            std::vector<ChannelParameterNumeric> cpn = (*channelIt)->getChannelParameterNumerics();
             for (std::vector<ChannelParameterNumeric>::iterator paramIt = cpn.begin(); paramIt != cpn.end(); ++paramIt)
                 createParamFloat<ChannelParameterNumeric>(*paramIt, channelParameterNumericList);
 
-            std::vector<ChannelParameterOnOff> cpo = channelIt->getChannelParameterOnOffs();
+            std::vector<ChannelParameterOnOff> cpo = (*channelIt)->getChannelParameterOnOffs();
             for (std::vector<ChannelParameterOnOff>::iterator paramIt = cpo.begin(); paramIt != cpo.end(); ++paramIt)
                 createParamBinary<ChannelParameterOnOff>(*paramIt, channelParameterOnOffList);
 
-            std::vector<ChannelParameterChStatus> cpcs = channelIt->getChannelParameterChStatuses();
+            std::vector<ChannelParameterChStatus> cpcs = (*channelIt)->getChannelParameterChStatuses();
             for (std::vector<ChannelParameterChStatus>::iterator paramIt = cpcs.begin(); paramIt != cpcs.end(); ++paramIt)
                 createParamMBinary<ChannelParameterChStatus>(*paramIt, channelParameterChStatusList, recordFieldChParamChStatus);
 
-            std::vector<ChannelParameterBinary> cpb = channelIt->getChannelParameterBinaries();
+            std::vector<ChannelParameterBinary> cpb = (*channelIt)->getChannelParameterBinaries();
             for (std::vector<ChannelParameterBinary>::iterator paramIt = cpb.begin(); paramIt != cpb.end(); ++paramIt)
                 createParamInteger<ChannelParameterBinary>(*paramIt, channelParameterBinaryList);
         }

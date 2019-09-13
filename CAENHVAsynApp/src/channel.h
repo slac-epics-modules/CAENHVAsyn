@@ -41,11 +41,19 @@
 #include "common.h"
 #include "channel_parameter.h"
 
-class Channel
+class IChannel;
+
+typedef std::shared_ptr<IChannel> Channel;
+
+
+class IChannel
 {
 public:
-    Channel(int h, std::size_t s, std::size_t c);
-    ~Channel() {};
+    IChannel(int h, std::size_t s, std::size_t c);
+    ~IChannel() {};
+
+    // Factory method
+    static Channel create(int h, std::size_t s, std::size_t c);
 
     void printInfo(std::ostream& stream) const;
 
