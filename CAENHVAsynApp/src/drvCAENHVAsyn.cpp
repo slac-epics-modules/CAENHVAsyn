@@ -814,7 +814,7 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
         status = -1;
         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
-                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what().c_str());
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
     }
 
     // If the function was not found, fall back to the base method
