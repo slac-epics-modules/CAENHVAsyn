@@ -103,12 +103,12 @@ statusRecordMap_t   recordFieldChParamChStatus =
 // - This map is for Board parameters of type 'PARAM_TYPE_CHSTATUS'
 statusRecordMap_t recordFieldBdParamBdStatus =
 {
-    { 0x001, std::pair<std::string,std::string>( "_PF",   "Bd is in power-fail status"                ) },
-    { 0x002, std::pair<std::string,std::string>( "_FCE",  "Bd has a firmware checksum error"          ) },
-    { 0x004, std::pair<std::string,std::string>( "_CEHV", "Bd has calibration error on HV"            ) },
-    { 0x008, std::pair<std::string,std::string>( "_CET",  "Bd has a calibration error on temperature" ) },
-    { 0x010, std::pair<std::string,std::string>( "_UT",   "Bd is in under-temperature status"         ) },
-    { 0x020, std::pair<std::string,std::string>( "_OT",   "Bd is in over-temperature status"          ) },
+    { 0x001, std::pair<std::string,std::string>( "_PF",   "Bd is in power-fail status"         ) },
+    { 0x002, std::pair<std::string,std::string>( "_FCE",  "Bd has a firmware checksum error"   ) },
+    { 0x004, std::pair<std::string,std::string>( "_CEHV", "Bd has calibration error on HV"     ) },
+    { 0x008, std::pair<std::string,std::string>( "_CET",  "Bd has a calibration error on temp" ) },
+    { 0x010, std::pair<std::string,std::string>( "_UT",   "Bd is in under-temperature status"  ) },
+    { 0x020, std::pair<std::string,std::string>( "_OT",   "Bd is in over-temperature status"   ) },
 };
 
 class CAENHVAsyn : public asynPortDriver
