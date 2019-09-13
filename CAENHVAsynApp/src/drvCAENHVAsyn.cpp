@@ -450,10 +450,28 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     // Iterators
     std::map< int, SystemPropertyInteger >::iterator spIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
-        *value = spIt->second->getVal();
-    else
+    try
+    {
+        if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
+        {
+            *value = spIt->second->getVal();
+            found = true;
+        }
+    }
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::readInt32(pasynUser, value);
 
     // Log status and return
@@ -467,7 +485,7 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, status);
 
@@ -490,10 +508,28 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     // Iterators
     std::map< int, SystemPropertyInteger >::iterator spIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
-        spIt->second->setVal(value);
-    else
+    try
+    {
+        if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
+        {
+            spIt->second->setVal(value);
+            found = true;
+        }
+    }
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::writeInt32(pasynUser, value);
 
     // Log status and return
@@ -507,7 +543,7 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%d', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, status);
 
@@ -532,14 +568,38 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     std::map< int, BoardParameterNumeric   >::iterator bpIt;
     std::map< int, SystemPropertyFloat     >::iterator spIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
-        *value = cpIt->second->getVal();
-    else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
-        *value = bpIt->second->getVal();
-    else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
-        *value = spIt->second->getVal();
-    else
+    try
+    {
+        if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
+        {
+            *value = cpIt->second->getVal();
+            found = true;
+        }
+        else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
+        {
+            *value = bpIt->second->getVal();
+            found = true;
+        }
+        else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
+        {
+            *value = spIt->second->getVal();
+            found = true;
+        }
+    }
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::readFloat64(pasynUser, value);
 
     // Log status and return
@@ -553,7 +613,7 @@ asynStatus CAENHVAsyn::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, status);
 
@@ -578,14 +638,38 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     std::map< int, BoardParameterNumeric   >::iterator bpIt;
     std::map< int, SystemPropertyFloat     >::iterator spIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
-        cpIt->second->setVal(value);
-    else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
-        bpIt->second->setVal(value);
-    else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
-        spIt->second->setVal(value);
-    else
+    try
+    {
+        if ( ( cpIt = channelParameterNumericList.find(function) ) != channelParameterNumericList.end() )
+        {
+            cpIt->second->setVal(value);
+            found = true;
+        }
+        else if ( ( bpIt = boardParameterNumericList.find(function) ) != boardParameterNumericList.end() )
+        {
+            bpIt->second->setVal(value);
+            found = true;
+        }
+        else if ( ( spIt = systemPropertyFloatList.find(function) ) != systemPropertyFloatList.end() )
+        {
+            spIt->second->setVal(value);
+            found = true;
+        }
+    }
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::writeFloat64(pasynUser, value);
 
     // Log status and return
@@ -599,7 +683,7 @@ asynStatus CAENHVAsyn::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%f', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, status);
 
@@ -626,38 +710,58 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     std::map< int, ChannelParameterOnOff    >::iterator cpoIt;
     std::map< int, ChannelParameterChStatus >::iterator cpcsIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
+    try
     {
-       uint32_t temp = bpoIt->second->getVal();
-       temp &= mask;
-       *value = temp;
+        if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
+        {
+           uint32_t temp = bpoIt->second->getVal();
+           temp &= mask;
+           *value = temp;
+           found = true;
+        }
+        else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
+        {
+           uint32_t temp = bpcsIt->second->getVal();
+           temp &= mask;
+           *value = temp;
+           found = true;
+        }
+        else if ( ( bpbsIt = boardParameterBdStatusList.find(function) ) != boardParameterBdStatusList.end() )
+        {
+           uint32_t temp = bpbsIt->second->getVal();
+           temp &= mask;
+           *value = temp;
+           found = true;
+        }
+        else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
+        {
+           uint32_t temp = cpoIt->second->getVal();
+           temp &= mask;
+           *value = temp;
+           found = true;
+        }
+        else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
+        {
+           uint32_t temp = cpcsIt->second->getVal();
+           temp &= mask;
+           *value = temp;
+           found = true;
+        }
     }
-    else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
+    catch(std::runtime_error& e)
     {
-       uint32_t temp = bpcsIt->second->getVal();
-       temp &= mask;
-       *value = temp;
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
     }
-    else if ( ( bpbsIt = boardParameterBdStatusList.find(function) ) != boardParameterBdStatusList.end() )
-    {
-       uint32_t temp = bpbsIt->second->getVal();
-       temp &= mask;
-       *value = temp;
-    }
-    else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
-    {
-       uint32_t temp = cpoIt->second->getVal();
-       temp &= mask;
-       *value = temp;
-    }
-    else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
-    {
-       uint32_t temp = cpcsIt->second->getVal();
-       temp &= mask;
-       *value = temp;
-    }
-    else
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
 
     // Log status and return
@@ -671,7 +775,7 @@ asynStatus CAENHVAsyn::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, mask '%d', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, mask, status);
 
@@ -703,18 +807,48 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     std::map< int, ChannelParameterOnOff    >::iterator cpoIt;
     std::map< int, ChannelParameterChStatus >::iterator cpcsIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
-        bpoIt->second->setVal(val);
-    else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
-        bpcsIt->second->setVal(val);
-    else if ( ( bpbsIt = boardParameterBdStatusList.find(function) ) != boardParameterBdStatusList.end() )
-        bpbsIt->second->setVal(val);
-    else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
-        cpoIt->second->setVal(val);
-    else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
-        cpcsIt->second->setVal(val);
-    else
+    try
+    {
+        if ( ( bpoIt = boardParameterOnOffList.find(function) ) != boardParameterOnOffList.end() )
+        {
+            bpoIt->second->setVal(val);
+            found = true;
+        }
+        else if ( ( bpcsIt = boardParameterChStatusList.find(function) ) != boardParameterChStatusList.end() )
+        {
+            bpcsIt->second->setVal(val);
+            found = true;
+        }
+        else if ( ( bpbsIt = boardParameterBdStatusList.find(function) ) != boardParameterBdStatusList.end() )
+        {
+            bpbsIt->second->setVal(val);
+            found = true;
+        }
+        else if ( ( cpoIt = channelParameterOnOffList.find(function) ) != channelParameterOnOffList.end() )
+        {
+            cpoIt->second->setVal(val);
+            found = true;
+        }
+        else if ( ( cpcsIt = channelParameterChStatusList.find(function) ) != channelParameterChStatusList.end() )
+        {
+            cpcsIt->second->setVal(val);
+            found = true;
+        }
+    }
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 
     // Log status and return
@@ -728,7 +862,7 @@ asynStatus CAENHVAsyn::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%d', mask '%d', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, mask, status);
 
@@ -751,14 +885,30 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     // Iterators
     std::map< int, SystemPropertyString >::iterator spIt;
 
+    // Check if the function is found in out lists
+    bool found = false;
+
     // Look for the function number in the parameter lists
-    if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
+    try
     {
-        std::string temp = spIt->second->getVal();
-        strcpy(value, temp.c_str());
-        *nActual = temp.length() + 1;
+        if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
+        {
+            std::string temp = spIt->second->getVal();
+            strcpy(value, temp.c_str());
+            *nActual = temp.length() + 1;
+            found = true;
+        }
     }
-    else
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 
     // Log status and return
@@ -772,7 +922,7 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while reading, maxChars '%zu', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, maxChars, status);
 
@@ -798,9 +948,9 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     // Check if the function is found in out lists
     bool found = false;
 
+    // Look for the function number in the parameter lists
     try
     {
-        // Look for the function number in the parameter lists
         if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
         {
             found = true;
