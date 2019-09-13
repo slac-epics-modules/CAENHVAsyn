@@ -2,12 +2,12 @@
  *-----------------------------------------------------------------------------
  * Title      : CAEN HV Asyn module
  * ----------------------------------------------------------------------------
- * File       : chassis.cpp
+ * File       : crate.cpp
  * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
  * Created    : 2019-08-30
  * ----------------------------------------------------------------------------
  * Description:
- * CAEN HV Power Supplies Chassis Class
+ * CAEN HV Power Supplies Crate Class
  * ----------------------------------------------------------------------------
  * This file is part of l2MpsAsyn. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -19,9 +19,9 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include "chassis.h"
+#include "crate.h"
 
-void Chassis::GetPropList()
+void Crate::GetPropList()
 {
     std::string functionName("GetPropList");
 
@@ -84,7 +84,7 @@ void Chassis::GetPropList()
     free(PropNameList);
 }
 
-void Chassis::GetCrateMap()
+void Crate::GetCrateMap()
 {
     // Get Crate Map
     std::string functionName("GetCrateMap");
@@ -140,7 +140,7 @@ void Chassis::GetCrateMap()
     free(FmwRelMaxList);
 }
 
-Chassis::Chassis(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
+Crate::Crate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
 :
   handle(-1)
 {
@@ -149,11 +149,11 @@ Chassis::Chassis(int systemType, const std::string& ipAddr, const std::string& u
     GetCrateMap();
 }
 
-Chassis::~Chassis()
+Crate::~Crate()
 {
 }
 
-int Chassis::InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const
+int Crate::InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const
 {
     int h;
     std::string functionName("initSystem");
@@ -177,11 +177,11 @@ int Chassis::InitSystem(int systemType, const std::string& ipAddr, const std::st
 }
 
 
-void Chassis::printInfo(std::ostream& stream) const
+void Crate::printInfo(std::ostream& stream) const
 {
-    stream << "===========================" << std::endl;;
-    stream << "Chassis object information:" << std::endl;;
-    stream << "===========================" << std::endl;;
+    stream << "=========================" << std::endl;;
+    stream << "Crate object information:" << std::endl;;
+    stream << "=========================" << std::endl;;
     stream << "  handle = " << handle << std::endl;
     stream << "  Number of slots  : " << numSlots << std::endl;
     stream << "  Number of boards : " << boards.size() << std::endl;
@@ -194,11 +194,11 @@ void Chassis::printInfo(std::ostream& stream) const
     stream << "  ---------------------------" << std::endl;
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
         it->printInfo(stream);
-    stream << "===========================" << std::endl;;
+    stream << "=========================" << std::endl;;
     stream << std::endl;
 }
 
-void Chassis::printCrateMap(std::ostream& stream) const
+void Crate::printCrateMap(std::ostream& stream) const
 {
     stream << "=============================" << std::endl;;
     stream << "Crate information:" << std::endl;;
@@ -214,7 +214,7 @@ void Chassis::printCrateMap(std::ostream& stream) const
 }
 
 template <typename T>
-void Chassis::printProperties(std::ostream& stream, const std::string& type, const T& pv) const
+void Crate::printProperties(std::ostream& stream, const std::string& type, const T& pv) const
 {
     std::size_t n(pv.size());
     stream << "    Number of properties of type " << type << ": " << n << std::endl;

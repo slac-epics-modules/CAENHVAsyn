@@ -1,16 +1,16 @@
-#ifndef CHASSIS_H
-#define CHASSIS_H
+#ifndef CRATE_H
+#define CRATE_H
 
 /**
  *-----------------------------------------------------------------------------
  * Title      : CAEN HV Asyn module
  * ----------------------------------------------------------------------------
- * File       : chassis.h
+ * File       : crate.h
  * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
  * Created    : 2019-08-20
  * ----------------------------------------------------------------------------
  * Description:
- * CAEN HV Power Supplies Chassis Class
+ * CAEN HV Power Supplies Crate Class
  * ----------------------------------------------------------------------------
  * This file is part of l2MpsAsyn. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -46,11 +46,11 @@ class SysProp;
 template<typename T>
 class SysPropT;
 
-class Chassis
+class Crate
 {
 public:
-    Chassis(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
-    ~Chassis();
+    Crate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
+    ~Crate();
 
     void printInfo(std::ostream& stream) const;
     void printCrateMap(std::ostream& stream) const;
@@ -78,7 +78,7 @@ private:
     // Slots in the crate
     std::vector<Board> boards;
 
-    // Chassis properties
+    // Crate properties
     std::vector<SystemPropertyInteger> systemPropertyIntegers;
     std::vector<SystemPropertyFloat>   systemPropertyFloats;
     std::vector<SystemPropertyString>  systemPropertyStrings;

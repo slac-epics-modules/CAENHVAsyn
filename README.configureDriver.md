@@ -18,10 +18,10 @@ CAENHVAsynConfig(PORT_NAME, SYSTEM_TYPE, IP_ADDR, USER_NAME, PASSWORD)
 | Parameter                  | Description
 |----------------------------|-----------------------------
 | PORT_NAME                  | The name given to this asyn port driver.
-| SYSTEM_TYPE                | Type of system of the HV Power supply chassis.
-| IP_ADDR                    | IP address of the HV Power supply chassis.
-| USER_NAME                  | User name to access the HV Power supply chassis.
-| PASSWORD                   | Password to access the HV Power supply chassis.
+| SYSTEM_TYPE                | Type of system of the HV Power supply crate.
+| IP_ADDR                    | IP address of the HV Power supply crate.
+| USER_NAME                  | User name to access the HV Power supply crate.
+| PASSWORD                   | Password to access the HV Power supply crate.
 
 **Notes:**
 - **SYSTEM_TYPE**: The system type is identified by a integer number, describe in the *CAEN HV Wrapper Library* documentation. Currently only SYx527 (value from 0 to 3) are supported by this driver.

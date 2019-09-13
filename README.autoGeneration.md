@@ -12,13 +12,13 @@ The auto-generation of PVs is disabled by default. It can be enabled by defining
 
 ## System Scanning
 
-When the driver is instantiate, it will initially connect to the HV Power Supply chassis and scan it to find out how many system parameter, boards, board parameters, channels per board, and channel parameter exists in the system. Each parameter is identify (besides it slot and channel number) by a string name as described in the *CAEN HV Wrapper Library* documentation. The type of each parameter is also found during this scanning process.
+When the driver is instantiate, it will initially connect to the HV Power Supply crate and scan it to find out how many system parameter, boards, board parameters, channels per board, and channel parameter exists in the system. Each parameter is identify (besides it slot and channel number) by a string name as described in the *CAEN HV Wrapper Library* documentation. The type of each parameter is also found during this scanning process.
 
 For each parameter found, an associate Asyn parameter is created. Is the PV auto-generation is enabled, 1 or 2 PVs will be created for each parameters (one for reading and one for writing, so parameters with R/W access will have 2 associate PVs). Alternatively, you can manually create you own PVs and use the auto-generated Asyn parameter name to access that particular parameter.
 
 ### Debug Information File
 
-At the end of the scanning, an output file is created with with all the information found in the system. It includes all the parameters found in the system, its type and properties, as well as the Asyn paramater and PV name generated for each one. The output file is located at `/tmp/CAENHVAsyn_<ASYN_PORT_NAME>_chassisInfo.txt`, where **ASYN_PORT_NAME** is the Asyn port name used for the driver.
+At the end of the scanning, an output file is created with with all the information found in the system. It includes all the parameters found in the system, its type and properties, as well as the Asyn paramater and PV name generated for each one. The output file is located at `/tmp/CAENHVAsyn_<ASYN_PORT_NAME>_crateInfo.txt`, where **ASYN_PORT_NAME** is the Asyn port name used for the driver.
 
 ## Asyn Parameter and PV Name
 
@@ -161,7 +161,7 @@ Bit position    | BIT_SUFFIX    | Bit Function Description
 
 ## Asyn Parameter Type
 
-Depending on the type of parameter found on the HV Power supply chassis, an appropriate Asyn parameter type is used according to this table. The table also shows which type of record, and which DTYP field is auto-generated. If you define PV manually, you should use the same type of record as describe in the table.
+Depending on the type of parameter found on the HV Power supply crate, an appropriate Asyn parameter type is used according to this table. The table also shows which type of record, and which DTYP field is auto-generated. If you define PV manually, you should use the same type of record as describe in the table.
 
 HV Power Supply Parameter Type  | Asyn Parameter            | Record type (R/W) | DTYP field (R/W)
 --------------------------------|---------------------------|-------------------|---------------

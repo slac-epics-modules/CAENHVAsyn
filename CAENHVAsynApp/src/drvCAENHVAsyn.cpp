@@ -24,7 +24,7 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
-std::string CAENHVAsyn::chassisInfoFilePath = "/tmp/";
+std::string CAENHVAsyn::crateInfoFilePath = "/tmp/";
 
 template <typename T>
 void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
@@ -337,26 +337,26 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     if ( (systemType < 0) || (systemType > 3) )
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
-    // Create a Chassis object
-    chassis = new Chassis(systemType, ipAddr, userName, password);
+    // Create a Crate object
+    crate = new Crate(systemType, ipAddr, userName, password);
 
     // Print the crate map to the IOC shell
     std::cout << std::endl;
-    chassis->printCrateMap(std::cout);
+    crate->printCrateMap(std::cout);
     std::cout << std::endl;
 
-    // Print Chassis information
-    //chassis->printInfo(std::cout);
+    // Print Crate information
+    //crate->printInfo(std::cout);
 
-    // Print Chassis information to a temporal file
+    // Print Crate information to a temporal file
     // This need to be reimplemented using RAII...
     // Also, the user should be able to override the output location
-    std::string infoFileName(chassisInfoFilePath + this->driverName_ + "_" + this->portName_ + "_chassisInfo.txt");
+    std::string infoFileName(crateInfoFilePath + this->driverName_ + "_" + this->portName_ + "_crateInfo.txt");
     std::ofstream infoFile;
 
-    std::cout << "Dumping chassis information on '" << infoFileName << "'... ";
+    std::cout << "Dumping crate information on '" << infoFileName << "'... ";
     infoFile.open(infoFileName);
-    chassis->printInfo(infoFile);
+    crate->printInfo(infoFile);
     infoFile.close();
     std::cout  << "Done" << std::endl;
 
@@ -367,25 +367,25 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
     // System properties
     {
-        std::vector<SystemPropertyInteger> s = chassis->getSystemPropertyIntegers();
+        std::vector<SystemPropertyInteger> s = crate->getSystemPropertyIntegers();
         for (std::vector<SystemPropertyInteger>::iterator it = s.begin(); it != s.end(); ++it)
             createParamInteger<SystemPropertyInteger>(*it, systemPropertyIntegerList);
     }
 
     {
-        std::vector<SystemPropertyFloat> s = chassis->getSystemPropertyFloats();
+        std::vector<SystemPropertyFloat> s = crate->getSystemPropertyFloats();
         for (std::vector<SystemPropertyFloat>::iterator it = s.begin(); it != s.end(); ++it)
             createParamFloat<SystemPropertyFloat>(*it, systemPropertyFloatList);
     }
 
     {
-        std::vector<SystemPropertyString> s = chassis->getSystemPropertyStrings();
+        std::vector<SystemPropertyString> s = crate->getSystemPropertyStrings();
         for (std::vector<SystemPropertyString>::iterator it = s.begin(); it != s.end(); ++it)
             createParamString<SystemPropertyString>(*it, systemPropertyStringList);
     }
 
     // Boards
-    std::vector<Board> b = chassis->getBoards();
+    std::vector<Board> b = crate->getBoards();
 
     for (std::vector<Board>::iterator boardIt = b.begin(); boardIt != b.end(); ++boardIt)
     {

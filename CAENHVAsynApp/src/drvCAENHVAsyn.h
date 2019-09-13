@@ -52,7 +52,7 @@
 
 #include "CAENHVWrapper.h"
 #include "common.h"
-#include "chassis.h"
+#include "crate.h"
 
 #define MAX_SIGNALS (3)
 #define NUM_PARAMS (1500)
@@ -128,8 +128,8 @@ class CAENHVAsyn : public asynPortDriver
 
         // EPICS record prefix. Use for autogeneration of PVs.
         static std::string epicsPrefix;
-        // Chassis information output file location
-        static std::string chassisInfoFilePath;
+        // Crate information output file location
+        static std::string crateInfoFilePath;
 
     private:
 
@@ -148,7 +148,7 @@ class CAENHVAsyn : public asynPortDriver
 
         const std::string driverName_;
         std::string portName_;
-        Chassis *chassis;
+        Crate *crate;
 
        // System property lists
        std::map<int, SystemPropertyInteger> systemPropertyIntegerList;
