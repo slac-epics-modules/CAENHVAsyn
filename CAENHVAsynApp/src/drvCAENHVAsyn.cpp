@@ -795,14 +795,30 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     // Iterators
     std::map< int, SystemPropertyString >::iterator spIt;
 
-    // Look for the function number in the parameter lists
-    if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
+    // Check if the function is found in out lists
+    bool found = false;
+
+    try
     {
-        std::string temp(value);
-        spIt->second->setVal(temp);
-        *nActual = temp.size();
+        // Look for the function number in the parameter lists
+        if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
+        {
+            found = true;
+            std::string temp(value);
+            spIt->second->setVal(temp);
+            *nActual = temp.size();
+        }
     }
-    else
+    catch(std::runtime_error& e)
+    {
+        status = -1;
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+                    "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : exception caught '%s'\n", \
+                    this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, e.what().c_str());
+    }
+
+    // If the function was not found, fall back to the base method
+    if (!found)
         status = asynPortDriver::writeOctet(pasynUser, value, maxChars, nActual);
 
     // Log status and return
@@ -816,7 +832,7 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     }
     else
     {
-         asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, \
                     "Driver '%s', Port '%s', Method '%s', Function number '%d', parameter '%s' : Error while writting '%s', maxChars '%zu', status '%d'\n", \
                     this->driverName_.c_str(), this->portName_.c_str(), method.c_str(), function, name, value, maxChars, status);
 
