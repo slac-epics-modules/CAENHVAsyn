@@ -338,7 +338,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
     // Create a Crate object
-    crate = new Crate(systemType, ipAddr, userName, password);
+    crate = std::make_shared<Crate>(systemType, ipAddr, userName, password);
 
     // Print the crate map to the IOC shell
     std::cout << std::endl;

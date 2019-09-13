@@ -148,7 +148,7 @@ class CAENHVAsyn : public asynPortDriver
 
         const std::string driverName_;
         std::string portName_;
-        Crate *crate;
+        std::shared_ptr<Crate> crate;
 
        // System property lists
        std::map<int, SystemPropertyInteger> systemPropertyIntegerList;
