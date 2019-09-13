@@ -200,9 +200,9 @@ void Chassis::printInfo(std::ostream& stream) const
 
 void Chassis::printCrateMap(std::ostream& stream) const
 {
-    stream << "===========================" << std::endl;;
+    stream << "=============================" << std::endl;;
     stream << "Crate information:" << std::endl;;
-    stream << "===========================" << std::endl;;
+    stream << "=============================" << std::endl;;
     stream << "  Number of slots  : " << numSlots << std::endl;
     stream << "  Number of boards : " << boards.size() << std::endl;
     stream << "  Board information: " << std::endl;
@@ -210,7 +210,7 @@ void Chassis::printCrateMap(std::ostream& stream) const
     for (std::vector<Board>::const_iterator it = boards.begin(); it != boards.end(); ++it)
         it->printBoardInfo(stream);
     stream << "  ---------------------------" << std::endl;
-    stream << "===========================" << std::endl;;
+    stream << "=============================" << std::endl;;
 }
 
 template <typename T>
