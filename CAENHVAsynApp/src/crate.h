@@ -46,11 +46,18 @@ class SysProp;
 template<typename T>
 class SysPropT;
 
-class Crate
+class ICrate;
+
+typedef std::shared_ptr<ICrate> Crate;
+
+class ICrate
 {
 public:
-    Crate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
-    ~Crate();
+    ICrate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
+    ~ICrate();
+
+    // Factory method
+    static Crate create(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password);
 
     void printInfo(std::ostream& stream) const;
     void printCrateMap(std::ostream& stream) const;

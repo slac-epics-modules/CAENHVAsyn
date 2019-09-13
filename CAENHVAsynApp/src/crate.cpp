@@ -21,7 +21,7 @@
 
 #include "crate.h"
 
-void Crate::GetPropList()
+void ICrate::GetPropList()
 {
     std::string functionName("GetPropList");
 
@@ -84,7 +84,7 @@ void Crate::GetPropList()
     free(PropNameList);
 }
 
-void Crate::GetCrateMap()
+void ICrate::GetCrateMap()
 {
     // Get Crate Map
     std::string functionName("GetCrateMap");
@@ -139,7 +139,7 @@ void Crate::GetCrateMap()
     free(FmwRelMaxList);
 }
 
-Crate::Crate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
+ICrate::ICrate(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
 :
   handle(-1)
 {
@@ -148,11 +148,16 @@ Crate::Crate(int systemType, const std::string& ipAddr, const std::string& userN
     GetCrateMap();
 }
 
-Crate::~Crate()
+Crate ICrate::create(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password)
+{
+    return std::make_shared<ICrate>(systemType, ipAddr, userName, password);
+}
+
+ICrate::~ICrate()
 {
 }
 
-int Crate::InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const
+int ICrate::InitSystem(int systemType, const std::string& ipAddr, const std::string& userName, const std::string& password) const
 {
     int h;
     std::string functionName("initSystem");
@@ -176,7 +181,7 @@ int Crate::InitSystem(int systemType, const std::string& ipAddr, const std::stri
 }
 
 
-void Crate::printInfo(std::ostream& stream) const
+void ICrate::printInfo(std::ostream& stream) const
 {
     stream << "=========================" << std::endl;;
     stream << "Crate object information:" << std::endl;;
@@ -197,7 +202,7 @@ void Crate::printInfo(std::ostream& stream) const
     stream << std::endl;
 }
 
-void Crate::printCrateMap(std::ostream& stream) const
+void ICrate::printCrateMap(std::ostream& stream) const
 {
     stream << "=============================" << std::endl;;
     stream << "Crate information:" << std::endl;;
@@ -213,7 +218,7 @@ void Crate::printCrateMap(std::ostream& stream) const
 }
 
 template <typename T>
-void Crate::printProperties(std::ostream& stream, const std::string& type, const T& pv) const
+void ICrate::printProperties(std::ostream& stream, const std::string& type, const T& pv) const
 {
     std::size_t n(pv.size());
     stream << "    Number of properties of type " << type << ": " << n << std::endl;
