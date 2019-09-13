@@ -3,6 +3,8 @@
 Release notes for the CAENHVAsyn EPICS Module.
 
 ## Releases:
+* __R1.1.0__: 2019-09-13 J. Vasquez
+  * Set
 * __R1.0.0__: 2019-09-12 J. Vasquez
   * First stable release.
   * Includes support for parameters of type `PARAM_TYPE_CHSTATUS`, `PARAM_TYPE_BDSTATUS`, and `PARAM_TYPE_BINARY`.
