@@ -41,13 +41,7 @@ Board::~Board()
 
 void Board::printInfo(std::ostream& stream) const
 {
-    stream << "    Slot: " << slot \
-           << ", Model: " << model \
-           << ", Description: " <<  description \
-           << ", Number of channels: " << numChannels \
-           << ", Serial Number: " << serialNumber \
-           << ", Firmware release: " << firmwareRelease \
-           << std::endl;
+    printBoardInfo(stream);
 
     stream << "    Board parameters:" << std::endl;
     stream << "    ..........................." << std::endl;
@@ -72,6 +66,17 @@ void Board::printInfo(std::ostream& stream) const
     stream << "    ..........................." << std::endl;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
         it->printInfo(stream);
+}
+
+void Board::printBoardInfo(std::ostream& stream) const
+{
+    stream << "    Slot: " << slot \
+           << ", Model: " << model \
+           << ", Description: " <<  description \
+           << ", Number of channels: " << numChannels \
+           << ", Serial Number: " << serialNumber \
+           << ", Firmware release: " << firmwareRelease \
+           << std::endl;
 }
 
 void Board::GetBoardParams()

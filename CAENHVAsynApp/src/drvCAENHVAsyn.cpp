@@ -340,6 +340,11 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     // Create a Chassis object
     chassis = new Chassis(systemType, ipAddr, userName, password);
 
+    // Print the crate map to the IOC shell
+    std::cout << std::endl;
+    chassis->printCrateMap(std::cout);
+    std::cout << std::endl;
+
     // Print Chassis information
     //chassis->printInfo(std::cout);
 

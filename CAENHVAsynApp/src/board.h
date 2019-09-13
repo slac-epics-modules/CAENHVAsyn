@@ -49,6 +49,7 @@ public:
     ~Board();
 
     void printInfo(std::ostream& stream) const;
+    void printBoardInfo(std::ostream& stream) const;
 
     std::vector<BoardParameterNumeric>  getBoardParameterNumerics()   { return boardParameterNumerics;   };
     std::vector<BoardParameterOnOff>    getBoardParameterOnOffs()     { return boardParameterOnOffs;     };
