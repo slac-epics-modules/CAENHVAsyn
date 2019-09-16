@@ -3,6 +3,9 @@
 Release notes for the CAENHVAsyn EPICS Module.
 
 ## Releases:
+* __R1.1.1__: 2019-09-16 J. Vasquez
+  * Update definition of RELEASE file. The version of EPICS base should not be defined there.
+
 * __R1.1.0__: 2019-09-13 J. Vasquez
   * Bug fix: reduce a description string to less than 40 chars.
   * Print out the crate map and board information to the IOC shell.
