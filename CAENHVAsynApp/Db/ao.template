@@ -10,4 +10,5 @@ record(ao,      "$(P)$(R)") {
     field(DRVL, "$(DRVL)")
     field(DRVH, "$(DRVH)")
     field(OUT,  "@asyn($(PORT))$(PARAM)")
+    info(autosaveFields, "VAL")
 }

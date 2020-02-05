@@ -3,6 +3,9 @@
 Release notes for the CAENHVAsyn EPICS Module.
 
 ## Releases:
+* __R1.1.2__: 2020-02-05 J. Mock
+  * Add autosave fields to ai, ao, bi, bo, longin, longout template files
+
 * __R1.1.1__: 2019-09-16 J. Vasquez
   * Update definition of RELEASE file. The version of EPICS base should not be defined there.
 
