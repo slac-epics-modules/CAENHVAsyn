@@ -24,7 +24,12 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
+#ifdef _WIN32
+std::string CAENHVAsyn::crateInfoFilePath = "";
+#else
 std::string CAENHVAsyn::crateInfoFilePath = "/tmp/";
+#endif
+
 
 template <typename T>
 void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
@@ -40,7 +45,7 @@ void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -87,7 +92,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, SystemPropertyFloat>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -115,7 +120,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
             dbParamsLocal << ",DRVL=";
             dbParamsLocal << ",DRVH=";
             dbParamsLocal << ",R="    << recordName << ":St";
-            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());                                                               
         }
 
     }
@@ -134,7 +139,7 @@ void CAENHVAsyn::createParamBinary(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -175,7 +180,7 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -233,7 +238,7 @@ void CAENHVAsyn::createParamInteger(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamInt32, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -272,7 +277,7 @@ void CAENHVAsyn::createParamString(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamOctet, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
