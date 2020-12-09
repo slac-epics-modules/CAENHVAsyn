@@ -1,26 +1,14 @@
-# =======================================================
-# Let's install our IOC boot products:
-# envPaths and st.cmd
-# =======================================================
-INSTALL_LOCATION_STARTUP += $(INSTALL_LOCATION)/startup
-DIRECTORY_TARGETS += $(INSTALL_LOCATION_STARTUP)
+ifneq ($(findstring win32-x86,$(EPICS_HOST_ARCH)),)
+CAEN_ARCH = win32
+#CAENHVWRAPPER_LIB += /$(CAEN_ARCH)
+endif
 
-# =============================
-# Build Application Statically
-# =============================
-SHARED_LIBRARIES=YES
-STATIC_BUILD=NO
+ifneq ($(findstring windows-x64,$(EPICS_HOST_ARCH)),)
+CAEN_ARCH = win64
+#CAENHVWRAPPER_LIB += /$(CAEN_ARCH)
+endif
 
-# =============================
-# Define the archiecture versions
-# =============================
-LINUX_VERSION=rhel6
-
-# =======================================================================================================
-# Support for CAEN HV Wrapper 
-# =======================================================================================================
-CAENHVWRAPPER_PACKAGE_NAME=CAENHVWrapper
-CAENHVWRAPPER_VERSION=CAENHVWrapper-5.82
-CAENHVWRAPPER_TOP=$(PACKAGE_SITE_TOP)/$(CAENHVWRAPPER_PACKAGE_NAME)/$(CAENHVWRAPPER_VERSION)
-CAENHVWRAPPER_LIB=$(CAENHVWRAPPER_TOP)/$(PKG_ARCH)/lib
-CAENHVWRAPPER_INCLUDE=$(CAENHVWRAPPER_TOP)/$(PKG_ARCH)/include
+CAENHVWRAPPER=$(TOP)/CAENHVWrapper
+CAENHVWRAPPER_LIB=$(CAENHVWRAPPER)/lib/$(CAEN_ARCH)
+CAENHVWRAPPER_INCLUDE=$(CAENHVWRAPPER)/include
+CAENHVWRAPPER_DLL=$(CAENHVWRAPPER)/dll/$(CAEN_ARCH)

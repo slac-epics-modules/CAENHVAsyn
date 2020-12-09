@@ -1,0 +1,274 @@
+    -----------------------------------------------------------------------------
+
+                       --- CAEN SpA - Computing Division ---
+
+    -----------------------------------------------------------------------------
+
+    CAEN HV Wrapper Library Release Notes
+
+    -----------------------------------------------------------------------------
+
+		Rel. 5.52 - January   2014
+    Rel. 5.50 - November  2013
+    Rel. 5.22 - May       2013
+    Rel. 5.21 - May       2013
+    Rel. 5.20 - March     2013
+    Rel. 5.10 - December  2012
+    Rel. 5.00 - June      2012
+    Rel. 3.20 - March     2012
+    Rel. 3.10 - July      2010
+    Rel. 2.11 - July      2003
+    Rel. 2.8  - December  2002
+    Rel. 2.4  - May       2002
+    Rel. 2.0  - March     2002
+    Rel. 1.2  - November  2000
+
+    -----------------------------------------------------------------------------
+
+
+  Description
+  -----------
+
+  This document is updated for every official release of the CAEN HV Wrapper
+  Library and it contains various information specific to this software which
+  can not be found in the User's Manual, available together with the software
+  or on the CAEN web site: www.caen.it.
+
+
+  System Requirements
+  -------------------
+
+  - Network Interface Card + TCP/IP protocol
+   (to control SY 1527/ SY 2527 / SY4527 / SY 5527, NIM /DESKTOP HV, N568E)
+  - USB Interface (to control V65xx, NIM /DESKTOP HV, DT55xx HV, N568E)
+  - CAENComm library (to controll the V65xx or the DT55xx)
+  - A1303 H.S. CAENET Controller Card (to control N568)
+
+
+  What's New in Rel. 5.52
+ ---------------------------
+
+ New Features and Important Notes
+   --------------------------------
+
+   - added LabView version
+   - added static library version
+   
+ Bug Fixes
+  ----------
+  - resolved bug in GetBdParam(..) internal function for SY 4527 / SY 5527 devices, that returned a wrong code
+	
+	
+ What's New in Rel. 5.50
+ ---------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - add support for N568E device
+   - add support for DT55xx device
+   - thread-safe mechanism for SY1527/SY4527 families connections
+
+   Bug Fixes
+   ----------
+
+   - resolved bug in V65xx optical link connection, with event mode
+
+
+ What's New in Rel. 5.22
+ ---------------------------
+
+   Bug Fixes
+   ----------
+
+   - resolved bug in NIM / Destkop connection/disconnection
+   - resolved bug in NIM / Desktop Read Data
+
+
+ What's New in Rel. 5.21
+ --------------------------
+
+   Bug Fixes
+   ---------
+
+   - resolved 64bit version bug
+
+
+ What's New in Rel. 5.20
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - add support for V8100
+
+   Bug Fixes
+   ---------
+
+   - resolved some minor bugs
+
+
+ What's New in Rel. 5.10
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - add support for N1470
+   - add support for V65XX
+
+   Bug Fixes
+   ---------
+
+   - eliminates bug with A1676A with a large number of channels
+
+
+ What's New in Rel. 5.00
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - removed support for old modules/system accordingly with CAEN's Product Obsolescence Policy
+   - add support for new power supply system SY 4527 and SY 5527
+   - new api format
+
+
+ What's New in Rel. 3.20
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - removed support for old modules/system accordingly with CAEN's Product Obsolescence Policy
+   - various bug fix
+
+
+ What's New in Rel. 3.10
+ --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - add support for Sy1527/Sy2527 Event mode features (only Windows platform)
+   - add support for Sy4527/Sy5527
+
+   Bug Fixes
+   ---------
+
+   - Corrected some minor bugs
+
+ What's New in Rel. 3.10
+ --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - add support for Sy1527/Sy2527 Event mode features
+   - add support for VME Power Supply modules (V65xx Family)
+
+  What's New in Rel. 2.11
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - Shortened the CAENET systems login timeout from 5.0s to 200ms.
+   - Made the library "thread safe".
+
+
+   Bug Fixes
+   ---------
+
+   - Eliminated spurious CAENET errors during login attempts.
+
+
+  What's New in Rel. 2.8
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - Included control of N568/B 16 Channels Programmable Spectroscopy
+     Amplifier
+   - Added the "count" Engineering Unit
+   - Added support for the CAENHVSetBdParam API function with Sy1527
+     (needs Rel. 1.14.00 or more recent in the SY1527/2527)
+
+
+   Bug Fixes
+   ---------
+
+   - Corrected some minor bugs
+
+
+  What's New in Rel. 2.4
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - Added support for the new A1303 H. S. CAENET Controller; it is now
+     possible to have multiple boards (i.e. independent CAENET chains in a
+     single PC)
+   - Included control of Sy403 High Voltage System via CAENET (through
+     Mod. A303A or A1303)
+   - Added support for CAENET BUSY handling, i.e. by retrying to execute
+     the CAENET command
+   - Included control of N470 and N570 Programmable Power Supplies via
+     CAENET (through Mod. A303A or A1303)
+
+
+   Bug Fixes
+   ---------
+
+   - Corrected some minor bugs
+
+
+  What's New in Rel. 2.0
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - Included control of Sy127 and Sy527 via CAENET (through Mod. A303A,
+     High Speed CAENET Controller for PC)
+   - Added the "rpm" Engineering Unit
+   - Handled signed parameters, like i.e. negative temperature
+
+
+   Bug Fixes
+   ---------
+
+   - Corrected some minor bugs
+
+
+  What's New in Rel. 1.2
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - Support for communication with SY1527/SY2527 via TCP/IP
+
+
+  Determining Your Software Release
+  ---------------------------------
+
+  To determine the complete software release of the CAEN HV Wrapper Library
+  installed in your machine, you can use the relevant menu choice of the demo
+  program.
+  You will see something like:
+                               5.21-1.7
+  where: 5.21 is the Release of the CAENHVWrapper.dll described in this document
+  and 1.7 is the Release of the HSCAENETlib.dll library used by the Wrapper
+  library for the communication with the CAENET Power Supplies (you will find
+  detailed info for that software in the HSCAENETReleaseNotes.txt document).
+
+
+  How to get support
+  ------------------
+
+  Our Software Support Group is available for questions, support and any other
+  software related issue concerning CAEN Power Supplies; for software support
+  visit the page www.caen.it/computing/support.php.
