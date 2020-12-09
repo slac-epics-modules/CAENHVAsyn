@@ -1,6 +1,6 @@
 bin/
-lib/
-include/
+/include
+/lib
 db/
 O.*/
 dbd/

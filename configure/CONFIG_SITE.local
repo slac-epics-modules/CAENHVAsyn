@@ -1,11 +1,9 @@
 ifneq ($(findstring win32-x86,$(EPICS_HOST_ARCH)),)
 CAEN_ARCH = win32
-#CAENHVWRAPPER_LIB += /$(CAEN_ARCH)
 endif
 
 ifneq ($(findstring windows-x64,$(EPICS_HOST_ARCH)),)
 CAEN_ARCH = win64
-#CAENHVWRAPPER_LIB += /$(CAEN_ARCH)
 endif
 
 CAENHVWRAPPER=$(TOP)/CAENHVWrapper
