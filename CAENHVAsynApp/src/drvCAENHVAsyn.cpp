@@ -40,7 +40,7 @@ void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -87,7 +87,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, SystemPropertyFloat>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -115,7 +115,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
             dbParamsLocal << ",DRVL=";
             dbParamsLocal << ",DRVH=";
             dbParamsLocal << ",R="    << recordName << ":St";
-            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());                                                               
         }
 
     }
@@ -134,7 +134,7 @@ void CAENHVAsyn::createParamBinary(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -175,7 +175,7 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -233,7 +233,7 @@ void CAENHVAsyn::createParamInteger(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamInt32, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -272,7 +272,7 @@ void CAENHVAsyn::createParamString(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamOctet, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -355,9 +355,9 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     std::ofstream infoFile;
 
     std::cout << "Dumping crate information on '" << infoFileName << "'... ";
-    infoFile.open(infoFileName);
-    crate->printInfo(infoFile);
-    infoFile.close();
+    //infoFile.open(infoFileName);
+    //crate->printInfo(infoFile);
+    //infoFile.close();
     std::cout  << "Done" << std::endl;
 
     if (epicsPrefix.empty())
