@@ -24,7 +24,12 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
+#ifdef _WIN32
+std::string CAENHVAsyn::crateInfoFilePath = "";
+#else
 std::string CAENHVAsyn::crateInfoFilePath = "/tmp/";
+#endif
+
 
 template <typename T>
 void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
@@ -355,9 +360,9 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
     std::ofstream infoFile;
 
     std::cout << "Dumping crate information on '" << infoFileName << "'... ";
-    //infoFile.open(infoFileName);
-    //crate->printInfo(infoFile);
-    //infoFile.close();
+    infoFile.open(infoFileName);
+    crate->printInfo(infoFile);
+    infoFile.close();
     std::cout  << "Done" << std::endl;
 
     if (epicsPrefix.empty())
