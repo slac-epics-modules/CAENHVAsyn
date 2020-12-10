@@ -6,5 +6,4 @@ record(bo,      "$(P)$(R)") {
     field(OUT,  "@asynMask($(PORT),0,$(MASK))$(PARAM)")
     field(ZNAM, "$(ZNAM)")
     field(ONAM, "$(ONAM)")
-    info(autosaveFields, "VAL")
 }

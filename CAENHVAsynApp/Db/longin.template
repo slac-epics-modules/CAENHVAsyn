@@ -4,5 +4,4 @@ record(longin,  "$(P)$(R)") {
     field(PINI, "YES")
     field(SCAN, "$(SCAN)")
     field(INP,  "@asyn($(PORT))$(PARAM)")
-    info(autosaveFields, "VAL")
 }

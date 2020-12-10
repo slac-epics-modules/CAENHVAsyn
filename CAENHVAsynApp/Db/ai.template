@@ -8,5 +8,4 @@ record(ai,      "$(P)$(R)") {
     field(LOPR, "$(LOPR)")
     field(HOPR, "$(HOPR)")
     field(INP,  "@asyn($(PORT))$(PARAM)")
-    info(autosaveFields, "VAL")
 }
