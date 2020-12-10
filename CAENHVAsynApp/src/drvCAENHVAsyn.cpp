@@ -198,30 +198,52 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
+            std::stringstream dbParamsLocalMbbi;
+            dbParamsLocalMbbi.str("");
+            dbParamsLocalMbbi << dbParamsLocal.str();
+            dbParamsLocalMbbi << ",SCAN=1 second";
+            dbParamsLocalMbbi << ",DESC=" << p->getEpicsDesc();
+            dbParamsLocalMbbi << ",R=" << recordName << ":Rd";
+
+            int mbbiVal = 0;
             for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
+            {
+                dbParamsLocalMbbi << "," << mbbiVal << "VL=" << it->first;
+                dbParamsLocalMbbi << "," << mbbiVal << "ST=" << it->second.at(2);
+                dbParamsLocalMbbi << "," << mbbiVal << "SV=" << it->second.at(3);
+                mbbiVal++;
+                if (mbbiVal > 15) {
+                    break; // MBBIs can only hold 16 values
+                }
+            }
+            dbLoadRecords("db/mbbi.template", dbParamsLocalMbbi.str().c_str());
+
+            // Use the first (rather than zeroth) element in the map as the first is just for the null case in the mbbi 
+            for (statusRecordMap_t::const_iterator it = std::next(recordMap.begin()); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=1 second";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC=" << it->second.second;
-                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.at(1);
+                dbParamsLocal2 << ",R="    << recordName << it->second.at(0) << ":Rd";
                 dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
             }
         }
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
+            // Use the first (rather than zeroth) element in the map as the first is just for the null case in the mbbi 
+            for (statusRecordMap_t::const_iterator it = std::next(recordMap.begin()); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=Passive";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC=" << it->second.second;
-                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.at(1);
+                dbParamsLocal2 << ",R="    << recordName << it->second.at(0) << ":Rd";
                 dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
             }
         }
