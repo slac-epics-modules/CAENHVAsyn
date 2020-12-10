@@ -24,6 +24,8 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
+// If specified then only read calls are performed, defaults to false.
+bool CAENHVAsyn::readOnly = false;
 #ifdef _WIN32
 std::string CAENHVAsyn::crateInfoFilePath = "";
 #else
@@ -343,7 +345,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
     // Create a Crate object
-    crate = ICrate::create(systemType, ipAddr, userName, password);
+    crate = ICrate::create(systemType, ipAddr, userName, password, readOnly);
 
     // Print the crate map to the IOC shell
     std::cout << std::endl;
@@ -1080,11 +1082,35 @@ static void epicsPrefixCallFunc(const iocshArgBuf *args)
 }
 // - CAENHVAsynSetEpicsPrefix //
 
+// + CAENHVAsynReadOnly //
+extern "C" int CAENHVAsynReadOnly(const bool readOnly)
+{
+    CAENHVAsyn::readOnly = readOnly;
+
+    return 0;
+}
+
+static const iocshArg readOnlyArg0 = { "ReadOnly", iocshArgInt };
+
+static const iocshArg * const readOnlyArgs[] =
+{
+    &readOnlyArg0
+};
+
+static const iocshFuncDef readOnlyFuncDef = { "CAENHVAsynReadOnly", 1, epicsPrefixArgs };
+
+static void readOnlyCallFunc(const iocshArgBuf *args)
+{
+    CAENHVAsynReadOnly(args[0].ival);
+}
+// - CAENHVAsynReadOnly //
+
 // iocshRegister
 void drvCAENHVAsynRegister(void)
 {
     iocshRegister( &configFuncDef,      configCallFunc      );
     iocshRegister( &epicsPrefixFuncDef, epicsPrefixCallFunc );
+    iocshRegister( &readOnlyFuncDef,    readOnlyCallFunc);
 }
 
 extern "C"

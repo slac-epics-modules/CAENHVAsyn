@@ -55,11 +55,11 @@ typedef std::shared_ptr<IChannel> Channel;
 class IChannel
 {
 public:
-    IChannel(int h, std::size_t s, std::size_t c);
+    IChannel(int h, std::size_t s, std::size_t c, bool readOnly);
     ~IChannel() {};
 
     // Factory method
-    static Channel create(int h, std::size_t s, std::size_t c);
+    static Channel create(int h, std::size_t s, std::size_t c, bool readOnly);
 
     void printInfo(std::ostream& stream) const;
 
@@ -76,6 +76,7 @@ private:
     int                         handle;
     std::size_t                 slot;
     std::size_t                 channel;
+    bool                        readOnly;
 
     std::vector<ChannelParameterString>   channelParameterStrings;
     std::vector<ChannelParameterNumeric>  channelParameterNumerics;
