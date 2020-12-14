@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-USR_CXXFLAGS += -std=c++0x
+USR_CXXFLAGS_Linux += -std=c++0x
 
 # CAENHVAsyn.dbd will be created from CAENHVAsynInclude.dbd and installed
 DBD += CAENHVAsyn.dbd
@@ -13,15 +13,24 @@ DBD += CAENHVAsyn.dbd
 INC += drvCAENHVAsyn.h
 
 LIBRARY_IOC += CAENHVAsyn
-LIB_SRCS += drvCAENHVAsyn.cpp
-LIB_SRCS += common.cpp
-LIB_SRCS += crate.cpp
-LIB_SRCS += system_property.cpp
-LIB_SRCS += board.cpp
-LIB_SRCS += board_parameter.cpp
-LIB_SRCS += channel.cpp
-LIB_SRCS += channel_parameter.cpp
-LIB_LIBS += asyn
+CAENHVAsyn_SRCS += drvCAENHVAsyn.cpp
+CAENHVAsyn_SRCS += common.cpp
+CAENHVAsyn_SRCS += crate.cpp
+CAENHVAsyn_SRCS += system_property.cpp
+CAENHVAsyn_SRCS += board.cpp
+CAENHVAsyn_SRCS += board_parameter.cpp
+CAENHVAsyn_SRCS += channel.cpp
+CAENHVAsyn_SRCS += channel_parameter.cpp
+CAENHVAsyn_LIBS += asyn
+CAENHVAsyn_LIBS_WIN32 += $(EPICS_BASE_IOC_LIBS)
+CAENHVAsyn_SYS_LIBS_WIN32 += ws2_32
+
+## this library can be used to replace caenhvwrapper shared library
+## to enable simulation
+LIBRARY_IOC += CAENHVWrapperSim
+CAENHVWrapperSim_SRCS += CAENHVWrapper_sim.cpp
+CAENHVWrapperSim_LIBS += $(EPICS_BASE_IOC_LIBS)
+CAENHVWrapperSim_SYS_LIBS_WIN32 += ws2_32
 
 #=====================================================
 # Path to "NON EPICS" External PACKAGES: USER INCLUDES
@@ -29,13 +38,11 @@ LIB_LIBS += asyn
 
 USR_INCLUDES = $(addprefix -I,$(CAENHVWRAPPER_INCLUDE))
 caenhvwrapper_DIR = $(CAENHVWRAPPER_LIB)
-USR_LIBS_Linux += caenhvwrapper
+CAENHVAsyn_LIBS_Linux += caenhvwrapper
+CAENHVAsyn_LIBS_WIN32 += caenhvwrapper
 
-LIB_LIBS_WIN32 += caenhvwrapper
 BIN_INSTALLS_WIN32 += $(wildcard $(CAENHVWRAPPER_DLL)/*.dll)
 LIB_INSTALLS_WIN32 += $(wildcard $(CAENHVWRAPPER_LIB)/*.lib)
-LIB_SYS_LIBS_WIN32 += ws2_32
-LIB_LIBS_WIN32 += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
 
