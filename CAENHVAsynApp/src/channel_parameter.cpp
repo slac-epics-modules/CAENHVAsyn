@@ -260,6 +260,9 @@ std::string IChannelName::getVal() const
 
 void IChannelName::setVal(std::string name) const
 {
+    if (mode == PARAM_MODE_RDONLY)
+        return;
+        
     uint16_t tempChan = channel;
     if (CAENHV_SetChName(handle, slot, 1, &tempChan, name.c_str()) != CAENHV_OK)
         throw std::runtime_error("CAENHV_SetChName failed: " + std::string(CAENHV_GetError(handle)));
