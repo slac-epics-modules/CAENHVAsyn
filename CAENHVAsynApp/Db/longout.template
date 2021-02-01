@@ -4,5 +4,4 @@ record(longout, "$(P)$(R)") {
     field(PINI, "YES")
     field(SCAN, "Passive")
     field(OUT,  "@asyn($(PORT))$(PARAM)")
-    info(autosaveFields, "VAL")
 }

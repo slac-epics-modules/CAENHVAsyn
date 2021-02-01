@@ -21,18 +21,19 @@
 
 #include "channel.h"
 
-IChannel::IChannel(int h, std::size_t s, std::size_t c)
+IChannel::IChannel(int h, std::size_t s, std::size_t c, bool readOnly)
 :
     handle(h),
     slot(s),
-    channel(c)
+    channel(c),
+    readOnly(readOnly)
 {
     GetChannelParams();
 }
 
-Channel IChannel::create(int h, std::size_t s, std::size_t c)
+Channel IChannel::create(int h, std::size_t s, std::size_t c, bool readOnly)
 {
-    return std::make_shared<IChannel>(h, s, c);
+    return std::make_shared<IChannel>(h, s, c, readOnly);
 }
 
 void IChannel::printInfo(std::ostream& stream) const
@@ -40,6 +41,10 @@ void IChannel::printInfo(std::ostream& stream) const
     stream << "      Slot = " << slot \
            << ", Channel = " << channel \
            << std::endl;
+    
+    stream << "        Number of String parameters: " << channelParameterStrings.size() << std::endl;
+    for (std::vector<ChannelParameterString>::const_iterator it = channelParameterStrings.begin(); it != channelParameterStrings.end(); ++it)
+        (*it)->printInfo(stream);
 
     stream << "        Number of Numeric parameters: " << channelParameterNumerics.size() << std::endl;
     for (std::vector<ChannelParameterNumeric>::const_iterator it = channelParameterNumerics.begin(); it != channelParameterNumerics.end(); ++it)
@@ -76,6 +81,9 @@ void IChannel::GetChannelParams()
     if ( r != CAENHV_OK )
         return;
 
+    // Get the channel name
+    channelParameterStrings.push_back( IChannelName::create(handle, slot, channel, "NAME", PARAM_MODE_RDWR) );
+
     // Check if we the number of parameter is > 0
     if (ParNumber <= 0)
         return;
@@ -99,6 +107,15 @@ void IChannel::GetChannelParams()
         if (CAENHV_GetChParamProp(handle, slot, channel, p[i], "Mode", &mode) != CAENHV_OK )
             throw std::runtime_error("CAENHV_GetChParamProp failed: " + std::string(CAENHV_GetError(handle)));
 
+        if (readOnly) {
+            if (mode == PARAM_MODE_RDWR) {
+                mode = PARAM_MODE_RDONLY;
+            }
+            else if (mode == PARAM_MODE_WRONLY) {
+                break;
+            }
+        }
+
         if (type == PARAM_TYPE_NUMERIC)
             channelParameterNumerics.push_back( IChannelParameterNumeric::create(handle, slot, channel, p[i], mode) );
         else if (type == PARAM_TYPE_ONOFF)
@@ -112,6 +129,9 @@ void IChannel::GetChannelParams()
             std::cerr << "Error found when creating a Board Parameter object for pamater '" << p[i] << "'. Unsupported type = " << type << std::endl;
     }
 
+    // Memory allocated across CRTs can cause issues on Windows
+#ifndef _WIN32
     // Deallocate memory (Use RAII in the future for this)
     free(ParNameList);
+#endif
 }

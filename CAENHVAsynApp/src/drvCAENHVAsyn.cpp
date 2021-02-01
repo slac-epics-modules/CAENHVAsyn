@@ -24,7 +24,14 @@
 // Default value for the EPICS record prefix is an empty string,
 // which means that the autogeration is disabled.
 std::string CAENHVAsyn::epicsPrefix;
+// If specified then only read calls are performed, defaults to false.
+bool CAENHVAsyn::readOnly = false;
+#ifdef _WIN32
+std::string CAENHVAsyn::crateInfoFilePath = "";
+#else
 std::string CAENHVAsyn::crateInfoFilePath = "/tmp/";
+#endif
+
 
 template <typename T>
 void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
@@ -40,7 +47,7 @@ void CAENHVAsyn::createParamFloat(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -87,7 +94,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
     int index;
     createParam(paramName.c_str(), asynParamFloat64, &index);
 
-    list.insert( std::make_pair<int, SystemPropertyFloat>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -115,7 +122,7 @@ void CAENHVAsyn::createParamFloat(SystemPropertyFloat p, std::map<int, SystemPro
             dbParamsLocal << ",DRVL=";
             dbParamsLocal << ",DRVH=";
             dbParamsLocal << ",R="    << recordName << ":St";
-            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());
+            dbLoadRecords("db/ao.template", dbParamsLocal.str().c_str());                                                               
         }
 
     }
@@ -134,7 +141,7 @@ void CAENHVAsyn::createParamBinary(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -175,7 +182,7 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
     int index;
     createParam(paramName.c_str(), asynParamUInt32Digital, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -191,30 +198,52 @@ void CAENHVAsyn::createParamMBinary(T p, std::map<int, T>& list, const statusRec
 
         if ( (!mode.compare("RW")) || (!mode.compare("RO")) )
         {
+            std::stringstream dbParamsLocalMbbi;
+            dbParamsLocalMbbi.str("");
+            dbParamsLocalMbbi << dbParamsLocal.str();
+            dbParamsLocalMbbi << ",SCAN=1 second";
+            dbParamsLocalMbbi << ",DESC=" << p->getEpicsDesc();
+            dbParamsLocalMbbi << ",R=" << recordName << ":Rd";
+
+            int mbbiVal = 0;
             for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
+            {
+                dbParamsLocalMbbi << "," << mbbiVal << "VL=" << it->first;
+                dbParamsLocalMbbi << "," << mbbiVal << "ST=" << it->second.at(2);
+                dbParamsLocalMbbi << "," << mbbiVal << "SV=" << it->second.at(3);
+                mbbiVal++;
+                if (mbbiVal > 15) {
+                    break; // MBBIs can only hold 16 values
+                }
+            }
+            dbLoadRecords("db/mbbi.template", dbParamsLocalMbbi.str().c_str());
+
+            // Use the first (rather than zeroth) element in the map as the first is just for the null case in the mbbi 
+            for (statusRecordMap_t::const_iterator it = std::next(recordMap.begin()); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=1 second";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC=" << it->second.second;
-                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.at(1);
+                dbParamsLocal2 << ",R="    << recordName << it->second.at(0) << ":Rd";
                 dbLoadRecords("db/bi.template", dbParamsLocal2.str().c_str());
             }
         }
 
         if ( (!mode.compare("RW")) || (!mode.compare("WO")) )
         {
-            for (statusRecordMap_t::const_iterator it = recordMap.begin(); it != recordMap.end(); ++it)
+            // Use the first (rather than zeroth) element in the map as the first is just for the null case in the mbbi 
+            for (statusRecordMap_t::const_iterator it = std::next(recordMap.begin()); it != recordMap.end(); ++it)
             {
                 std::stringstream dbParamsLocal2;
                 dbParamsLocal2.str("");
                 dbParamsLocal2 <<  dbParamsLocal.str();
                 dbParamsLocal2 << ",SCAN=Passive";
                 dbParamsLocal2 << ",MASK=" << it->first;
-                dbParamsLocal2 << ",DESC=" << it->second.second;
-                dbParamsLocal2 << ",R="    << recordName << it->second.first << ":Rd";
+                dbParamsLocal2 << ",DESC=" << it->second.at(1);
+                dbParamsLocal2 << ",R="    << recordName << it->second.at(0) << ":Rd";
                 dbLoadRecords("db/bo.template", dbParamsLocal2.str().c_str());
             }
         }
@@ -233,7 +262,7 @@ void CAENHVAsyn::createParamInteger(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamInt32, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -272,7 +301,7 @@ void CAENHVAsyn::createParamString(T p, std::map<int, T>& list)
     int index;
     createParam(paramName.c_str(), asynParamOctet, &index);
 
-    list.insert( std::make_pair<int, T>(index, p) );
+    list.insert( std::make_pair(index, p) );
 
     if (!epicsPrefix.empty())
     {
@@ -338,7 +367,7 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
         throw std::runtime_error("Unsupported system type. Only supported types are SYx527 (0-3)");
 
     // Create a Crate object
-    crate = ICrate::create(systemType, ipAddr, userName, password);
+    crate = ICrate::create(systemType, ipAddr, userName, password, readOnly);
 
     // Print the crate map to the IOC shell
     std::cout << std::endl;
@@ -413,6 +442,10 @@ CAENHVAsyn::CAENHVAsyn(const std::string& portName, int systemType, const std::s
 
         for(std::vector<Channel>::iterator channelIt = c.begin(); channelIt != c.end(); ++channelIt)
         {
+            std::vector<ChannelParameterString> cps = (*channelIt)->getChannelParameterStrings();
+            for (std::vector<ChannelParameterString>::iterator paramIt = cps.begin(); paramIt != cps.end(); ++paramIt)
+                createParamString<ChannelParameterString>(*paramIt, channelParameterStringList);
+
             std::vector<ChannelParameterNumeric> cpn = (*channelIt)->getChannelParameterNumerics();
             for (std::vector<ChannelParameterNumeric>::iterator paramIt = cpn.begin(); paramIt != cpn.end(); ++paramIt)
                 createParamFloat<ChannelParameterNumeric>(*paramIt, channelParameterNumericList);
@@ -883,7 +916,8 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     getParamName(addr, function, &name);
 
     // Iterators
-    std::map< int, SystemPropertyString >::iterator spIt;
+    std::map< int, SystemPropertyString   >::iterator spIt;
+    std::map< int, ChannelParameterString >::iterator cpIt;
 
     // Check if the function is found in out lists
     bool found = false;
@@ -891,12 +925,22 @@ asynStatus CAENHVAsyn::readOctet(asynUser *pasynUser, char *value, size_t maxCha
     // Look for the function number in the parameter lists
     try
     {
+        std::string temp;
         if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
         {
-            std::string temp = spIt->second->getVal();
+            temp = spIt->second->getVal();
+            found = true;
+        }
+
+        if ((cpIt = channelParameterStringList.find(function)) != channelParameterStringList.end())
+        {
+            temp = cpIt->second->getVal();
+            found = true;
+        }
+
+        if (found) {
             strcpy(value, temp.c_str());
             *nActual = temp.length() + 1;
-            found = true;
         }
     }
     catch(std::runtime_error& e)
@@ -943,7 +987,8 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     getParamName(addr, function, &name);
 
     // Iterators
-    std::map< int, SystemPropertyString >::iterator spIt;
+    std::map< int, SystemPropertyString   >::iterator spIt;
+    std::map< int, ChannelParameterString >::iterator cpIt;
 
     // Check if the function is found in out lists
     bool found = false;
@@ -951,11 +996,19 @@ asynStatus CAENHVAsyn::writeOctet(asynUser *pasynUser, const char *value, size_t
     // Look for the function number in the parameter lists
     try
     {
+        std::string temp(value);
+
         if ( ( spIt = systemPropertyStringList.find(function) ) != systemPropertyStringList.end() )
         {
             found = true;
-            std::string temp(value);
             spIt->second->setVal(temp);
+            *nActual = temp.size();
+        }
+
+        if ((cpIt = channelParameterStringList.find(function)) != channelParameterStringList.end())
+        {
+            found = true;
+            cpIt->second->setVal(temp);
             *nActual = temp.size();
         }
     }
@@ -1051,11 +1104,35 @@ static void epicsPrefixCallFunc(const iocshArgBuf *args)
 }
 // - CAENHVAsynSetEpicsPrefix //
 
+// + CAENHVAsynReadOnly //
+extern "C" int CAENHVAsynReadOnly(const bool readOnly)
+{
+    CAENHVAsyn::readOnly = readOnly;
+
+    return 0;
+}
+
+static const iocshArg readOnlyArg0 = { "ReadOnly", iocshArgInt };
+
+static const iocshArg * const readOnlyArgs[] =
+{
+    &readOnlyArg0
+};
+
+static const iocshFuncDef readOnlyFuncDef = { "CAENHVAsynReadOnly", 1, epicsPrefixArgs };
+
+static void readOnlyCallFunc(const iocshArgBuf *args)
+{
+    CAENHVAsynReadOnly(args[0].ival);
+}
+// - CAENHVAsynReadOnly //
+
 // iocshRegister
 void drvCAENHVAsynRegister(void)
 {
     iocshRegister( &configFuncDef,      configCallFunc      );
     iocshRegister( &epicsPrefixFuncDef, epicsPrefixCallFunc );
+    iocshRegister( &readOnlyFuncDef,    readOnlyCallFunc);
 }
 
 extern "C"
