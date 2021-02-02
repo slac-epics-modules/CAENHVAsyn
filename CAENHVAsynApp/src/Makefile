@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-USR_CXXFLAGS += -std=c++0x
+USR_CXXFLAGS_Linux += -std=c++0x
 
 # CAENHVAsyn.dbd will be created from CAENHVAsynInclude.dbd and installed
 DBD += CAENHVAsyn.dbd
