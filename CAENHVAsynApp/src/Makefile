@@ -28,14 +28,23 @@ LIB_LIBS += asyn
 #======================================================
 
 USR_INCLUDES = $(addprefix -I,$(CAENHVWRAPPER_INCLUDE))
-caenhvwrapper_DIR = $(CAENHVWRAPPER_LIB)
-USR_LIBS_Linux += caenhvwrapper
+ifneq ($(findstring linux,$(EPICS_HOST_ARCH)),)
+USR_LDFLAGS += -L$(CAENHVWRAPPER_LIB)
+endif
 
-LIB_LIBS_WIN32 += caenhvwrapper
+caenhvwrapper_DIR = $(CAENHVWRAPPER_LIB)
+hscaenetlib_DIR = $(CAENHVWRAPPER_LIB)
+
+USR_LIBS_Linux += caenhvwrapper # hscaenetlib
+LIB_LIBS_WIN32 += caenhvwrapper # hscaenetlib
+
 BIN_INSTALLS_WIN32 += $(wildcard $(CAENHVWRAPPER_DLL)/*.dll)
 LIB_INSTALLS_WIN32 += $(wildcard $(CAENHVWRAPPER_LIB)/*.lib)
 LIB_SYS_LIBS_WIN32 += ws2_32
 LIB_LIBS_WIN32 += $(EPICS_BASE_IOC_LIBS)
+
+BIN_INSTALLS_Linux += $(wildcard $(CAENHVWRAPPER_LIB)/*.so.*)
+LIB_INSTALLS_Linux += $(wildcard $(CAENHVWRAPPER_LIB)/*.so)
 
 #===========================
 
