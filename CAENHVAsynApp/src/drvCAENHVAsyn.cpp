@@ -481,6 +481,7 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     getParamName(addr, function, &name);
 
     // Iterators
+    std::map< int, ChannelParameterBinary >::iterator cpIt;
     std::map< int, SystemPropertyInteger >::iterator spIt;
 
     // Check if the function is found in out lists
@@ -489,7 +490,12 @@ asynStatus CAENHVAsyn::readInt32(asynUser *pasynUser, epicsInt32 *value)
     // Look for the function number in the parameter lists
     try
     {
-        if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
+        if ( ( cpIt = channelParameterBinaryList.find(function) ) != channelParameterBinaryList.end() )
+        {
+            *value = cpIt->second->getVal();
+            found = true;
+        }
+        else if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
         {
             *value = spIt->second->getVal();
             found = true;
