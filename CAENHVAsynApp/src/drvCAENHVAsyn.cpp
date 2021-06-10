@@ -556,7 +556,7 @@ asynStatus CAENHVAsyn::writeInt32(asynUser *pasynUser, epicsInt32 value)
     {
         if ( ( cpIt = channelParameterBinaryList.find(function) ) != channelParameterBinaryList.end() )
         {
-            cpIt->second->setVal(val);
+            cpIt->second->setVal(value);
             found = true;
         }
         else if ( ( spIt = systemPropertyIntegerList.find(function) ) != systemPropertyIntegerList.end() )
