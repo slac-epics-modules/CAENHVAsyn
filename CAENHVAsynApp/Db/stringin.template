@@ -5,5 +5,7 @@ record(waveform, "$(P)$(R)") {
     field(SCAN,  "$(SCAN)")
     field(NELM,  "$(NELM)")
     field(FTVL,  "CHAR")
+    field(APST,  "On Change")
+    field(MPST,  "On Change")
     field(INP,   "@asyn($(PORT))$(PARAM)")
 }
