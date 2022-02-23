@@ -3,6 +3,9 @@
 Release notes for the CAENHVAsyn EPICS Module.
 
 ## Releases:
+* __R1.1.3__: 2022-02-22 egumtow
+  * Update asyn module to R4.39-1.0.1
+
 * __R1.1.2__: 2020-02-05 J. Mock
   * Add autosave fields to ai, ao, bi, bo, longin, longout template files
 
