@@ -14,7 +14,7 @@ STATIC_BUILD=NO
 # =============================
 # Define the archiecture versions
 # =============================
-LINUX_VERSION=rhel6
+LINUX_VERSION=rhel7
 
 # =======================================================================================================
 # Support for CAEN HV Wrapper 
