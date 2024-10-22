@@ -3,6 +3,10 @@
 Release notes for the CAENHVAsyn EPICS Module.
 
 ## Releases:
+* __R2.0.0__: 2024-10-22 jmock
+  * Build for rhel7 target - stop building rhel6
+    * Update drvCAENHVAsyn.cpp make_pair function call for rhel7 compiler
+
 * __R1.1.3__: 2022-02-22 egumtow
   * Update asyn module to R4.39-1.0.1
 
